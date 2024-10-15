@@ -1,12 +1,14 @@
 #include <iostream>
-#include <GLFW/glfw3.h>
+
+#define GLFW_INCLUDE_NONE
 #include <glad/gl.h>
+#include <GLFW/glfw3.h>
 
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
 
-using namespace std;
+//sing namespace std;
 
 #define VSYNC 1 //0 = off, 1 = on
 
@@ -30,8 +32,8 @@ int main(){
         exit(EXIT_FAILURE);
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 
@@ -41,25 +43,29 @@ int main(){
         printf("GLFW WINDOW INIT FAILED\n", stderr);
         exit(EXIT_FAILURE); 
     } 
-
-
     glfwMakeContextCurrent(window);
-    gladLoadGL(glfwGetProcAddress);
+
+
+    if(!gladLoadGL(glfwGetProcAddress)){ // Glad initialization fails
+        glfwTerminate();
+        printf("GLAD INIT FAILED\n", stderr);
+        exit(EXIT_FAILURE); 
+    }
 
     glfwSetKeyCallback(window, key_callback);
     glfwSwapInterval(VSYNC);
 
 
-    float lastFrame =0.0f;
+    //float lastFrame =0.0f;
     while(!glfwWindowShouldClose(window)){ //while window wants to stay open
 
         int height, width;
         glfwGetFramebufferSize(window, &width, &height);
         glViewport(0, 0, width, height);
 
-        float currentTime = glfwGetTime();
+        /*float currentTime = glfwGetTime();
 		float deltaTime = currentTime - lastFrame;
-		lastFrame = currentTime;
+		lastFrame = currentTime;*/
 
 
         glfwSwapBuffers(window);
