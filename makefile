@@ -23,17 +23,19 @@ LIB_PATH = Dependencies/lib
 F = -framework
 FRAMEWORKS = $(F) Cocoa $(F) OpenGL $(F) IOKit
 
+
 $(TARGET) : $(OBJS) $(GL_OBJ)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) $(GL_OBJ) -I$(INCLUDE) -l$(LIB) $(FRAMEWORKS) -L$(LIB_PATH)
-	echo "\nDONE\n"
+	@$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) $(GL_OBJ) -I$(INCLUDE) -l$(LIB) $(FRAMEWORKS) -L$(LIB_PATH)
+	@echo "DONE"
 
 $(OBJS) : $(SRCS_CPP)
-	$(CC) $(CFLAGS) -c $(SRCS_RAW_CPP:LOC%=$(SRC_PATH)%) -I$(INCLUDE)
-	mv $(OBJS_TEMP) $(OBJ_PATH)
+	@$(CC) $(CFLAGS) -c $(SRCS_RAW_CPP:LOC%=$(SRC_PATH)%) -I$(INCLUDE)
+	@mv $(OBJS_TEMP) $(OBJ_PATH)
 
 $(GL_OBJ) : $(GL_SRC)
-	$(C_COMPILER) $(CFLAGS) -c -o $(GL_OBJ) $(GL_SRC) -I$(INCLUDE)
+	@$(C_COMPILER) $(CFLAGS) -c -o $(GL_OBJ) $(GL_SRC) -I$(INCLUDE)
 
 clean:
-	rm -f $(TARGET) $(OBJS)
-	rm -rf $(TARGET).dSYM
+	@rm -f $(TARGET) $(OBJS)
+	@rm -rf $(TARGET).dSYM
+	@echo "DONE"
