@@ -36,3 +36,5 @@
 .DS_Store
 *IGNORE*
 *TEMP*
+
+.vscode
