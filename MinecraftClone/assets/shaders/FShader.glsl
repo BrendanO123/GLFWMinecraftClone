@@ -1,8 +1,14 @@
 #version 330
 
-in vec3 color;
+in vec2 TexCoord;
 out vec4 fragment;
 
+uniform sampler2D Texture;
+
 void main(){
-    fragment = vec4(color, 1.0);
+    vec4 color = texture(Texture, TexCoord);
+    if(color.a==0){
+        discard;
+    }
+    fragment=color;
 }

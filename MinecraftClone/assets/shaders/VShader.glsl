@@ -2,12 +2,12 @@
 
 uniform mat4 MVP;
 
-in vec3 vCol;
 in vec3 vPos;
+in vec2 vtexPos;
 
-out vec3 color;
+out vec2 TexCoord;
 
 void main(){
     gl_Position = MVP * vec4(vPos, 1.0);
-    color = vCol;
+    TexCoord = vtexPos;
 }
