@@ -30,19 +30,16 @@ void Chunk :: genChunk(){
     Block block, adjacentBlock;
     GLubyte type;
     vector<GLubyte> layer;
-    bool solidLayer;
 
     glm :: mat4 rot = glm :: mat4(1.f);
     rot = glm :: rotate(rot, glm ::radians(45.0f), glm :: vec3(0.f, 1.f, 0.f));
 
     for(int i=data.size()-1; i>=0; i--){
-        solidLayer = true;
         for(GLubyte x=0; x<16; x++){
             for(GLubyte z=0; z<16; z++){
                 index = z + (int(x) << 4);
                 type = data[i].data[index];
                 block = Blocks :: blocks[type];
-                if(solidLayer && (Blocks :: blocks[type].flagByte & Blocks :: TRANSPARENT_BIT)){solidLayer=false;}
                 if(type){
                     y=data[i].y;
                     layer=data[i].data;
@@ -173,7 +170,6 @@ void Chunk :: genChunk(){
 
                             //top quad
                             if(i == data.size()){
-                                //TODO: check neighbooring chunks to cull faces along border
                                 adjacentBlock = blocks[AIR];
                             }
                             else{
@@ -198,7 +194,6 @@ void Chunk :: genChunk(){
 
                             //bottom quad
                             if(i==0){
-                                //TODO: check neighbooring chunks to cull faces along border
                                 adjacentBlock = blocks[AIR];
                             }
                             else{
@@ -225,8 +220,6 @@ void Chunk :: genChunk(){
                 }
             }
         }
-
-        //if(solidLayer){break;}
         flagByte |= ChunkFlags :: GENERATED;
     }
 }

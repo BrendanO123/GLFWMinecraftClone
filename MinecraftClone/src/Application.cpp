@@ -114,14 +114,26 @@ int main(){
     Chunk chunk = Chunk(0, glm :: vec2(0,0));
 
     chunk.data.push_back(Layer((unsigned char)0));
-    chunk.data[0].data[0 + (0<<4)] = Blocks :: LEAVES_OAK;
-    chunk.data[0].data[0 + (1<<4)] = Blocks :: GRASS;
-    chunk.data[0].data[1 + (1<<4)] = Blocks :: DIRT;
-    chunk.data[0].data[0 + (2<<4)] = Blocks :: STONE;
-    chunk.data[0].data[1 + (0<<4)] = Blocks :: LOG_OAK;
+    chunk.data[0].data[1 + (0<<4)] = Blocks :: LOG_OAK; chunk.data[0].data[1 + (1<<4)] = Blocks :: DIRT;
+    chunk.data[0].data[0 + (0<<4)] = Blocks :: LEAVES_OAK; chunk.data[0].data[0 + (1<<4)] = Blocks :: GRASS;
+
+    chunk.data[0].data[1 + (2<<4)] = Blocks :: GRASS; chunk.data[0].data[1 + (3<<4)] = Blocks :: GRASS;
+    chunk.data[0].data[0 + (2<<4)] = Blocks :: STONE; chunk.data[0].data[0 + (3<<4)] = Blocks :: GRASS;
+
+    chunk.data[0].data[1 + (4<<4)] = Blocks :: GRASS;
+    chunk.data[0].data[0 + (4<<4)] = Blocks :: GRASS;
 
     chunk.data.push_back(Layer((unsigned char)1));
     chunk.data[1].data[0 + (1<<4)] = Blocks :: SHORT_GRASS;
+    chunk.data[1].data[1 + (2<<4)] = Blocks :: TALL_GRASS_BOTTOM;
+    chunk.data[1].data[1 + (3<<4)] = Blocks :: TULIP_WHITE;
+    chunk.data[1].data[0 + (3<<4)] = Blocks :: ROSE;
+
+    chunk.data[1].data[1 + (4<<4)] = Blocks :: TULIP_ORANGE;
+    chunk.data[1].data[0 + (4<<4)] = Blocks :: TULIP_PINK;
+
+    chunk.data.push_back(Layer((unsigned char)2));
+    chunk.data[2].data[1 + (2<<4)] = Blocks :: TALL_GRASS_TOP;
 
     chunk.genChunk();
 

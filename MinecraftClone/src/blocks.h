@@ -4,7 +4,7 @@
 
 namespace Blocks{
 
-    const Block blocks[9] = {
+    const Block blocks[13] = {
         Block(0, 0, 0, 0, true), //air block: tex = na, trans = true
         Block(0, 1, 0, 1), //dirt block: tex = (0,0)
         Block( //grass block (unique faces)
@@ -22,6 +22,10 @@ namespace Blocks{
         Block(1, 2, 2, 3, true, true), //grass fan
         Block(3, 4, 0, 1, true, true), //tall grass bottom
         Block(3, 4, 1, 2, true, true), //tall grass top
+        Block(0, 1, 3, 4, true, true), //rose/poppy
+        Block(1, 2, 3, 4, true, true), //orange tulip
+        Block(2, 3, 2, 3, true, true), //white tulip
+        Block(3, 4, 2, 3, true, true), //pink tulip
     };
 
     enum BLOCKS{
@@ -33,6 +37,10 @@ namespace Blocks{
         LEAVES_OAK = 5,
         SHORT_GRASS = 6,
         TALL_GRASS_BOTTOM = 7,
-        TALL_GRASS_TOP = 8
+        TALL_GRASS_TOP = 8,
+        ROSE = 9,
+        TULIP_ORANGE = 10,
+        TULIP_WHITE = 11,
+        TULIP_PINK = 12
     };
 }
