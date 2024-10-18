@@ -1,11 +1,11 @@
-#include "block.h"
+#include "Block.h"
 
 Block :: Block(char minX, char maxX, char minY, char maxY, bool transparent, bool billboard){
     topLowX=sideLowX=bottomLowX=minX;
     topHighX=sideHighX=bottomHighX=maxX;
     topLowY=sideLowY=bottomLowY=minY;
     topHighY=sideHighY=bottomHighY=maxY;
-    flagByte = (transparent ? Blocks ::TRANSPARENT_BIT : 0) + (billboard ? Blocks :: BILLBOARD_BIT : 0);
+    flagByte = (transparent ? Blocks :: TRANSPARENT_BIT : 0) + (billboard ? Blocks :: BILLBOARD_BIT : 0);
 }
 
 Block :: Block(
@@ -20,3 +20,4 @@ Block :: Block(
     
     flagByte = (transparent ? Blocks ::TRANSPARENT_BIT : 0) + (billboard ? Blocks :: BILLBOARD_BIT : 0);
 }
+Block :: Block(){}

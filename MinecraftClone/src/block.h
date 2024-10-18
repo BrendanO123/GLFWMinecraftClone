@@ -12,9 +12,15 @@ struct Block{
     char sideMinX, char sideMaxX, char sideMinY, char sideMaxY, 
     char bottomMinX, char bottomMaxX, char bottomMinY, char bottomMaxY,
     bool transparent=false, bool billboard=false);
+    Block();
 };
 
 namespace Blocks{
-    static const unsigned char TRANSPARENT_BIT=(unsigned char)(1<<7);
-    static const unsigned char BILLBOARD_BIT=1;
+    enum BlockFlags : unsigned char{
+        BILLBOARD_BIT = 1,
+        TRANSPARENT_BIT =(unsigned char)(1<<7)
+    };
+
+    static const float blockMapW_blocks = 4.f;
+    static const float blockMapH_blocks = 4.f;
 }
