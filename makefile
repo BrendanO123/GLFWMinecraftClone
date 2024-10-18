@@ -42,3 +42,8 @@ clean:
 	@rm -f $(TARGET) $(OBJS)
 	@rm -rf $(TARGET).dSYM
 	@echo "DONE"
+
+clean_exc:
+	@rm -f $(TARGET)
+	@rm -rf $(TARGET).dSYM
+	@echo "DONE"
