@@ -31,6 +31,7 @@ class Chunk{
         //it also has the unused (for now) values of modified and stored in file flag bits
 
         Chunk(GLuint lod, glm :: vec2 chunkPos);
+        ~Chunk();
 
         void genChunk();
         void render(GLuint modelMatLoc, GLuint vpos_location, GLuint vtexPos_location);

@@ -18,6 +18,11 @@
 Chunk :: Chunk(GLuint lod, glm :: vec2 chunkPos){
     LOD = lod; pos_world = glm ::vec3(((int)chunkPos.x) << (4+LOD), 0, ((int)chunkPos.x) << (4+LOD));
 }
+Chunk :: ~Chunk(){
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
+    glDeleteVertexArrays(1, &VAO);
+}
 
 void Chunk :: genChunk(){
     //TODO: terrain generation
