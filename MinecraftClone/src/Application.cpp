@@ -15,6 +15,7 @@
 #include "Chunk.h"
 #include "Shaders.h"
 #include "Blocks.h"
+#include "Camera.h"
 
 #include <stdlib.h>
 #include <stddef.h>
@@ -24,14 +25,27 @@ using namespace std;
 
 #define VSYNC 1 //0 = off, 1 = on
 
+Camera cam = Camera();
+
 static void error_callback(int error, const char* description){
     fprintf(stderr, "Error %s\n", description);
 }
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
+static void mouse_callback(GLFWwindow* window, double xpos, double ypos){
+    cam.mouse_callback(window, xpos, ypos);
+}
+
+static void scroll_callback(GLFWwindow* window, double xOff, double yOff){
+    cam.scroll_callback(window, xOff, yOff);
+}
+
+void processInput(GLFWwindow* window, float deltaTime=1.f){
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
         glfwSetWindowShouldClose(window, GLFW_TRUE);
+        return;
     }
+
+    cam.processInput(window, deltaTime);
 }
 
 
@@ -59,6 +73,9 @@ int main(){
     } 
     glfwMakeContextCurrent(window);
 
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     if(!gladLoadGL(glfwGetProcAddress)){ // Glad initialization fails
         glfwDestroyWindow(window);
@@ -66,8 +83,6 @@ int main(){
         printf("GLAD INIT FAILED\n", stderr);
         exit(EXIT_FAILURE); 
     }
-
-    glfwSetKeyCallback(window, key_callback);
     glfwSwapInterval(VSYNC);
 
 
@@ -142,7 +157,12 @@ int main(){
     float renderDist = 25.f;
 
     glClearColor(135/255.0f, 206/255.0f, 235/255.0f, 1.0f);
+    float deltaTime, currentFrame, lastFrame = 0.0f;
     while(!glfwWindowShouldClose(window)){ //while window wants to stay open
+
+        currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
 
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
@@ -150,13 +170,13 @@ int main(){
         float ratio = width / (float) height;
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        processInput(window, deltaTime);
 
 
-        projection = glm::perspective(glm::radians(75.0f), ratio, 0.1f, renderDist);
+        projection = glm::perspective(glm::radians(cam.fov), ratio, 0.1f, renderDist);
         glUniformMatrix4fv(projectionMatLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-        glm :: vec3 CameraPos = glm :: vec3(0.f, 3 * sin(glfwGetTime()), -4.5f);
-        view = glm :: translate(glm :: identity<glm :: mat4>(), glm :: vec3(-CameraPos.x, -CameraPos.y, CameraPos.z));
+        view = cam.getView();
         glUniformMatrix4fv(viewMatLoc, 1, GL_FALSE, glm::value_ptr(view));
 
         chunk.render(modelMatLoc, vpos_location, vtexPos_location);

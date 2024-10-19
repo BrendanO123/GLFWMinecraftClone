@@ -5,10 +5,10 @@ CFLAGS = -Wall -g
 TARGET = build.out
 
 SRC_PATH = MinecraftClone/src/
-SRCS_RAW_CPP = LOCApplication.cpp LOCShaders.cpp LOCBlock.cpp LOCChunk.cpp
+SRCS_RAW_CPP = LOCApplication.cpp LOCShaders.cpp LOCBlock.cpp LOCChunk.cpp LOCCamera.cpp
 SRCS_CPP = $(SRCS_RAW_CPP:LOC%=$(SRC_PATH)%)
 
-SRCS_RAW_H = LOCShaders.h LOCBlocks.h LOCBlock.h LOCChunk.h
+SRCS_RAW_H = LOCShaders.h LOCBlocks.h LOCBlock.h LOCChunk.h LOCCamera.h
 SRCS_H = $(SRCS_RAW_H:LOC%=$(SRC_PATH)%)
 
 OBJ_PATH = Dependencies/bin/
