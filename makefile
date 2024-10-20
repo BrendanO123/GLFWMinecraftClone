@@ -27,7 +27,7 @@ F = -framework
 FRAMEWORKS = $(F) Cocoa $(F) OpenGL $(F) IOKit
 
 
-$(TARGET) : $(OBJS) $(GL_OBJ)
+$(TARGET) : $(OBJS) $(GL_OBJ) $(SRCS_H)
 	@$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) $(GL_OBJ) -I$(INCLUDE) -l$(LIB) $(FRAMEWORKS) -L$(LIB_PATH)
 	@echo "DONE"
 

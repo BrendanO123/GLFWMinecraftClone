@@ -7,16 +7,78 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
+#include "Shaders.h"
+
 using namespace std;
 
 struct Vertex
 {
+    GLubyte texPosX, texPosY;
+    GLbyte posX, posY, posZ;
+
+    Vertex(glm :: vec3 Pos, glm :: vec2 TexPos){
+        posX = (char)int(Pos.x); 
+        posY=(char)int(Pos.y); 
+        posZ=(char)int(Pos.z); 
+        texPosX = (unsigned char)TexPos.x;
+        texPosY = (unsigned char)TexPos.y;
+    }
+    Vertex(glm :: vec3 Pos, GLubyte texX, GLubyte texY){
+        posX = (char)int(Pos.x); 
+        posY=(char)int(Pos.y); 
+        posZ=(char)int(Pos.z); 
+        texPosX = texX; 
+        texPosY = texY;
+    }
+    Vertex(GLbyte x, GLbyte y, GLbyte z, glm :: vec2 TexPos){
+        posX=x; posY=y; posZ=z; 
+        texPosX = (unsigned char)TexPos.x; texPosY = (unsigned char)TexPos.y;
+    }
+    Vertex(GLbyte x, GLbyte y, GLbyte z, GLubyte texX, GLubyte texY){posX=x; posY=y; posZ=z; texPosX = texX; texPosY = texY;}
+    Vertex(){posX = 0; posY = 0; posZ = 0; texPosX = 0; texPosY = 0;}
+};
+struct BillboardVertex
+{
+    glm :: vec3 pos;
+    GLubyte texPosX, texPosY;
+
+    BillboardVertex(glm :: vec3 Pos, glm :: vec2 TexPos){pos=Pos; texPosX = (unsigned char)TexPos.x; texPosY = (unsigned char)TexPos.y;}
+    BillboardVertex(glm :: vec3 Pos, GLubyte texX, GLubyte texY){pos=Pos; texPosX = texX; texPosY = texY;}
+    BillboardVertex(){pos= glm ::vec3(1); texPosX = 0; texPosY = 0;}
+};
+/*struct Vertex
+{
+    glm :: vec2 texPos;
+    GLbyte posX, posY, posZ;
+
+    Vertex(glm :: vec3 Pos, glm :: vec2 TexPos){
+        posX = (char)int(Pos.x); 
+        posY=(char)int(Pos.y); 
+        posZ=(char)int(Pos.z); 
+        texPos = TexPos;
+    }
+    Vertex(glm :: vec3 Pos, GLubyte texX, GLubyte texY){
+        posX = (char)int(Pos.x); 
+        posY=(char)int(Pos.y); 
+        posZ=(char)int(Pos.z); 
+        texPos = glm :: vec2(texX, texY);
+    }
+    Vertex(GLbyte x, GLbyte y, GLbyte z, glm :: vec2 TexPos){
+        posX=x; posY=y; posZ=z; 
+        texPos = TexPos;
+    }
+    Vertex(GLbyte x, GLbyte y, GLbyte z, GLubyte texX, GLubyte texY){posX=x; posY=y; posZ=z; texPos = glm :: vec2(texX, texY);}
+    Vertex(){posX = 0; posY = 0; posZ = 0; texPos = glm :: vec2(0);}
+};
+struct BillboardVertex
+{
     glm :: vec3 pos;
     glm :: vec2 texPos;
 
-    Vertex(glm :: vec3 Pos, glm :: vec2 TexPos){pos=Pos; texPos=TexPos;}
-    Vertex(){pos= glm ::vec3(1); texPos = glm :: vec2(1);}
-};
+    BillboardVertex(glm :: vec3 Pos, glm :: vec2 TexPos){pos=Pos; texPos = TexPos;}
+    BillboardVertex(glm :: vec3 Pos, GLubyte texX, GLubyte texY){pos=Pos; texPos = glm :: vec2(texX, texY);}
+    BillboardVertex(){pos= glm ::vec3(1); texPos = glm :: vec2(0);}
+};*/
 struct Layer{
     GLubyte y;
     vector<GLubyte> data;
@@ -34,13 +96,15 @@ class Chunk{
         ~Chunk();
 
         void genChunk();
-        void render(GLuint modelMatLoc, GLuint vpos_location, GLuint vtexPos_location);
+        void render(Shader shader);
         
     private:
-        GLuint VAO, VBO, EBO;
+        GLuint VAONorm, VBONorm, EBONorm, VAOBoard, VBOBoard, EBOBoard, modelMatLoc;
         glm :: vec3 pos_world;
         vector<Vertex> verticies;
+        vector<BillboardVertex> billboardVerticies;
         vector<unsigned int> indicies;
+        vector<unsigned int> billboardIndicies;
         GLubyte LOD;
 };
 namespace ChunkFlags{

@@ -12,8 +12,8 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Chunk.h"
 #include "Shaders.h"
+#include "Chunk.h"
 #include "Blocks.h"
 #include "Camera.h"
 
@@ -88,13 +88,13 @@ int main(){
 
     Shader shader = Shader("MinecraftClone/assets/shaders/VShader.glsl", "MinecraftClone/assets/shaders/FShader.glsl");
 
-    const GLuint modelMatLoc = glGetUniformLocation(shader.program, "model");
     const GLuint viewMatLoc = glGetUniformLocation(shader.program, "view");
     const GLuint projectionMatLoc = glGetUniformLocation(shader.program, "projection");
-    const GLint vpos_location = glGetAttribLocation(shader.program, "vPos");
-    const GLint vtexPos_location = glGetAttribLocation(shader.program, "vtexPos");
 
     shader.use();
+
+    glUniform1f(glGetUniformLocation(shader.program, "blockMapW_blocks"), Blocks :: blockMapW_blocks);
+    glUniform1f(glGetUniformLocation(shader.program, "blockMapH_blocks"), Blocks :: blockMapH_blocks);
 
 
     GLuint texture;
@@ -103,6 +103,8 @@ int main(){
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    stbi_set_flip_vertically_on_load(true);
 
     int w, h, channels;
     GLubyte *data = stbi_load("MinecraftClone/assets/sprites/block_map.png", &w, &h, &channels, 0);
@@ -179,7 +181,7 @@ int main(){
         view = cam.getView();
         glUniformMatrix4fv(viewMatLoc, 1, GL_FALSE, glm::value_ptr(view));
 
-        chunk.render(modelMatLoc, vpos_location, vtexPos_location);
+        chunk.render(shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
