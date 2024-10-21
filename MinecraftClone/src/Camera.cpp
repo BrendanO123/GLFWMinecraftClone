@@ -8,11 +8,11 @@ Camera :: Camera(){
     firstMouseCall = true;
     lastX = 400;
     lastY = 300;
-    maxFov = 75.0f;
+    maxFov = 110.0f;
 
     CameraPos = glm :: vec3(0.f, 0.f, 4.5f);
 
-    fov = 45.f;
+    fov = 70.f;
     mouseSensitivity = 0.1f;
 }
 

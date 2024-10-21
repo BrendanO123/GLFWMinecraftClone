@@ -109,15 +109,18 @@ void World :: update(glm :: vec3 camPos){
 
                     numChunksRendered++; //inc num rendered
                     iterate->second.render(*shader); //render it
+
+                    //continue
+                    ++iterate;
                 }
             }
             else{
                 numChunksRendered++; //inc num rendered
                 iterate->second.render(*shader); //render it
+
+                //continue
+                ++iterate;
             }
         }
-
-        //continue
-        ++iterate;
     }
 }
