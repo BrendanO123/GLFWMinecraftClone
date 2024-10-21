@@ -31,4 +31,5 @@ class Camera{
         void processInput(GLFWwindow* window, float deltaTime);
         glm :: mat4 getView();
         glm :: vec3 getPos();
+        void setFirstMouse(bool state){firstMouseCall = state;}
 };

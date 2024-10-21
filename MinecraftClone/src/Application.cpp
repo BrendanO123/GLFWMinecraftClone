@@ -21,32 +21,42 @@
 #include <stddef.h>
 #include <stdio.h>
 
+#include <time.h>
+
 using namespace std;
 
 #define VSYNC 1 //0 = off, 1 = on
 
 Camera cam = Camera();
+bool menu = false;
 
 static void error_callback(int error, const char* description){
     fprintf(stderr, "Error %s\n", description);
 }
 
 static void mouse_callback(GLFWwindow* window, double xpos, double ypos){
-    cam.mouse_callback(window, xpos, ypos);
+    if(!menu){cam.mouse_callback(window, xpos, ypos);}
 }
 
 static void scroll_callback(GLFWwindow* window, double xOff, double yOff){
-    cam.scroll_callback(window, xOff, yOff);
+    if(!menu){cam.scroll_callback(window, xOff, yOff);}
 }
 
-void processInput(GLFWwindow* window, float deltaTime=1.f){
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS && mods == GLFW_MOD_SHIFT){
         glfwSetWindowShouldClose(window, GLFW_TRUE);
         return;
     }
-
-    cam.processInput(window, deltaTime);
+    else if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
+        menu = !menu;
+        if(menu){glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);}
+        else{glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); cam.setFirstMouse(true);}
+    }
 }
+
+void processInput(GLFWwindow* window, float deltaTime=1.f){if(!menu){cam.processInput(window, deltaTime);}}
+
 
 
 const string title = "To Be Minecraft Clone";
@@ -75,6 +85,7 @@ int main(){
 
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
+    glfwSetKeyCallback(window, key_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     if(!gladLoadGL(glfwGetProcAddress)){ // Glad initialization fails
