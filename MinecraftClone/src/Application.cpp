@@ -21,8 +21,6 @@
 #include <stddef.h>
 #include <stdio.h>
 
-#include <time.h>
-
 using namespace std;
 
 #define VSYNC 1 //0 = off, 1 = on
@@ -171,7 +169,8 @@ int main(){
         World :: world->update(cam.CameraPos);
 
         glfwSwapBuffers(window);
-        glfwPollEvents();
+        if(!menu){glfwPollEvents();}
+        else{glfwWaitEvents();}
     }
 
     delete(World :: world);
