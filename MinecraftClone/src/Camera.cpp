@@ -57,6 +57,8 @@ void Camera :: scroll_callback(GLFWwindow* window, double xOff, double yOff){
 
 void Camera :: processInput(GLFWwindow* window, float deltaTime=1.f){
 
+    //TODO: main menu and f3 screen
+
     glm :: vec3 move = glm :: vec3 (0.f, 0.f, 0.f);
     bool shouldMove = false;
     if((glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) ^ (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)){

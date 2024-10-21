@@ -256,11 +256,6 @@ void Chunk :: render(Shader shader){
 
         modelMatLoc = glGetUniformLocation(shader.program, "model");
         flagByte |= ChunkFlags :: READY;
-
-        for (int i=0; i<verticies.size(); i++){
-            //std :: cout << '(' << int(verticies[i].texPosX) << ',' << int(verticies[i].texPosY) << ')' << std :: endl;
-            //std :: cout << '(' << int(verticies[i].posX) << ',' << int(verticies[i].posY) << ',' << int(verticies[i].posZ) <<  ')' << std :: endl;
-        }
     }
 
     glm :: mat4 model = glm ::mat4(1.0f);
