@@ -46,39 +46,6 @@ struct BillboardVertex
     BillboardVertex(glm :: vec3 Pos, GLubyte texX, GLubyte texY){pos=Pos; texPosX = texX; texPosY = texY;}
     BillboardVertex(){pos= glm ::vec3(1); texPosX = 0; texPosY = 0;}
 };
-/*struct Vertex
-{
-    glm :: vec2 texPos;
-    GLbyte posX, posY, posZ;
-
-    Vertex(glm :: vec3 Pos, glm :: vec2 TexPos){
-        posX = (char)int(Pos.x); 
-        posY=(char)int(Pos.y); 
-        posZ=(char)int(Pos.z); 
-        texPos = TexPos;
-    }
-    Vertex(glm :: vec3 Pos, GLubyte texX, GLubyte texY){
-        posX = (char)int(Pos.x); 
-        posY=(char)int(Pos.y); 
-        posZ=(char)int(Pos.z); 
-        texPos = glm :: vec2(texX, texY);
-    }
-    Vertex(GLbyte x, GLbyte y, GLbyte z, glm :: vec2 TexPos){
-        posX=x; posY=y; posZ=z; 
-        texPos = TexPos;
-    }
-    Vertex(GLbyte x, GLbyte y, GLbyte z, GLubyte texX, GLubyte texY){posX=x; posY=y; posZ=z; texPos = glm :: vec2(texX, texY);}
-    Vertex(){posX = 0; posY = 0; posZ = 0; texPos = glm :: vec2(0);}
-};
-struct BillboardVertex
-{
-    glm :: vec3 pos;
-    glm :: vec2 texPos;
-
-    BillboardVertex(glm :: vec3 Pos, glm :: vec2 TexPos){pos=Pos; texPos = TexPos;}
-    BillboardVertex(glm :: vec3 Pos, GLubyte texX, GLubyte texY){pos=Pos; texPos = glm :: vec2(texX, texY);}
-    BillboardVertex(){pos= glm ::vec3(1); texPos = glm :: vec2(0);}
-};*/
 struct Layer{
     GLubyte y;
     vector<GLubyte> data;

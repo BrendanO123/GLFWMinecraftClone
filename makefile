@@ -1,6 +1,6 @@
 CC = g++
 C_COMPILER = gcc
-CFLAGS = -Wall -g
+CFLAGS = -Wall -g -std=c++11
 
 TARGET = build.out
 
