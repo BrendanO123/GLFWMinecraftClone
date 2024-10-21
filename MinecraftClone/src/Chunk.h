@@ -2,6 +2,7 @@
 
 #include "Blocks.h"
 #include <vector>
+#include <thread>
 
 #include <glm/glm.hpp>
 #include <glad/gl.h>
@@ -64,6 +65,7 @@ class Chunk{
 
         void genChunk();
         void render(Shader shader);
+        void getPos(int &x, int &z){x = int(pos_world.x/(1<<(4+LOD))); z = int(pos_world.z/(1<<(4+LOD)));}
         
     private:
         GLuint VAONorm, VBONorm, EBONorm, VAOBoard, VBOBoard, EBOBoard, modelMatLoc;
@@ -73,6 +75,8 @@ class Chunk{
         vector<unsigned int> indicies;
         vector<unsigned int> billboardIndicies;
         GLubyte LOD;
+        std :: thread chunkThread;
+        static inline int Floor(float a){return (a<0 ? int(a) : int(a));}
 };
 namespace ChunkFlags{
     enum CHUNKFLAGS : unsigned char{

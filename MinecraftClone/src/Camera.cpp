@@ -28,6 +28,7 @@ Camera :: Camera(float FOV, float maxFOV, glm :: vec3 pos, glm :: vec2 Rotation,
     lastX = 400;
     lastY = 300;
 }
+glm :: vec3 Camera :: getPos(){return CameraPos;}
 
 void Camera :: mouse_callback(GLFWwindow* window, double xpos, double ypos){
     if(firstMouseCall){lastX=xpos; lastY=ypos; firstMouseCall=false; return;}
@@ -75,7 +76,7 @@ void Camera :: processInput(GLFWwindow* window, float deltaTime=1.f){
     }
 
     if(shouldMove && normalizedMoveSpeed){move = glm :: normalize(move);}
-    CameraPos += move * moveSpeed;
+    CameraPos += move * moveSpeed * ((glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) ? 4.0f : 1.0f);
 }
 
 glm :: mat4 Camera :: getView(){

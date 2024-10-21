@@ -1,5 +1,5 @@
-#include <iostream>
 #include <string.h>
+#include <iostream>
 
 #define GLFW_INCLUDE_NONE
 #include <glad/gl.h>
@@ -13,7 +13,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Shaders.h"
-#include "Chunk.h"
+#include "World.h"
 #include "Blocks.h"
 #include "Camera.h"
 
@@ -128,35 +128,11 @@ int main(){
 
     glEnable(GL_DEPTH_TEST);
 
-    Chunk chunk = Chunk(0, glm :: vec2(0,0));
-
-    chunk.data.push_back(Layer((unsigned char)0));
-    chunk.data[0].data[1 + (0<<4)] = Blocks :: LOG_OAK; chunk.data[0].data[1 + (1<<4)] = Blocks :: DIRT;
-    chunk.data[0].data[0 + (0<<4)] = Blocks :: LEAVES_OAK; chunk.data[0].data[0 + (1<<4)] = Blocks :: STONE;
-
-    chunk.data[0].data[1 + (2<<4)] = Blocks :: GRASS; chunk.data[0].data[1 + (3<<4)] = Blocks :: GRASS;
-    chunk.data[0].data[0 + (2<<4)] = Blocks :: GRASS; chunk.data[0].data[0 + (3<<4)] = Blocks :: GRASS;
-
-    chunk.data[0].data[1 + (4<<4)] = Blocks :: GRASS;
-    chunk.data[0].data[0 + (4<<4)] = Blocks :: GRASS;
-
-    chunk.data.push_back(Layer((unsigned char)1));
-    chunk.data[1].data[0 + (2<<4)] = Blocks :: SHORT_GRASS;
-    chunk.data[1].data[1 + (2<<4)] = Blocks :: TALL_GRASS_BOTTOM;
-    chunk.data[1].data[1 + (3<<4)] = Blocks :: TULIP_WHITE;
-    chunk.data[1].data[0 + (3<<4)] = Blocks :: ROSE;
-
-    chunk.data[1].data[1 + (4<<4)] = Blocks :: TULIP_ORANGE;
-    chunk.data[1].data[0 + (4<<4)] = Blocks :: TULIP_PINK;
-
-    chunk.data.push_back(Layer((unsigned char)2));
-    chunk.data[2].data[1 + (2<<4)] = Blocks :: TALL_GRASS_TOP;
-
-    chunk.genChunk();
+    World :: world = new World(&shader);
 
     glm ::mat4 view = glm :: identity<glm :: mat4>();
     glm ::mat4 projection = glm :: identity<glm :: mat4>();
-    float renderDist = 25.f;
+    float renderDist = 70.f;
 
     glClearColor(135/255.0f, 206/255.0f, 235/255.0f, 1.0f);
     float deltaTime, currentFrame, lastFrame = 0.0f;
@@ -181,13 +157,13 @@ int main(){
         view = cam.getView();
         glUniformMatrix4fv(viewMatLoc, 1, GL_FALSE, glm::value_ptr(view));
 
-        chunk.render(shader);
+        World :: world->update(cam.CameraPos);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
-    
+    delete(World :: world);
     glfwDestroyWindow(window);
     glfwTerminate();
     exit(EXIT_SUCCESS);

@@ -30,4 +30,5 @@ class Camera{
         void scroll_callback(GLFWwindow* window, double xOff, double yOff);
         void processInput(GLFWwindow* window, float deltaTime);
         glm :: mat4 getView();
+        glm :: vec3 getPos();
 };

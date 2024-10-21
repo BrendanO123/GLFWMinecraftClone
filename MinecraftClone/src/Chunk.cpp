@@ -1,6 +1,7 @@
 #include "Chunk.h"
 #include "Blocks.h"
 #include "Block.h"
+#include "WorldGen.h"
 
 #include <glad/gl.h>
 
@@ -16,9 +17,14 @@
 #include <stdio.h>
 
 Chunk :: Chunk(GLuint lod, glm :: vec2 chunkPos){
-    LOD = lod; pos_world = glm ::vec3(((int)chunkPos.x) << (4+LOD), 0, ((int)chunkPos.x) << (4+LOD));
+    LOD = lod; pos_world = glm ::vec3(((int)chunkPos.x) << (4+LOD), 0, ((int)chunkPos.y) << (4+LOD));
+
+    chunkThread = std :: thread(&Chunk :: genChunk, this);
 }
 Chunk :: ~Chunk(){
+    if (chunkThread.joinable()){chunkThread.join();}
+    else{std :: cout << "Thread Join Failed" << std :: endl;}
+    
     glDeleteBuffers(1, &VBONorm);
     glDeleteBuffers(1, &EBONorm);
     glDeleteVertexArrays(1, &VAONorm);
@@ -28,9 +34,6 @@ Chunk :: ~Chunk(){
 }
 
 void Chunk :: genChunk(){
-    //TODO: terrain generation
-    //currently just uses existing chunk data which is currently public
-    //I should change to private, add accessor and modifier funcs and introduce terrain gen
 
     //TODO: fetch blocks adjacent to chunk
     
@@ -39,8 +42,8 @@ void Chunk :: genChunk(){
     GLubyte type;
     vector<GLubyte> layer;
 
-    glm :: mat4 rot = glm :: mat4(1.f);
-    rot = glm :: rotate(rot, glm ::radians(45.0f), glm :: vec3(0.f, 1.f, 0.f));
+    int x, z; getPos(x, z);
+    WorldGen :: generateChunkData(x, z, (1<<(4+LOD)), &data);
 
     for(int i=data.size()-1; i>=0; i--){
         for(GLubyte x=0; x<16; x++){
@@ -208,11 +211,13 @@ void Chunk :: genChunk(){
                 }
             }
         }
-        flagByte |= ChunkFlags :: GENERATED;
     }
+
+    flagByte |= ChunkFlags :: GENERATED;
 }
 
 void Chunk :: render(Shader shader){
+    
     if(!(flagByte & ChunkFlags :: READY)){
         if(!(flagByte & ChunkFlags :: GENERATED)){return;}
         glGenVertexArrays(1, &VAONorm);
@@ -259,7 +264,7 @@ void Chunk :: render(Shader shader){
     }
 
     glm :: mat4 model = glm ::mat4(1.0f);
-    model = glm :: translate(model, /*pos_world*/glm :: vec3(-2.5f, -0.5f, 1.f));
+    model = glm :: translate(model, pos_world);
     glUniformMatrix4fv(modelMatLoc, 1, GL_FALSE, glm :: value_ptr(model));
 
     glEnable(GL_CULL_FACE);

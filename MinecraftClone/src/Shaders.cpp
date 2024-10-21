@@ -7,6 +7,7 @@
 using namespace std;
 
 //constructor
+Shader :: Shader(){}
 Shader :: Shader(const char* VShaderPath, const char* FShaderPath){
     ifstream VShaderFile, FShaderFile;
     string VCodeStr, FCodeStr;
