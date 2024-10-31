@@ -1,6 +1,7 @@
 CC = g++
 C_COMPILER = gcc
-CFLAGS = -Wall -g -std=c++17
+CFLAGS = -Wall -g
+CPPVERSION = -std=c++17
 
 TARGET = build.out
 
@@ -16,7 +17,7 @@ OBJ1 = $(SRCS_RAW_CPP:%.cpp=%.o)
 OBJS = $(OBJ1:LOC%=$(OBJ_PATH)%)
 OBJS_TEMP = $(OBJ1:LOC%=%)
 
-GL_OBJ = Dependencies/bin/gl.oc
+GL_OBJ = Dependencies/bin/gl.o
 GL_SRC = MinecraftClone/src/gl.c
 
 INCLUDE = Dependencies/include -I$(SRC_PATH)
@@ -28,11 +29,11 @@ FRAMEWORKS = $(F) Cocoa $(F) OpenGL $(F) IOKit
 
 
 $(TARGET) : $(OBJS) $(GL_OBJ) $(SRCS_H)
-	@$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) $(GL_OBJ) -I$(INCLUDE) -l$(LIB) $(FRAMEWORKS) -L$(LIB_PATH)
+	@$(CC) $(CFLAGS) $(CPPVERSION) -o $(TARGET) $(OBJS) $(GL_OBJ) -I$(INCLUDE) -l$(LIB) $(FRAMEWORKS) -L$(LIB_PATH)
 	@echo "DONE"
 
 $(OBJ_PATH)%.o : $(SRC_PATH)%.cpp
-	@$(CC) $(CFLAGS) -c $< -o $@ -I$(INCLUDE)
+	@$(CC) $(CFLAGS) $(CPPVERSION) -c $< -o $@ -I$(INCLUDE)
 
 
 $(GL_OBJ) : $(GL_SRC)
