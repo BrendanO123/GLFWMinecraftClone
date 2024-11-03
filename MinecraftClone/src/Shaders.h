@@ -12,6 +12,7 @@ class Shader{
         GLuint program;
         Shader(const char* VShaderPath, const char* FShaderPath);
         Shader();
+        ~Shader();
 
         void setFloat(const string& name, float value) const;
         void setVec2(const string& name, vec2 value) const;

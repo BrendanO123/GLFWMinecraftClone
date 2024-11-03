@@ -95,6 +95,7 @@ Shader :: Shader(const char* VShaderPath, const char* FShaderPath){
 void Shader :: use(){
     glUseProgram(program);
 }
+Shader :: ~Shader(){glDeleteProgram(program);}
 
 //set float function
 void Shader :: setFloat(const string& name, float value) const{
