@@ -1,6 +1,7 @@
 #include <string.h>
 #include <iostream>
 
+#define GL_SILENCE_DEPRECATION
 #define GLFW_INCLUDE_NONE
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
@@ -102,16 +103,29 @@ int main(){
 
     shader.use();
 
+    float alphaErrorRange=0.3f; //MUST BE >0!!
     glUniform1f(glGetUniformLocation(shader.program, "blockMapW_blocks"), Blocks :: blockMapW_blocks);
     glUniform1f(glGetUniformLocation(shader.program, "blockMapH_blocks"), Blocks :: blockMapH_blocks);
+    glUniform1f(glGetUniformLocation(shader.program, "alphaH"), alphaErrorRange);
 
 
     GLuint texture;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+    glEnable(GL_BLEND);
+
+    //TODO to fix textures: 
+        //commit and push current changes
+        //change sprite map to 3d texture where each slice is a block face and gen mipmap of that to prevent interblock bleeding
+        //set alpha mode to binary
+        //maybe try filling in the empty pixels in the texture with transparent or translucent green instead of transparent white
+        
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR /*GL_NEAREST*/);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     stbi_set_flip_vertically_on_load(true);
 

@@ -5,9 +5,10 @@ out vec4 fragment;
 
 uniform sampler2D Texture;
 
+uniform float alphaH;
+
 void main(){
     vec4 color = texture(Texture, TexCoord);
-    if(color.a==0){discard;}
+    if(color.a<alphaH){discard;}
     fragment=color;
-    //fragment = vec4(TexCoord, 0.f, 1.f);
 }

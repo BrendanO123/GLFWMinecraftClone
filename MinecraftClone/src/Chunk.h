@@ -1,12 +1,13 @@
 #pragma once
 
+#define GL_SILENCE_DEPRECATION
+#include <glad/gl.h>
+
 #include "Blocks.h"
+#include "ChunkData.h"
+#include "Layer.h"
 #include <vector>
 #include <thread>
-
-#include <glm/glm.hpp>
-#include <glad/gl.h>
-#include <GLFW/glfw3.h>
 
 #include "Shaders.h"
 
@@ -47,25 +48,20 @@ struct BillboardVertex
     BillboardVertex(glm :: vec3 Pos, GLubyte texX, GLubyte texY){pos=Pos; texPosX = texX; texPosY = texY;}
     BillboardVertex(){pos= glm ::vec3(1); texPosX = 0; texPosY = 0;}
 };
-struct Layer{
-    GLubyte y;
-    vector<GLubyte> data;
-
-    Layer(GLubyte newY){y = newY; data = vector<unsigned char>(256, (unsigned char)0);};
-};
 class Chunk{
 
     public:
-        vector<Layer> data; //TODO: make variable with lod
         GLubyte flagByte; //header byte with ready to render and generated flag bits
         //it also has the unused (for now) values of modified and stored in file flag bits
 
-        Chunk(GLuint lod, glm :: vec2 chunkPos);
+        Chunk(GLuint lod, glm :: ivec2 chunkPos);
         ~Chunk();
 
         void genChunk();
         void render(Shader shader);
         void getPos(int &x, int &z){x = int(pos_world.x/(1<<(4+LOD))); z = int(pos_world.z/(1<<(4+LOD)));}
+
+        ChunkData* data, *left, *right, *front, *back;
         
     private:
         GLuint VAONorm, VBONorm, EBONorm, VAOBoard, VBOBoard, EBOBoard, modelMatLoc;
@@ -75,7 +71,6 @@ class Chunk{
         vector<unsigned int> indicies;
         vector<unsigned int> billboardIndicies;
         GLubyte LOD;
-        std :: thread chunkThread;
         static inline int Floor(float a){return (a<0 ? int(a) : int(a));}
 };
 namespace ChunkFlags{

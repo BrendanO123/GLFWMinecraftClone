@@ -3,9 +3,6 @@
 #include "Block.h"
 #include "WorldGen.h"
 
-#include <glad/gl.h>
-
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -16,14 +13,10 @@
 #include <stddef.h>
 #include <stdio.h>
 
-Chunk :: Chunk(GLuint lod, glm :: vec2 chunkPos){
-    LOD = lod; pos_world = glm ::vec3(((int)chunkPos.x) << (4+LOD), 0, ((int)chunkPos.y) << (4+LOD));
-
-    chunkThread = std :: thread(&Chunk :: genChunk, this);
+Chunk :: Chunk(GLuint lod, glm :: ivec2 chunkPos) : LOD(lod){
+    pos_world = glm ::vec3(((int)chunkPos.x) << (4+LOD), 0, ((int)chunkPos.y) << (4+LOD)); //will niot actually work if LOD is changed
 }
 Chunk :: ~Chunk(){
-    if (chunkThread.joinable()){chunkThread.join();}
-    else{std :: cout << "Thread Join Failed" << std :: endl;}
     
     glDeleteBuffers(1, &VBONorm);
     glDeleteBuffers(1, &EBONorm);
@@ -34,26 +27,22 @@ Chunk :: ~Chunk(){
 }
 
 void Chunk :: genChunk(){
-
-    //TODO: fetch blocks adjacent to chunk
-    
     GLuint vOffset=0, BoardVOff = 0, index, y;
     Block block, adjacentBlock;
     GLubyte type;
     vector<GLubyte> layer;
 
     int x, z; getPos(x, z);
-    WorldGen :: generateChunkData(x, z, (1<<(4+LOD)), &data);
 
-    for(int i=data.size()-1; i>=0; i--){
+    for(int i=data->data.size()-1; i>=0; i--){
         for(GLubyte x=0; x<16; x++){
             for(GLbyte z=0; z<16; z++){
                 index = z + (int(x) << 4);
-                type = data[i].data[index];
+                type = data->data.at(i).data[index];
                 block = Blocks :: blocks[type];
                 if(type){
-                    y=data[i].y;
-                    layer=data[i].data;
+                    y=data->data.at(i).y;
+                    layer=data->data.at(i).data;
                     using namespace Blocks;{
                         if(block.flagByte & BILLBOARD_BIT){
 
@@ -81,8 +70,9 @@ void Chunk :: genChunk(){
 
                             //front quad
                             if(z==0){
-                                //TODO: check neighbooring chunks to cull faces along border
-                                adjacentBlock = blocks[AIR];
+                                GLubyte index = front->findBlock(GLubyte(15 + (int(x)<<4)), y);
+                                if(index<blockCount){adjacentBlock = blocks[index];}
+                                else{adjacentBlock = blocks[AIR];}
                             }
                             else{
                                 adjacentBlock = blocks[layer[z-1 + (int(x) << 4)]];
@@ -100,9 +90,10 @@ void Chunk :: genChunk(){
                             }
 
                             //right quad
-                            if(x==16){
-                                //TODO: check neighbooring chunks to cull faces along border
-                                adjacentBlock = blocks[AIR];
+                            if(x==15){
+                                GLubyte index = right->findBlock(GLubyte(z), y);
+                                if(index<blockCount){adjacentBlock = blocks[index];}
+                                else{adjacentBlock = blocks[AIR];}
                             }
                             else{
                                 adjacentBlock = blocks[layer[z + (int(x+1) << 4)]];
@@ -120,9 +111,10 @@ void Chunk :: genChunk(){
                             }
 
                             //back quad
-                            if(z==16){
-                                //TODO: check neighbooring chunks to cull faces along border
-                                adjacentBlock = blocks[AIR];
+                            if(z==15){
+                                GLubyte index = back->findBlock(GLubyte(0 + (int(x)<<4)), y);
+                                if(index<blockCount){adjacentBlock = blocks[index];}
+                                else{adjacentBlock = blocks[AIR];}
                             }
                             else{
                                 adjacentBlock = blocks[layer[z+1 + (int(x) << 4)]];
@@ -141,8 +133,9 @@ void Chunk :: genChunk(){
 
                             //left quad
                             if(x==0){
-                                //TODO: check neighbooring chunks to cull faces along border
-                                adjacentBlock = blocks[AIR];
+                                GLubyte index = left->findBlock(GLubyte(z) + (15<<4), y);
+                                if(index<blockCount){adjacentBlock = blocks[index];}
+                                else{adjacentBlock = blocks[AIR];}
                             }
                             else{
                                 adjacentBlock = blocks[layer[z + (int(x-1) << 4)]];
@@ -160,12 +153,12 @@ void Chunk :: genChunk(){
                             }
 
                             //top quad
-                            if(i == data.size()){
+                            if(i == data->data.size()-1){
                                 adjacentBlock = blocks[AIR];
                             }
                             else{
-                                if(data[i+1].y == y+1){
-                                    adjacentBlock = blocks[data[i+1].data[z + (int(x) << 4)]];
+                                if(data->data.at(i+1).y == y+1){
+                                    adjacentBlock = blocks[data->data.at(i+1).data[z + (int(x) << 4)]];
                                 }
                                 else{
                                     adjacentBlock = blocks[AIR];
@@ -188,8 +181,8 @@ void Chunk :: genChunk(){
                                 adjacentBlock = blocks[AIR];
                             }
                             else{
-                                if(data[i-1].y == y-1){
-                                    adjacentBlock = blocks[data[i-1].data[z + (int(x) << 4)]];
+                                if(data->data.at(i-1).y == y-1){
+                                    adjacentBlock = blocks[data->data.at(i-1).data[z + (int(x) << 4)]];
                                 }
                                 else{
                                     adjacentBlock = blocks[AIR];

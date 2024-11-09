@@ -1,10 +1,13 @@
 #pragma once
 
 #include "Block.h"
+#include <GLFW/glfw3.h>
 
 namespace Blocks{
 
-    const Block blocks[13] = {
+    const GLubyte blockCount = 13;
+
+    const Block blocks[blockCount] = {
         Block(0, 0, 0, 0, true), //air block: tex = na, trans = true
         Block(0, 1, 0, 1), //dirt block: tex = (0,0)
         Block( //grass block (unique faces)
