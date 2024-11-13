@@ -32,9 +32,11 @@ $(TARGET) : $(OBJS) $(GL_OBJ) $(SRCS_H)
 	@$(CC) $(CFLAGS) $(CPPVERSION) -o $(TARGET) $(OBJS) $(GL_OBJ) -I$(INCLUDE) -l$(LIB) $(FRAMEWORKS) -L$(LIB_PATH)
 	@echo "DONE"
 
-$(OBJ_PATH)%.o : $(SRC_PATH)%.cpp
-	@$(CC) $(CFLAGS) $(CPPVERSION) -c $< -o $@ -I$(INCLUDE)
+$(OBJ_PATH)Application.o : $(SRC_PATH)Application.cpp
+	@$(CC) $(CFLAGS) $(CPPVERSION) -c -o $(OBJ_PATH)Application.o $(SRC_PATH)Application.cpp -I$(INCLUDE)
 
+$(OBJ_PATH)%.o : $(SRC_PATH)%.cpp $(SRC_PATH)%.h
+	@$(CC) $(CFLAGS) $(CPPVERSION) -c $< -o $@ -I$(INCLUDE)
 
 $(GL_OBJ) : $(GL_SRC)
 	@$(C_COMPILER) $(CFLAGS) -c -o $(GL_OBJ) $(GL_SRC) -I$(INCLUDE)

@@ -48,6 +48,6 @@ class World{
         int lastCamX = -100, lastCamZ = -100;
         int camX_chunk = -101, camZ_chunk = -101;
 
-        int renderDistance = 3;
+        int renderDistance = 5;
         unsigned int chunkSize = 16;
 };

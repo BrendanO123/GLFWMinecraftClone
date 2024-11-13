@@ -2,13 +2,12 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-Camera :: Camera(){
+Camera :: Camera() : maxFov(110.f), minFov(15.0f){
     CameraFront = glm :: vec3(0.f, 0.f, -1.f);
     rotation = glm :: vec2(0.f, -90.f);
     firstMouseCall = true;
     lastX = 400;
     lastY = 300;
-    maxFov = 110.0f;
 
     CameraPos = glm :: vec3(8.f, 5.f, 8.f);
 
@@ -16,8 +15,8 @@ Camera :: Camera(){
     mouseSensitivity = 0.1f;
 }
 
-Camera :: Camera(float FOV, float maxFOV, glm :: vec3 pos, glm :: vec2 Rotation, float sensitivity){
-    fov = FOV; maxFov = maxFOV; CameraPos = pos; rotation = Rotation; mouseSensitivity = sensitivity;
+Camera :: Camera(float FOV, float maxFOV, float minFOV, glm :: vec3 pos, glm :: vec2 Rotation, float sensitivity) : maxFov(maxFOV), minFov(minFOV) {
+    fov = FOV; CameraPos = pos; rotation = Rotation; mouseSensitivity = sensitivity;
 
     CameraFront.x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
     CameraFront.y = sin(glm::radians(rotation.x));
@@ -51,7 +50,7 @@ void Camera :: mouse_callback(GLFWwindow* window, double xpos, double ypos){
 
 void Camera :: scroll_callback(GLFWwindow* window, double xOff, double yOff){
     fov -= (float)yOff;
-    if(fov<1.0f){fov=1.0f;}
+    if(fov<minFov){fov=minFov;}
     if(fov>maxFov){fov=maxFov;}
 }
 
@@ -61,6 +60,7 @@ void Camera :: processInput(GLFWwindow* window, float deltaTime=1.f){
 
     glm :: vec3 move = glm :: vec3 (0.f, 0.f, 0.f);
     bool shouldMove = false;
+    if(glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS){fov=70.f;}
     if((glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) ^ (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)){
         shouldMove = true;
         if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){move += CameraFront;}

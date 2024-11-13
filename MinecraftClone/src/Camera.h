@@ -16,16 +16,17 @@ class Camera{
 
         float lastX;
         float lastY;
-        float maxFov;
     public:
         glm :: vec3 CameraPos;
         const glm :: vec3 CameraUp = glm :: vec3(0.f, 1.f, 0.f);
 
         float fov;
+        const float maxFov; 
+        const float minFov;
         float mouseSensitivity;
 
         Camera();
-        Camera(float FOV, float maxFOV, glm :: vec3 pos, glm :: vec2 Rotation, float sensitivity=0.1f);
+        Camera(float FOV, float maxFOV, float minFOV, glm :: vec3 pos, glm :: vec2 Rotation, float sensitivity=0.1f);
         void mouse_callback(GLFWwindow* window, double xpos, double ypos);
         void scroll_callback(GLFWwindow* window, double xOff, double yOff);
         void processInput(GLFWwindow* window, float deltaTime);

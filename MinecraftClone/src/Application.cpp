@@ -113,19 +113,15 @@ int main(){
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
 
-    glEnable(GL_BLEND);
-
-    //TODO to fix textures: 
-        //commit and push current changes
+    //TODO to fix textures:
         //change sprite map to 3d texture where each slice is a block face and gen mipmap of that to prevent interblock bleeding
-        //set alpha mode to binary
         //maybe try filling in the empty pixels in the texture with transparent or translucent green instead of transparent white
-        
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR /*GL_NEAREST*/);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 4);
 
     stbi_set_flip_vertically_on_load(true);
 
@@ -155,7 +151,7 @@ int main(){
 
     glm ::mat4 view = glm :: identity<glm :: mat4>();
     glm ::mat4 projection = glm :: identity<glm :: mat4>();
-    float renderDist = 70.f;
+    float renderDist = 160.f;
 
     glClearColor(135/255.0f, 206/255.0f, 235/255.0f, 1.0f);
     float deltaTime, currentFrame, lastFrame = 0.0f;
