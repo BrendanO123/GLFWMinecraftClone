@@ -23,10 +23,11 @@ class Camera{
         float fov;
         const float maxFov; 
         const float minFov;
+        const float defaultFov;
         float mouseSensitivity;
 
         Camera();
-        Camera(float FOV, float maxFOV, float minFOV, glm :: vec3 pos, glm :: vec2 Rotation, float sensitivity=0.1f);
+        Camera(float FOV, float maxFOV, float minFOV, float defualtFOV, glm :: vec3 pos, glm :: vec2 Rotation, float sensitivity=0.1f);
         void mouse_callback(GLFWwindow* window, double xpos, double ypos);
         void scroll_callback(GLFWwindow* window, double xOff, double yOff);
         void processInput(GLFWwindow* window, float deltaTime);

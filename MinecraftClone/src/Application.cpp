@@ -114,7 +114,6 @@ int main(){
     glBindTexture(GL_TEXTURE_2D, texture);
 
     //TODO to fix textures:
-        //change sprite map to 3d texture where each slice is a block face and gen mipmap of that to prevent interblock bleeding
         //maybe try filling in the empty pixels in the texture with transparent or translucent green instead of transparent white
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR /*GL_NEAREST*/);

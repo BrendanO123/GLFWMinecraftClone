@@ -2,7 +2,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-Camera :: Camera() : maxFov(110.f), minFov(15.0f){
+Camera :: Camera() : maxFov(110.f), minFov(15.0f), defaultFov(70.f){
     CameraFront = glm :: vec3(0.f, 0.f, -1.f);
     rotation = glm :: vec2(0.f, -90.f);
     firstMouseCall = true;
@@ -11,11 +11,11 @@ Camera :: Camera() : maxFov(110.f), minFov(15.0f){
 
     CameraPos = glm :: vec3(8.f, 5.f, 8.f);
 
-    fov = 70.f;
+    fov = defaultFov;
     mouseSensitivity = 0.1f;
 }
 
-Camera :: Camera(float FOV, float maxFOV, float minFOV, glm :: vec3 pos, glm :: vec2 Rotation, float sensitivity) : maxFov(maxFOV), minFov(minFOV) {
+Camera :: Camera(float FOV, float maxFOV, float minFOV, float defaultFOV, glm :: vec3 pos, glm :: vec2 Rotation, float sensitivity) : maxFov(maxFOV), minFov(minFOV), defaultFov(defaultFOV) {
     fov = FOV; CameraPos = pos; rotation = Rotation; mouseSensitivity = sensitivity;
 
     CameraFront.x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
@@ -60,7 +60,7 @@ void Camera :: processInput(GLFWwindow* window, float deltaTime=1.f){
 
     glm :: vec3 move = glm :: vec3 (0.f, 0.f, 0.f);
     bool shouldMove = false;
-    if(glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS){fov=70.f;}
+    if(glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS){fov=defaultFov;}
     if((glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) ^ (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)){
         shouldMove = true;
         if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){move += CameraFront;}
