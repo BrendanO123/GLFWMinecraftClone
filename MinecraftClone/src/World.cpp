@@ -24,9 +24,10 @@ World :: ~World(){
 }
 
 //handle player movement and gen new chunks
-void World :: update(glm :: vec3 camPos){
+void World :: update(glm :: vec3 camPos, bool menu){
 
     mute.lock();
+    isMenu=menu;
 
     //get float cam pos into int chunk pos
     camX_chunk = Floor(camPos.x/chunkSize);
@@ -88,23 +89,25 @@ void World :: threadUpdate(){
 
     while(!shouldEnd){
 
-        //if player moves into new chunk
-        mute.lock();
-        if(camX_chunk != lastCamX || camZ_chunk != lastCamZ){
+        if(!isMenu){ //if stuff is happening
+            //if player moves into new chunk
+            mute.lock();
+            if(camX_chunk != lastCamX || camZ_chunk != lastCamZ){
 
-            //move stored player location
-            lastCamX = camX_chunk; lastCamZ = camZ_chunk;
+                //move stored player location
+                lastCamX = camX_chunk; lastCamZ = camZ_chunk;
 
-            //loop through chunks in render
-            for (int x = camX_chunk - renderDistance; x<= camX_chunk + renderDistance; x++){
-                for (int z = camZ_chunk - renderDistance; z<= camZ_chunk + renderDistance; z++){
+                //loop through chunks in render
+                for (int x = camX_chunk - renderDistance; x<= camX_chunk + renderDistance; x++){
+                    for (int z = camZ_chunk - renderDistance; z<= camZ_chunk + renderDistance; z++){
 
-                    //if we don't have chunk, add to rendering queue
-                    if(chunks.find({x, z}) == chunks.end()){chunkQueue.push({x, z});}
+                        //if we don't have chunk, add to rendering queue
+                        if(chunks.find({x, z}) == chunks.end()){chunkQueue.push({x, z});}
+                    }
                 }
             }
+            mute.unlock();
         }
-        mute.unlock();
 
         mute.lock();
         //if we aren't yet rendering anything and we have things we want to render
@@ -216,30 +219,33 @@ void World :: threadUpdate(){
         }
         else{
             mute.unlock();
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            if(!isMenu){std::this_thread::sleep_for(std::chrono::milliseconds(1000));}
+            else{std::this_thread::sleep_for(std::chrono::milliseconds(2000));}
         }
 
-        mute.lock();
-        for (auto iterate = chunkData.begin(); iterate != chunkData.end();)
-        {
-            glm :: ivec2 chunkPos = iterate->second->pos;
-
-            if (chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y)) == chunks.end() &&
-                chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y)) == chunks.end() &&
-                chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y+1)) == chunks.end() &&
-                chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y-1)) == chunks.end() &&
-                chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y+1)) == chunks.end() &&
-                chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y-1)) == chunks.end() &&
-                chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y)) == chunks.end() &&
-                chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y+1)) == chunks.end() &&
-                chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y-1)) == chunks.end())
+        if(!isMenu){//if stuff is happening
+            mute.lock();
+            for (auto iterate = chunkData.begin(); iterate != chunkData.end();)
             {
-                delete chunkData.at(iterate->first);
-                iterate = chunkData.erase(iterate);
+                glm :: ivec2 chunkPos = iterate->second->pos;
+
+                if (chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y)) == chunks.end() &&
+                    chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y)) == chunks.end() &&
+                    chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y+1)) == chunks.end() &&
+                    chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y-1)) == chunks.end() &&
+                    chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y+1)) == chunks.end() &&
+                    chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y-1)) == chunks.end() &&
+                    chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y)) == chunks.end() &&
+                    chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y+1)) == chunks.end() &&
+                    chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y-1)) == chunks.end())
+                {
+                    delete chunkData.at(iterate->first);
+                    iterate = chunkData.erase(iterate);
+                }
+                else{iterate++;}
             }
-            else{iterate++;}
+            mute.unlock();
         }
-        mute.unlock();
     }
 }
 

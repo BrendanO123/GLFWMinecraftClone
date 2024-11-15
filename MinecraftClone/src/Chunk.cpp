@@ -47,20 +47,20 @@ void Chunk :: genChunk(){
                         if(block.flagByte & BILLBOARD_BIT){
 
                             //positive front
-                            billboardVerticies.push_back(BillboardVertex(glm :: vec3(x+0.14645f, y, -0.85355f-z), block.sideLowX, block.sideLowY));
-                            billboardVerticies.push_back(BillboardVertex(glm :: vec3(x+0.85355f, y, -0.14645f-z), block.sideHighX, block.sideLowY));
-                            billboardVerticies.push_back(BillboardVertex(glm :: vec3(x+0.14645f, y+1, -0.85355f-z), block.sideLowX, block.sideHighY));
-                            billboardVerticies.push_back(BillboardVertex(glm :: vec3(x+0.85355f, y+1, -0.14645f-z), block.sideHighX, block.sideHighY));
+                            billboardVerticies.emplace_back(BillboardVertex(glm :: vec3(x+0.14645f, y, -0.85355f-z), block.sideLowX, block.sideLowY));
+                            billboardVerticies.emplace_back(BillboardVertex(glm :: vec3(x+0.85355f, y, -0.14645f-z), block.sideHighX, block.sideLowY));
+                            billboardVerticies.emplace_back(BillboardVertex(glm :: vec3(x+0.14645f, y+1, -0.85355f-z), block.sideLowX, block.sideHighY));
+                            billboardVerticies.emplace_back(BillboardVertex(glm :: vec3(x+0.85355f, y+1, -0.14645f-z), block.sideHighX, block.sideHighY));
 
                             billboardIndicies.push_back(BoardVOff); billboardIndicies.push_back(BoardVOff+2); billboardIndicies.push_back(BoardVOff+1);
                             billboardIndicies.push_back(BoardVOff+3); billboardIndicies.push_back(BoardVOff+1); billboardIndicies.push_back(BoardVOff+2);
                             BoardVOff+=4;
 
                             //negative front
-                            billboardVerticies.push_back(BillboardVertex(glm :: vec3(x+0.14645f, y, -0.14645f-z), block.sideLowX, block.sideLowY));
-                            billboardVerticies.push_back(BillboardVertex(glm :: vec3(x+0.85355f, y, -0.85355f-z), block.sideHighX, block.sideLowY));
-                            billboardVerticies.push_back(BillboardVertex(glm :: vec3(x+0.14645f, y+1, -0.14645f-z), block.sideLowX, block.sideHighY));
-                            billboardVerticies.push_back(BillboardVertex(glm :: vec3(x+0.85355f, y+1, -0.85355f-z), block.sideHighX, block.sideHighY));
+                            billboardVerticies.emplace_back(BillboardVertex(glm :: vec3(x+0.14645f, y, -0.14645f-z), block.sideLowX, block.sideLowY));
+                            billboardVerticies.emplace_back(BillboardVertex(glm :: vec3(x+0.85355f, y, -0.85355f-z), block.sideHighX, block.sideLowY));
+                            billboardVerticies.emplace_back(BillboardVertex(glm :: vec3(x+0.14645f, y+1, -0.14645f-z), block.sideLowX, block.sideHighY));
+                            billboardVerticies.emplace_back(BillboardVertex(glm :: vec3(x+0.85355f, y+1, -0.85355f-z), block.sideHighX, block.sideHighY));
 
                             billboardIndicies.push_back(BoardVOff); billboardIndicies.push_back(BoardVOff+2); billboardIndicies.push_back(BoardVOff+1);
                             billboardIndicies.push_back(BoardVOff+3); billboardIndicies.push_back(BoardVOff+1); billboardIndicies.push_back(BoardVOff+2);
@@ -79,10 +79,10 @@ void Chunk :: genChunk(){
                             }
 
                             if(adjacentBlock.flagByte & TRANSPARENT_BIT){
-                                verticies.push_back(Vertex(x, y, -z, block.sideLowX, block.sideLowY));
-                                verticies.push_back(Vertex(x+1, y, -z, block.sideHighX, block.sideLowY));
-                                verticies.push_back(Vertex(x, y+1, -z, block.sideLowX, block.sideHighY));
-                                verticies.push_back(Vertex(x+1, y+1, -z, block.sideHighX, block.sideHighY));
+                                verticies.emplace_back(Vertex(x, y, -z, block.sideLowX, block.sideLowY));
+                                verticies.emplace_back(Vertex(x+1, y, -z, block.sideHighX, block.sideLowY));
+                                verticies.emplace_back(Vertex(x, y+1, -z, block.sideLowX, block.sideHighY));
+                                verticies.emplace_back(Vertex(x+1, y+1, -z, block.sideHighX, block.sideHighY));
 
                                 indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
                                 indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
@@ -100,10 +100,10 @@ void Chunk :: genChunk(){
                             }
 
                             if(adjacentBlock.flagByte & TRANSPARENT_BIT){
-                                verticies.push_back(Vertex(x+1, y, -z, block.sideLowX, block.sideLowY));
-                                verticies.push_back(Vertex(x+1, y, -z-1, block.sideHighX, block.sideLowY));
-                                verticies.push_back(Vertex(x+1, y+1, -z, block.sideLowX, block.sideHighY));
-                                verticies.push_back(Vertex(x+1, y+1, -z-1, block.sideHighX, block.sideHighY));
+                                verticies.emplace_back(Vertex(x+1, y, -z, block.sideLowX, block.sideLowY));
+                                verticies.emplace_back(Vertex(x+1, y, -z-1, block.sideHighX, block.sideLowY));
+                                verticies.emplace_back(Vertex(x+1, y+1, -z, block.sideLowX, block.sideHighY));
+                                verticies.emplace_back(Vertex(x+1, y+1, -z-1, block.sideHighX, block.sideHighY));
 
                                 indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
                                 indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
@@ -121,10 +121,10 @@ void Chunk :: genChunk(){
                             }
 
                             if(adjacentBlock.flagByte & TRANSPARENT_BIT){
-                                verticies.push_back(Vertex(x+1, y, -z-1, block.sideLowX, block.sideLowY));
-                                verticies.push_back(Vertex(x, y, -z-1, block.sideHighX, block.sideLowY));
-                                verticies.push_back(Vertex(x+1, y+1, -z-1, block.sideLowX, block.sideHighY));
-                                verticies.push_back(Vertex(x, y+1, -z-1, block.sideHighX, block.sideHighY));
+                                verticies.emplace_back(Vertex(x+1, y, -z-1, block.sideLowX, block.sideLowY));
+                                verticies.emplace_back(Vertex(x, y, -z-1, block.sideHighX, block.sideLowY));
+                                verticies.emplace_back(Vertex(x+1, y+1, -z-1, block.sideLowX, block.sideHighY));
+                                verticies.emplace_back(Vertex(x, y+1, -z-1, block.sideHighX, block.sideHighY));
 
                                 indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
                                 indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
@@ -142,10 +142,10 @@ void Chunk :: genChunk(){
                             }
 
                             if(adjacentBlock.flagByte & TRANSPARENT_BIT){
-                                verticies.push_back(Vertex(x, y, -z-1, block.sideLowX, block.sideLowY));
-                                verticies.push_back(Vertex(x, y, -z, block.sideHighX, block.sideLowY));
-                                verticies.push_back(Vertex(x, y+1, -z-1, block.sideLowX, block.sideHighY));
-                                verticies.push_back(Vertex(x, y+1, -z, block.sideHighX, block.sideHighY));
+                                verticies.emplace_back(Vertex(x, y, -z-1, block.sideLowX, block.sideLowY));
+                                verticies.emplace_back(Vertex(x, y, -z, block.sideHighX, block.sideLowY));
+                                verticies.emplace_back(Vertex(x, y+1, -z-1, block.sideLowX, block.sideHighY));
+                                verticies.emplace_back(Vertex(x, y+1, -z, block.sideHighX, block.sideHighY));
 
                                 indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
                                 indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
@@ -166,10 +166,10 @@ void Chunk :: genChunk(){
                             }
 
                             if(adjacentBlock.flagByte & TRANSPARENT_BIT){
-                                verticies.push_back(Vertex(x, y+1, -z, block.topLowX, block.topLowY));
-                                verticies.push_back(Vertex(x+1, y+1, -z, block.topHighX, block.topLowY));
-                                verticies.push_back(Vertex(x, y+1, -z-1, block.topLowX, block.topHighY));
-                                verticies.push_back(Vertex(x+1, y+1, -z-1, block.topHighX, block.topHighY));
+                                verticies.emplace_back(Vertex(x, y+1, -z, block.topLowX, block.topLowY));
+                                verticies.emplace_back(Vertex(x+1, y+1, -z, block.topHighX, block.topLowY));
+                                verticies.emplace_back(Vertex(x, y+1, -z-1, block.topLowX, block.topHighY));
+                                verticies.emplace_back(Vertex(x+1, y+1, -z-1, block.topHighX, block.topHighY));
 
                                 indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
                                 indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
@@ -190,10 +190,10 @@ void Chunk :: genChunk(){
                             }
 
                             if(adjacentBlock.flagByte & TRANSPARENT_BIT){
-                                verticies.push_back(Vertex(x, y, -z-1, block.bottomLowX, block.bottomLowY));
-                                verticies.push_back(Vertex(x+1, y, -z-1, block.bottomHighX, block.bottomLowY));
-                                verticies.push_back(Vertex(x, y, -z, block.bottomLowX, block.bottomHighY));
-                                verticies.push_back(Vertex(x+1, y, -z, block.bottomHighX, block.bottomHighY));
+                                verticies.emplace_back(Vertex(x, y, -z-1, block.bottomLowX, block.bottomLowY));
+                                verticies.emplace_back(Vertex(x+1, y, -z-1, block.bottomHighX, block.bottomLowY));
+                                verticies.emplace_back(Vertex(x, y, -z, block.bottomLowX, block.bottomHighY));
+                                verticies.emplace_back(Vertex(x+1, y, -z, block.bottomHighX, block.bottomHighY));
 
                                 indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
                                 indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);

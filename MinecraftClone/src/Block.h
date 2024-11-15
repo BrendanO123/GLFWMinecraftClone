@@ -6,18 +6,19 @@ struct Block{
     char bottomLowX, bottomHighX, bottomLowY, bottomHighY;
     char flagByte; //header byte with transparent and billoard flag bits
 
-    Block(char minX, char maxX, char minY, char maxY, bool transparent=false, bool billboard=false);
+    Block(char minX, char maxX, char minY, char maxY, bool transparent=false, bool billboard=false, bool waterLogable = false);
     Block(
     char topMinX, char topMaxX, char topMinY, char topMaxY,
     char sideMinX, char sideMaxX, char sideMinY, char sideMaxY, 
     char bottomMinX, char bottomMaxX, char bottomMinY, char bottomMaxY,
-    bool transparent=false, bool billboard=false);
+    bool transparent=false, bool billboard=false, bool waterLogable = false);
     Block();
 };
 
 namespace Blocks{
     enum BlockFlags : unsigned char{
         BILLBOARD_BIT = 1,
+        WATER_LOGABLE_BIT = 2,
         TRANSPARENT_BIT =(unsigned char)(1<<7)
     };
 

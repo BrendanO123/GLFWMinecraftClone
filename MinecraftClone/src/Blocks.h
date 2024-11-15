@@ -28,7 +28,7 @@ namespace Blocks{
         Block(0, 1, 3, 4, true, true), //rose/poppy
         Block(1, 2, 3, 4, true, true), //orange tulip
         Block(2, 3, 2, 3, true, true), //white tulip
-        Block(3, 4, 2, 3, true, true), //pink tulip
+        Block(3, 4, 2, 3, true, true) //pink tulip
     };
 
     enum BLOCKS{

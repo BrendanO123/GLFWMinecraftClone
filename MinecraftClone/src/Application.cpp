@@ -175,7 +175,7 @@ int main(){
         view = cam.getView();
         glUniformMatrix4fv(viewMatLoc, 1, GL_FALSE, glm::value_ptr(view));
 
-        World :: world->update(cam.CameraPos);
+        World :: world->update(cam.CameraPos, menu);
 
         glfwSwapBuffers(window);
         if(!menu){glfwPollEvents();}
