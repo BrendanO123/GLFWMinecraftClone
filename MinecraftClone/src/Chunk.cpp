@@ -26,7 +26,7 @@ Chunk :: ~Chunk(){
     glDeleteVertexArrays(1, &VAOBoard);
 }
 
-void Chunk :: genChunk(){
+void Chunk :: genChunkMesh(){
     GLuint vOffset=0, BoardVOff = 0, index, y;
     Block block, adjacentBlock;
     GLubyte type;
@@ -70,9 +70,7 @@ void Chunk :: genChunk(){
 
                             //front quad
                             if(z==0){
-                                GLubyte index = front->findBlock(GLubyte(15 + (int(x)<<4)), y);
-                                if(index<blockCount){adjacentBlock = blocks[index];}
-                                else{adjacentBlock = blocks[AIR];}
+                                adjacentBlock = blocks[front->findBlock(GLubyte(15 + (int(x)<<4)), y)];
                             }
                             else{
                                 adjacentBlock = blocks[layer[z-1 + (int(x) << 4)]];
@@ -91,9 +89,7 @@ void Chunk :: genChunk(){
 
                             //right quad
                             if(x==15){
-                                GLubyte index = right->findBlock(GLubyte(z), y);
-                                if(index<blockCount){adjacentBlock = blocks[index];}
-                                else{adjacentBlock = blocks[AIR];}
+                                adjacentBlock = blocks[right->findBlock(GLubyte(z), y)];
                             }
                             else{
                                 adjacentBlock = blocks[layer[z + (int(x+1) << 4)]];
@@ -112,9 +108,7 @@ void Chunk :: genChunk(){
 
                             //back quad
                             if(z==15){
-                                GLubyte index = back->findBlock(GLubyte(0 + (int(x)<<4)), y);
-                                if(index<blockCount){adjacentBlock = blocks[index];}
-                                else{adjacentBlock = blocks[AIR];}
+                                adjacentBlock = blocks[back->findBlock(GLubyte(0 + (int(x)<<4)), y)];
                             }
                             else{
                                 adjacentBlock = blocks[layer[z+1 + (int(x) << 4)]];
@@ -133,9 +127,7 @@ void Chunk :: genChunk(){
 
                             //left quad
                             if(x==0){
-                                GLubyte index = left->findBlock(GLubyte(z) + (15<<4), y);
-                                if(index<blockCount){adjacentBlock = blocks[index];}
-                                else{adjacentBlock = blocks[AIR];}
+                                adjacentBlock = blocks[left->findBlock(GLubyte(z) + (15<<4), y)];
                             }
                             else{
                                 adjacentBlock = blocks[layer[z + (int(x-1) << 4)]];

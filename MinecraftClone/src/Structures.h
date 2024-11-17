@@ -55,18 +55,29 @@ namespace Structures{
 
 
     };
+
+    /**
+     * @brief The const list of all implemented structures that do not require the ability to selectivly delete blocks.
+     */
     const NormStructure NStructs[NormStructureCount] = {
         NormStructure(5, 6, 5, NStructsData[0].data())
     };
 
-    
+    /**
+     * @brief The const list of all implemented structures that do require the ability to selectivly delete blocks.
+     */
     const PartialFillStructure PFStructs[PartialFillStructureCount]={};
 
-    void init();
-
+    /**
+     * @brief The name of all normal structures and their index in the constant list.
+     */
     enum NORM_STRUCT_ASSETS : unsigned char{
         OAK_TREE = 0
     };
+
+    /**
+     * @brief The name of all variable fill structures and their index in the constant list.
+     */
     enum PARTIAL_STRUCT_ASSETS : unsigned char{
 
     };

@@ -210,7 +210,7 @@ void World :: threadUpdate(){
                 }
                 else{chunk->front=chunkData.at(tuple<int,int>(next.x, next.y-1)); mute.unlock();}
 
-                chunk->genChunk();
+                chunk->genChunkMesh();
 
                 mute.lock();
                 chunks[chunkTuple] = chunk;

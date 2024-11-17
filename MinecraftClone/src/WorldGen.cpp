@@ -9,7 +9,7 @@
 using namespace std;
 
 
-void fillLayer(int index, int chunkSize, ChunkData* chunkData, GLubyte type){
+void WorldGen :: fillLayer(int index, int chunkSize, ChunkData* chunkData, GLubyte type){
     for(int x=0; x<16; x++){
         for(int z=0; z<16; z++){
             chunkData->data.at(index).data[z + (x<<4)] = type;
@@ -44,7 +44,6 @@ void WorldGen :: generateChunkData(int x, int z, int chunkSize, ChunkData* chunk
     chunkData->data.emplace_back((unsigned char)8);
 
     Structures :: NStructs[Structures :: OAK_TREE].placeSelf(*chunkData, 2, 3, 2);
-
     Structures :: NStructs[Structures :: OAK_TREE].placeSelf(*chunkData, 6, 3, 5);
 
 }

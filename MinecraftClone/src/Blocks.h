@@ -7,6 +7,10 @@ namespace Blocks{
 
     const GLubyte blockCount = 13;
 
+
+    /**
+     * @brief the list of all blocks currently implemented indexed by the values given in the BLOCKS enum.
+     */
     const Block blocks[blockCount] = {
         Block(0, 0, 0, 0, true), //air block: tex = na, trans = true
         Block(0, 1, 0, 1), //dirt block: tex = (0,0)
@@ -31,6 +35,10 @@ namespace Blocks{
         Block(3, 4, 2, 3, true, true) //pink tulip
     };
 
+
+    /**
+     * @brief The block type values (also indicies in the blocks array) that are actually stored in chunks and their corresponding name.
+     */
     enum BLOCKS{
         AIR = 0,
         DIRT = 1,

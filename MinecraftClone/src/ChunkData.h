@@ -16,15 +16,24 @@ struct ChunkData{
     ChunkData(vector<Layer> Data, glm :: ivec2 loc) : data(Data), pos(loc){}
 
     //block fetch for chunk edge face culling
+    /**
+     * @brief Returns the block type at a given position, returns air if it isn't stored.
+     * @param index The index in the layer to find the block = z + x * 16.
+     * @param height The y value of the layer to find the block in.
+     */
     GLubyte findBlock(GLubyte index, GLubyte height){
         if(data.size()!=0){
             Layer* layer = findLayer(height, 0, data.size()-1);
             if(layer!=nullptr){return layer->data[index];}
         }
-        return -1;
+        return Blocks :: AIR;
     }
 
     //layer fetch for structure placement
+    /**
+     * @brief returns a pointer to the layer at the given height, nullptr if it doesn't exist.
+     * @param height The y value of the layer that should be returned.
+     */
     Layer* getLayer(GLubyte height){
         if(data.size()!=0){
             return findLayer(height, 0, data.size()-1);
@@ -77,6 +86,9 @@ struct ChunkData{
     private:
 
         //layer/block fetch helper (binary search) function
+        /**
+         * @brief helper function that uses a binary search with resepect to height of the layers to find a layer
+         */
         Layer* findLayer(GLubyte target, int low, int high){
             while(high>=low){
                 int mid = (low+high)>>1;
@@ -91,6 +103,9 @@ struct ChunkData{
         }
 
         //new layer index helper (binary search) function
+        /**
+         * @brief helper function that returns the index to insert a new layer of a given y value
+         */
         GLubyte findIndex(GLubyte target, int low, int high){
             GLubyte y;
             while(high>low){

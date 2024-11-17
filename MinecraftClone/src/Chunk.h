@@ -13,6 +13,9 @@
 
 using namespace std;
 
+/**
+ * @brief A vertex for a normal block in a chunk (int style cordinates).
+ */
 struct Vertex
 {
     GLubyte texPosX, texPosY;
@@ -39,6 +42,10 @@ struct Vertex
     Vertex(GLbyte x, GLbyte y, GLbyte z, GLubyte texX, GLubyte texY){posX=x; posY=y; posZ=z; texPosX = texX; texPosY = texY;}
     Vertex(){posX = 0; posY = 0; posZ = 0; texPosX = 0; texPosY = 0;}
 };
+
+/**
+ * @brief A vertex for a billboard block (such as a flower or tall grass) in a chunk (float cordinates). 
+ */
 struct BillboardVertex
 {
     glm :: vec3 pos;
@@ -48,6 +55,10 @@ struct BillboardVertex
     BillboardVertex(glm :: vec3 Pos, GLubyte texX, GLubyte texY){pos=Pos; texPosX = texX; texPosY = texY;}
     BillboardVertex(){pos= glm ::vec3(1); texPosX = 0; texPosY = 0;}
 };
+
+/**
+ * @brief the actual Chunk class which handles rendering the chunk.
+ */
 class Chunk{
 
     public:
@@ -57,7 +68,7 @@ class Chunk{
         Chunk(GLuint lod, glm :: ivec2 chunkPos);
         ~Chunk();
 
-        void genChunk();
+        void genChunkMesh();
         void render(Shader shader);
         void getPos(int &x, int &z){x = int(pos_world.x/(1<<(4+LOD))); z = int(pos_world.z/(1<<(4+LOD)));}
 
