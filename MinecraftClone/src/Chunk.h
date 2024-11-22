@@ -75,12 +75,11 @@ class Chunk{
         ChunkData* data, *left, *right, *front, *back;
         
     private:
-        GLuint VAONorm, VBONorm, EBONorm, VAOBoard, VBOBoard, EBOBoard, modelMatLoc;
+        GLuint VAONorm, VBONorm, EBONorm, VAOTranslucent, VBOTranslucent, EBOTranslucent, VAOBoard, VBOBoard, EBOBoard, modelMatLoc;
         glm :: vec3 pos_world;
-        vector<Vertex> verticies;
+        vector<Vertex> verticies, translucentVerticies;
         vector<BillboardVertex> billboardVerticies;
-        vector<unsigned int> indicies;
-        vector<unsigned int> billboardIndicies;
+        vector<unsigned int> indicies, translucentIndicies, billboardIndicies;
         GLubyte LOD;
         static inline int Floor(float a){return (a<0 ? int(a) : int(a));}
 };

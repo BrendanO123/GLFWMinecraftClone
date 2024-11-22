@@ -69,7 +69,7 @@ int main(){
         exit(EXIT_FAILURE);
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); //TODO: update to GLFW 4.3
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
@@ -103,7 +103,7 @@ int main(){
 
     shader.use();
 
-    float alphaErrorRange=0.3f; //MUST BE >0!!
+    float alphaErrorRange=0.2f; //MUST BE >0!!
     glUniform1f(glGetUniformLocation(shader.program, "blockMapW_blocks"), Blocks :: blockMapW_blocks);
     glUniform1f(glGetUniformLocation(shader.program, "blockMapH_blocks"), Blocks :: blockMapH_blocks);
     glUniform1f(glGetUniformLocation(shader.program, "alphaH"), alphaErrorRange);
@@ -113,10 +113,29 @@ int main(){
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
 
-    //TODO to fix textures:
-        //maybe try filling in the empty pixels in the texture with transparent or translucent green instead of transparent white
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR /*GL_NEAREST*/);
+    /** TODO:
+     * fix transparent textures
+     * add way more block types and sprites
+     * add f3 screen and png writing for underlying maps
+     * 
+     * get vukan and metalvk
+     * add compute shader dispatching for chunk gen
+     * make FBm noise for erosion, continental, temperature noise, and rainfall noise maps
+     * 
+     * create latitude temperature map and add to temperature noise
+     * 
+     * create variable layer count FBm for terrain height w/ errosion and continental maps
+     * create rainshadow math and add to rainfall noise
+     * 
+     * create biome maps
+     * create cave noise
+     * create structure placement noise
+     * 
+     * create river placment math
+     */
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -145,6 +164,7 @@ int main(){
     glFrontFace(GL_CW);
 
     glEnable(GL_DEPTH_TEST);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     World :: world = new World(&shader);
 

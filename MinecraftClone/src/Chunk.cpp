@@ -21,16 +21,20 @@ Chunk :: ~Chunk(){
     glDeleteBuffers(1, &VBONorm);
     glDeleteBuffers(1, &EBONorm);
     glDeleteVertexArrays(1, &VAONorm);
+    glDeleteBuffers(1, &VBOTranslucent);
+    glDeleteBuffers(1, &EBOTranslucent);
+    glDeleteVertexArrays(1, &VAOTranslucent);
     glDeleteBuffers(1, &VBOBoard);
     glDeleteBuffers(1, &EBOBoard);
     glDeleteVertexArrays(1, &VAOBoard);
 }
 
 void Chunk :: genChunkMesh(){
-    GLuint vOffset=0, BoardVOff = 0, index, y;
+    GLuint vOffset=0, transLVOff = 0, BoardVOff = 0, index, y;
     Block block, adjacentBlock;
-    GLubyte type;
+    GLubyte type, adjacentType;
     vector<GLubyte> layer;
+    bool transL;
 
     int x, z; getPos(x, z);
 
@@ -68,128 +72,216 @@ void Chunk :: genChunkMesh(){
                         }
                         else{
 
+                            transL = (block.flagByte & TRANSLUCENT_BIT); //transparency check
+
                             //front quad
                             if(z==0){
-                                adjacentBlock = blocks[front->findBlock(GLubyte(15 + (int(x)<<4)), y)];
+                                adjacentType = front->findBlock(GLubyte(15 + (int(x)<<4)), y);
+                                adjacentBlock = blocks[adjacentType];
                             }
                             else{
-                                adjacentBlock = blocks[layer[z-1 + (int(x) << 4)]];
+                                adjacentType = layer[z-1 + (int(x) << 4)];
+                                adjacentBlock = blocks[adjacentType];
                             }
 
-                            if(adjacentBlock.flagByte & TRANSPARENT_BIT){
-                                verticies.emplace_back(Vertex(x, y, -z, block.sideLowX, block.sideLowY));
-                                verticies.emplace_back(Vertex(x+1, y, -z, block.sideHighX, block.sideLowY));
-                                verticies.emplace_back(Vertex(x, y+1, -z, block.sideLowX, block.sideHighY));
-                                verticies.emplace_back(Vertex(x+1, y+1, -z, block.sideHighX, block.sideHighY));
+                            if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || (((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0) && (adjacentType!=type))){
+                                if(transL){
+                                    translucentVerticies.emplace_back(Vertex(x, y, -z, block.sideLowX, block.sideLowY));
+                                    translucentVerticies.emplace_back(Vertex(x+1, y, -z, block.sideHighX, block.sideLowY));
+                                    translucentVerticies.emplace_back(Vertex(x, y+1, -z, block.sideLowX, block.sideHighY));
+                                    translucentVerticies.emplace_back(Vertex(x+1, y+1, -z, block.sideHighX, block.sideHighY));
 
-                                indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
-                                indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
-                                vOffset+=4;
+                                    translucentIndicies.push_back(transLVOff); translucentIndicies.push_back(transLVOff+2); translucentIndicies.push_back(transLVOff+1);
+                                    translucentIndicies.push_back(transLVOff+3); translucentIndicies.push_back(transLVOff+1); translucentIndicies.push_back(transLVOff+2);
+                                    transLVOff+=4;
+                                }
+                                else{
+                                    verticies.emplace_back(Vertex(x, y, -z, block.sideLowX, block.sideLowY));
+                                    verticies.emplace_back(Vertex(x+1, y, -z, block.sideHighX, block.sideLowY));
+                                    verticies.emplace_back(Vertex(x, y+1, -z, block.sideLowX, block.sideHighY));
+                                    verticies.emplace_back(Vertex(x+1, y+1, -z, block.sideHighX, block.sideHighY));
+
+                                    indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
+                                    indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
+                                    vOffset+=4;
+                                }
                             }
 
                             //right quad
                             if(x==15){
-                                adjacentBlock = blocks[right->findBlock(GLubyte(z), y)];
+                                adjacentType = right->findBlock(GLubyte(z), y);
+                                adjacentBlock = blocks[adjacentType];
                             }
                             else{
-                                adjacentBlock = blocks[layer[z + (int(x+1) << 4)]];
+                                adjacentType = layer[z + (int(x+1) << 4)];
+                                adjacentBlock = blocks[adjacentType];
                             }
 
-                            if(adjacentBlock.flagByte & TRANSPARENT_BIT){
-                                verticies.emplace_back(Vertex(x+1, y, -z, block.sideLowX, block.sideLowY));
-                                verticies.emplace_back(Vertex(x+1, y, -z-1, block.sideHighX, block.sideLowY));
-                                verticies.emplace_back(Vertex(x+1, y+1, -z, block.sideLowX, block.sideHighY));
-                                verticies.emplace_back(Vertex(x+1, y+1, -z-1, block.sideHighX, block.sideHighY));
+                            if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || (((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0) && (adjacentType!=type))){
+                                if(transL){
+                                    translucentVerticies.emplace_back(Vertex(x+1, y, -z, block.sideLowX, block.sideLowY));
+                                    translucentVerticies.emplace_back(Vertex(x+1, y, -z-1, block.sideHighX, block.sideLowY));
+                                    translucentVerticies.emplace_back(Vertex(x+1, y+1, -z, block.sideLowX, block.sideHighY));
+                                    translucentVerticies.emplace_back(Vertex(x+1, y+1, -z-1, block.sideHighX, block.sideHighY));
 
-                                indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
-                                indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
-                                vOffset+=4;
+                                    translucentIndicies.push_back(transLVOff); translucentIndicies.push_back(transLVOff+2); translucentIndicies.push_back(transLVOff+1);
+                                    translucentIndicies.push_back(transLVOff+3); translucentIndicies.push_back(transLVOff+1); translucentIndicies.push_back(transLVOff+2);
+                                    transLVOff+=4;
+                                }
+                                else{
+                                    verticies.emplace_back(Vertex(x+1, y, -z, block.sideLowX, block.sideLowY));
+                                    verticies.emplace_back(Vertex(x+1, y, -z-1, block.sideHighX, block.sideLowY));
+                                    verticies.emplace_back(Vertex(x+1, y+1, -z, block.sideLowX, block.sideHighY));
+                                    verticies.emplace_back(Vertex(x+1, y+1, -z-1, block.sideHighX, block.sideHighY));
+
+                                    indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
+                                    indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
+                                    vOffset+=4;
+                                }
                             }
 
                             //back quad
                             if(z==15){
-                                adjacentBlock = blocks[back->findBlock(GLubyte(0 + (int(x)<<4)), y)];
+                                adjacentType = back->findBlock(GLubyte(0 + (int(x)<<4)), y);
+                                adjacentBlock = blocks[adjacentType];
                             }
                             else{
-                                adjacentBlock = blocks[layer[z+1 + (int(x) << 4)]];
+                                adjacentType = layer[z+1 + (int(x) << 4)];
+                                adjacentBlock = blocks[adjacentType];
                             }
 
-                            if(adjacentBlock.flagByte & TRANSPARENT_BIT){
-                                verticies.emplace_back(Vertex(x+1, y, -z-1, block.sideLowX, block.sideLowY));
-                                verticies.emplace_back(Vertex(x, y, -z-1, block.sideHighX, block.sideLowY));
-                                verticies.emplace_back(Vertex(x+1, y+1, -z-1, block.sideLowX, block.sideHighY));
-                                verticies.emplace_back(Vertex(x, y+1, -z-1, block.sideHighX, block.sideHighY));
+                            if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || (((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0) && (adjacentType!=type))){
+                                if(transL){
+                                    translucentVerticies.emplace_back(Vertex(x+1, y, -z-1, block.sideLowX, block.sideLowY));
+                                    translucentVerticies.emplace_back(Vertex(x, y, -z-1, block.sideHighX, block.sideLowY));
+                                    translucentVerticies.emplace_back(Vertex(x+1, y+1, -z-1, block.sideLowX, block.sideHighY));
+                                    translucentVerticies.emplace_back(Vertex(x, y+1, -z-1, block.sideHighX, block.sideHighY));
 
-                                indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
-                                indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
-                                vOffset+=4;
+                                    translucentIndicies.push_back(transLVOff); translucentIndicies.push_back(transLVOff+2); translucentIndicies.push_back(transLVOff+1);
+                                    translucentIndicies.push_back(transLVOff+3); translucentIndicies.push_back(transLVOff+1); translucentIndicies.push_back(transLVOff+2);
+                                    transLVOff+=4;
+                                }
+                                else{
+                                    verticies.emplace_back(Vertex(x+1, y, -z-1, block.sideLowX, block.sideLowY));
+                                    verticies.emplace_back(Vertex(x, y, -z-1, block.sideHighX, block.sideLowY));
+                                    verticies.emplace_back(Vertex(x+1, y+1, -z-1, block.sideLowX, block.sideHighY));
+                                    verticies.emplace_back(Vertex(x, y+1, -z-1, block.sideHighX, block.sideHighY));
+
+                                    indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
+                                    indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
+                                    vOffset+=4;
+                                }
                             }
 
                             //left quad
                             if(x==0){
-                                adjacentBlock = blocks[left->findBlock(GLubyte(z) + (15<<4), y)];
+                                adjacentType = left->findBlock(GLubyte(z) + (15<<4), y);
+                                adjacentBlock = blocks[adjacentType];
                             }
                             else{
-                                adjacentBlock = blocks[layer[z + (int(x-1) << 4)]];
+                                adjacentType = layer[z + (int(x-1) << 4)];
+                                adjacentBlock = blocks[adjacentType];
                             }
 
-                            if(adjacentBlock.flagByte & TRANSPARENT_BIT){
-                                verticies.emplace_back(Vertex(x, y, -z-1, block.sideLowX, block.sideLowY));
-                                verticies.emplace_back(Vertex(x, y, -z, block.sideHighX, block.sideLowY));
-                                verticies.emplace_back(Vertex(x, y+1, -z-1, block.sideLowX, block.sideHighY));
-                                verticies.emplace_back(Vertex(x, y+1, -z, block.sideHighX, block.sideHighY));
+                            if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || (((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0) && (adjacentType!=type))){
+                                if(transL){
+                                    translucentVerticies.emplace_back(Vertex(x, y, -z-1, block.sideLowX, block.sideLowY));
+                                    translucentVerticies.emplace_back(Vertex(x, y, -z, block.sideHighX, block.sideLowY));
+                                    translucentVerticies.emplace_back(Vertex(x, y+1, -z-1, block.sideLowX, block.sideHighY));
+                                    translucentVerticies.emplace_back(Vertex(x, y+1, -z, block.sideHighX, block.sideHighY));
 
-                                indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
-                                indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
-                                vOffset+=4;
+                                    translucentIndicies.push_back(transLVOff); translucentIndicies.push_back(transLVOff+2); translucentIndicies.push_back(transLVOff+1);
+                                    translucentIndicies.push_back(transLVOff+3); translucentIndicies.push_back(transLVOff+1); translucentIndicies.push_back(transLVOff+2);
+                                    transLVOff+=4;
+                                }
+                                else{
+                                    verticies.emplace_back(Vertex(x, y, -z-1, block.sideLowX, block.sideLowY));
+                                    verticies.emplace_back(Vertex(x, y, -z, block.sideHighX, block.sideLowY));
+                                    verticies.emplace_back(Vertex(x, y+1, -z-1, block.sideLowX, block.sideHighY));
+                                    verticies.emplace_back(Vertex(x, y+1, -z, block.sideHighX, block.sideHighY));
+
+                                    indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
+                                    indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
+                                    vOffset+=4;
+                                }
                             }
 
                             //top quad
                             if(i == data->data.size()-1){
-                                adjacentBlock = blocks[AIR];
+                                adjacentType = AIR;
+                                adjacentBlock = blocks[adjacentType];
                             }
                             else{
                                 if(data->data.at(i+1).y == y+1){
-                                    adjacentBlock = blocks[data->data.at(i+1).data[z + (int(x) << 4)]];
+                                    adjacentType = data->data.at(i+1).data[z + (int(x) << 4)];
+                                    adjacentBlock = blocks[adjacentType];
                                 }
                                 else{
-                                    adjacentBlock = blocks[AIR];
+                                    adjacentType = AIR;
+                                    adjacentBlock = blocks[adjacentType];
                                 }
                             }
 
-                            if(adjacentBlock.flagByte & TRANSPARENT_BIT){
-                                verticies.emplace_back(Vertex(x, y+1, -z, block.topLowX, block.topLowY));
-                                verticies.emplace_back(Vertex(x+1, y+1, -z, block.topHighX, block.topLowY));
-                                verticies.emplace_back(Vertex(x, y+1, -z-1, block.topLowX, block.topHighY));
-                                verticies.emplace_back(Vertex(x+1, y+1, -z-1, block.topHighX, block.topHighY));
+                            if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || (((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0) && (adjacentType!=type))){
+                                if(transL){
+                                    translucentVerticies.emplace_back(Vertex(x, y+1, -z, block.topLowX, block.topLowY));
+                                    translucentVerticies.emplace_back(Vertex(x+1, y+1, -z, block.topHighX, block.topLowY));
+                                    translucentVerticies.emplace_back(Vertex(x, y+1, -z-1, block.topLowX, block.topHighY));
+                                    translucentVerticies.emplace_back(Vertex(x+1, y+1, -z-1, block.topHighX, block.topHighY));
 
-                                indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
-                                indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
-                                vOffset+=4;
+                                    translucentIndicies.push_back(transLVOff); translucentIndicies.push_back(transLVOff+2); translucentIndicies.push_back(transLVOff+1);
+                                    translucentIndicies.push_back(transLVOff+3); translucentIndicies.push_back(transLVOff+1); translucentIndicies.push_back(transLVOff+2);
+                                    transLVOff+=4;
+                                }
+                                else{
+                                    verticies.emplace_back(Vertex(x, y+1, -z, block.topLowX, block.topLowY));
+                                    verticies.emplace_back(Vertex(x+1, y+1, -z, block.topHighX, block.topLowY));
+                                    verticies.emplace_back(Vertex(x, y+1, -z-1, block.topLowX, block.topHighY));
+                                    verticies.emplace_back(Vertex(x+1, y+1, -z-1, block.topHighX, block.topHighY));
+
+                                    indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
+                                    indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
+                                    vOffset+=4;
+                                }
                             }
 
                             //bottom quad
                             if(i==0){
-                                adjacentBlock = blocks[AIR];
+                                adjacentType = AIR;
+                                adjacentBlock = blocks[adjacentType];
                             }
                             else{
                                 if(data->data.at(i-1).y == y-1){
-                                    adjacentBlock = blocks[data->data.at(i-1).data[z + (int(x) << 4)]];
+                                    adjacentType = data->data.at(i-1).data[z + (int(x) << 4)];
+                                    adjacentBlock = blocks[adjacentType];
                                 }
                                 else{
-                                    adjacentBlock = blocks[AIR];
+                                    adjacentType = AIR;
+                                    adjacentBlock = blocks[adjacentType];
                                 }
                             }
 
-                            if(adjacentBlock.flagByte & TRANSPARENT_BIT){
-                                verticies.emplace_back(Vertex(x, y, -z-1, block.bottomLowX, block.bottomLowY));
-                                verticies.emplace_back(Vertex(x+1, y, -z-1, block.bottomHighX, block.bottomLowY));
-                                verticies.emplace_back(Vertex(x, y, -z, block.bottomLowX, block.bottomHighY));
-                                verticies.emplace_back(Vertex(x+1, y, -z, block.bottomHighX, block.bottomHighY));
+                            if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || (((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0) && (adjacentType!=type))){
+                                if(transL){
+                                    translucentVerticies.emplace_back(Vertex(x, y, -z-1, block.bottomLowX, block.bottomLowY));
+                                    translucentVerticies.emplace_back(Vertex(x+1, y, -z-1, block.bottomHighX, block.bottomLowY));
+                                    translucentVerticies.emplace_back(Vertex(x, y, -z, block.bottomLowX, block.bottomHighY));
+                                    translucentVerticies.emplace_back(Vertex(x+1, y, -z, block.bottomHighX, block.bottomHighY));
 
-                                indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
-                                indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
-                                vOffset+=4;
+                                    translucentIndicies.push_back(transLVOff); translucentIndicies.push_back(transLVOff+2); translucentIndicies.push_back(transLVOff+1);
+                                    translucentIndicies.push_back(transLVOff+3); translucentIndicies.push_back(transLVOff+1); translucentIndicies.push_back(transLVOff+2);
+                                    transLVOff+=4;
+                                }
+                                else{
+                                    verticies.emplace_back(Vertex(x, y, -z-1, block.bottomLowX, block.bottomLowY));
+                                    verticies.emplace_back(Vertex(x+1, y, -z-1, block.bottomHighX, block.bottomLowY));
+                                    verticies.emplace_back(Vertex(x, y, -z, block.bottomLowX, block.bottomHighY));
+                                    verticies.emplace_back(Vertex(x+1, y, -z, block.bottomHighX, block.bottomHighY));
+
+                                    indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
+                                    indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
+                                    vOffset+=4;
+                                }
                             }
                         }
                     }
@@ -223,6 +315,26 @@ void Chunk :: render(Shader shader){
         glEnableVertexAttribArray(posLoc);
         glVertexAttribPointer(posLoc, 3, GL_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, posX)));
 
+
+
+        glGenVertexArrays(1, &VAOTranslucent);
+        glBindVertexArray(VAOTranslucent);
+
+        glGenBuffers(1, &VBOTranslucent);
+        glBindBuffer(GL_ARRAY_BUFFER, VBOTranslucent);
+        glBufferData(GL_ARRAY_BUFFER, translucentVerticies.size() * sizeof(Vertex), translucentVerticies.data(), GL_STATIC_DRAW);
+
+        glGenBuffers(1, &VBOTranslucent);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOTranslucent);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, translucentIndicies.size() * sizeof(GLuint), translucentIndicies.data(), GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(vtexPos_location);
+        glVertexAttribPointer(vtexPos_location, 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, texPosX)));
+        glEnableVertexAttribArray(posLoc);
+        glVertexAttribPointer(posLoc, 3, GL_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, posX)));
+
+
+
         glGenVertexArrays(1, &VAOBoard);
         glBindVertexArray(VAOBoard);
 
@@ -254,4 +366,12 @@ void Chunk :: render(Shader shader){
     glDisable(GL_CULL_FACE);
     glBindVertexArray(VAOBoard);
     glDrawElements(GL_TRIANGLES, billboardIndicies.size(), GL_UNSIGNED_INT, 0);
+
+    glEnable(GL_BLEND);
+    //only water and other liquid textues will want cull face off 
+    //so if I add other translucent blocks like stained glass I will have to break this into liquid VAO and translucent VAO
+    //the liquid VAO having no cull face and the normal translucent VAO having cull face
+    glBindVertexArray(VAOTranslucent);
+    glDrawElements(GL_TRIANGLES, translucentIndicies.size(), GL_UNSIGNED_INT, 0);
+    glDisable(GL_BLEND);
 }
