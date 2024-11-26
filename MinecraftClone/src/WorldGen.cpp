@@ -23,45 +23,43 @@ void WorldGen :: generateChunkData(int x, int z, int chunkSize, ChunkData* chunk
     chunkData->pos=glm :: ivec2(x,z);
 
     chunkData->data.clear();
-    chunkData->data.reserve(5);
+    chunkData->data.reserve(12);
 
     chunkData->data.emplace_back((unsigned char)0); fillLayer(0, chunkSize, chunkData, Blocks :: STONE);
-    chunkData->data.emplace_back((unsigned char)1); fillLayer(1, chunkSize, chunkData, Blocks :: DIRT);
-
-    chunkData->data.at(1).data[1 + (4<<4)] = Blocks :: WATER;
-    chunkData->data.at(1).data[2 + (4<<4)] = Blocks :: WATER;
-    chunkData->data.at(1).data[0 + (5<<4)] = Blocks :: WATER;
-    chunkData->data.at(1).data[1 + (5<<4)] = Blocks :: WATER;
-
-    chunkData->data.emplace_back((unsigned char)2); fillLayer(2, chunkSize, chunkData, Blocks :: GRASS);
-
-    chunkData->data.at(2).data[1 + (3<<4)] = Blocks :: WATER;
-    chunkData->data.at(2).data[0 + (4<<4)] = Blocks :: WATER;
-    chunkData->data.at(2).data[1 + (4<<4)] = Blocks :: WATER;
-    chunkData->data.at(2).data[2 + (4<<4)] = Blocks :: WATER;
-    chunkData->data.at(2).data[3 + (5<<4)] = Blocks :: WATER;
-    chunkData->data.at(2).data[0 + (5<<4)] = Blocks :: WATER;
-    chunkData->data.at(2).data[1 + (5<<4)] = Blocks :: WATER;
-    chunkData->data.at(2).data[2 + (5<<4)] = Blocks :: WATER;
-    chunkData->data.at(2).data[0 + (6<<4)] = Blocks :: WATER;
-
-    chunkData->data.emplace_back((unsigned char)3);
-    chunkData->data.at(3).data[0 + (0<<4)] = Blocks :: SHORT_GRASS;
-    chunkData->data.at(3).data[1 + (0<<4)] = Blocks :: TALL_GRASS_BOTTOM;
-    chunkData->data.at(3).data[0 + (1<<4)] = Blocks :: ROSE;
-    chunkData->data.at(3).data[1 + (1<<4)] = Blocks :: TULIP_WHITE;
-    chunkData->data.at(3).data[0 + (2<<4)] = Blocks :: TULIP_ORANGE;
-    chunkData->data.at(3).data[1 + (2<<4)] = Blocks :: TULIP_PINK;
-
-
-    chunkData->data.emplace_back((unsigned char)4);
-    chunkData->data.at(4).data[1 + (0<<4)] = Blocks :: TALL_GRASS_TOP;
-    chunkData->data.emplace_back((unsigned char)5);
+    chunkData->data.emplace_back((unsigned char)1); fillLayer(1, chunkSize, chunkData, Blocks :: STONE);
+    chunkData->data.emplace_back((unsigned char)2); fillLayer(2, chunkSize, chunkData, Blocks :: STONE);
+    chunkData->data.emplace_back((unsigned char)3); fillLayer(3, chunkSize, chunkData, Blocks :: DIRT);
+    chunkData->data.emplace_back((unsigned char)4); fillLayer(4, chunkSize, chunkData, Blocks :: DIRT);
+    chunkData->data.emplace_back((unsigned char)5); fillLayer(5, chunkSize, chunkData, Blocks :: GRASS);
     chunkData->data.emplace_back((unsigned char)6);
-    chunkData->data.emplace_back((unsigned char)7);
-    chunkData->data.emplace_back((unsigned char)8);
+    chunkData->data.at(6).data[0 + (0<<4)] = Blocks :: SHORT_GRASS;
+    chunkData->data.at(6).data[1 + (0<<4)] = Blocks :: TALL_GRASS_BOTTOM;
+    chunkData->data.at(6).data[0 + (1<<4)] = Blocks :: ROSE;
+    chunkData->data.at(6).data[1 + (1<<4)] = Blocks :: TULIP_WHITE;
+    chunkData->data.at(6).data[0 + (2<<4)] = Blocks :: TULIP_ORANGE;
+    chunkData->data.at(6).data[1 + (2<<4)] = Blocks :: TULIP_PINK;
 
-    Structures :: NStructs[Structures :: OAK_TREE].placeSelf(*chunkData, 2, 3, 2);
-    Structures :: NStructs[Structures :: OAK_TREE].placeSelf(*chunkData, 6, 3, 5);
+
+    chunkData->data.emplace_back((unsigned char)7);
+    chunkData->data.at(7).data[1 + (0<<4)] = Blocks :: TALL_GRASS_TOP;
+    chunkData->data.emplace_back((unsigned char)8);
+    chunkData->data.emplace_back((unsigned char)9);
+    chunkData->data.emplace_back((unsigned char)10);
+    chunkData->data.emplace_back((unsigned char)11);
+
+    Structures :: Structs[Structures :: OAK_TREE].placeSelf(*chunkData, 2, 5, 2);
+    Structures :: Structs[Structures :: OAK_TREE].placeSelf(*chunkData, 6, 5, 5);
+
+    Structures :: Structs[Structures :: POND].placeSelf(*chunkData, 12-16, 3, 14-16);
+    Structures :: Structs[Structures :: POND].placeSelf(*chunkData, 12-16, 3, 14);
+    Structures :: Structs[Structures :: POND].placeSelf(*chunkData, 12-16, 3, 14+16);
+
+    Structures :: Structs[Structures :: POND].placeSelf(*chunkData, 12, 3, 14-16);
+    Structures :: Structs[Structures :: POND].placeSelf(*chunkData, 12, 3, 14);
+    Structures :: Structs[Structures :: POND].placeSelf(*chunkData, 12, 3, 14+16);
+
+    Structures :: Structs[Structures :: POND].placeSelf(*chunkData, 12+16, 3, 14-16);
+    Structures :: Structs[Structures :: POND].placeSelf(*chunkData, 12+16, 3, 14);
+    Structures :: Structs[Structures :: POND].placeSelf(*chunkData, 12+16, 3, 14+16);
 
 }

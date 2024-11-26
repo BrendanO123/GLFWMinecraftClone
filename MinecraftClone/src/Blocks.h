@@ -12,7 +12,7 @@ namespace Blocks{
      * @brief the list of all blocks currently implemented indexed by the values given in the BLOCKS enum.
      */
     const Block blocks[blockCount] = {
-        Block(0, 0, 0, 0, true, false, true), //air block: tex = na, trans = true, waterLog = true
+        Block(0, 0, 0, 0, true, false, false, true), //air block: tex = na, trans = true, waterLog = true
         Block(0, 1, 0, 1), //dirt block: tex = (0,0)
         Block( //grass block (unique faces)
             1, 2, 1, 2, //top: tex = (0,2)
@@ -25,19 +25,19 @@ namespace Blocks{
             2, 3, 0, 1, //side: tex = (2,0)
             2, 3, 1, 2 //bottom = top: tex = (2,1)
         ),
-        Block(0, 1, 2, 3, true), //oak leaves: tex = (1,1)
-        Block(1, 2, 2, 3, true, true), //grass fan
-        Block(3, 4, 0, 1, true, true), //tall grass bottom
-        Block(3, 4, 1, 2, true, true), //tall grass top
-        Block(0, 1, 3, 4, true, true), //rose/poppy
-        Block(1, 2, 3, 4, true, true), //orange tulip
-        Block(2, 3, 2, 3, true, true), //white tulip
-        Block(3, 4, 2, 3, true, true), //pink tulip
-        Block(
+        Block(0, 1, 2, 3, true, false, false), //oak leaves: tex = (1,1)
+        Block(1, 2, 2, 3, true, true, false), //grass fan
+        Block(3, 4, 0, 1, true, true, false), //tall grass bottom
+        Block(3, 4, 1, 2, true, true, false), //tall grass top
+        Block(0, 1, 3, 4, true, true, false), //rose/poppy
+        Block(1, 2, 3, 4, true, true, false), //orange tulip
+        Block(2, 3, 2, 3, true, true, false), //white tulip
+        Block(3, 4, 2, 3, true, true, false), //pink tulip
+        Block( //water
             4, 5, 3, 4, //top: tex = (2,1)
             4, 5, 2, 3, //side: tex = (2,0)
-            4, 5, 1, 2,
-            false, false, false, true), //water
+            4, 5, 1, 2, //bottom: tex = (2,1)
+            false, false, false, false, true), 
         Block(4, 5, 0, 1) //sand
     };
 

@@ -5,14 +5,11 @@
 
 using namespace std;
 
-void NormStructure :: placeSelf(ChunkData &target, GLubyte pX, GLubyte pY, GLubyte pZ) const{
+void Structure :: placeSelf(ChunkData &target, GLbyte pX, GLbyte pY, GLbyte pZ) const{
     unsigned char i = target.safeLayerFetch(pY);
     Layer* layer = &target.data.at(i);
 
-    bool forced = (flags & Structures :: FORCED);
-    //bool shouldWaterLog = (flags & Structures :: SHOULD_WATER_LOG);
-
-    GLubyte id;
+    GLubyte id, lookID;
     int yChunk, xChunk, zChunk;
     for(char y = 0; y < sizeY; y++){
 
@@ -31,7 +28,14 @@ void NormStructure :: placeSelf(ChunkData &target, GLubyte pX, GLubyte pY, GLuby
                 if(zChunk < 0){continue;}
 
                 id = contents[z+(int(x)*sizeZ)+(int(y)*sizeZ*sizeX)];
-                if(id == Blocks :: AIR && !forced){continue;}
+
+                if(!forcedBlocks[z+(int(x)*sizeZ)+(int(y)*sizeZ*sizeX)]){
+                    if(id == Blocks :: AIR){continue;}
+                    lookID = layer->data[zChunk+(int(xChunk)<<4)];
+                    if((Blocks :: blocks[id].flagByte & Blocks :: SOLID_BIT)  ^ (Blocks :: blocks[lookID].flagByte & Blocks :: SOLID_BIT)){
+                        continue;
+                    }
+                }
 
                 layer->data[zChunk+(int(xChunk)<<4)]=id;
             }
@@ -51,8 +55,4 @@ void NormStructure :: placeSelf(ChunkData &target, GLubyte pX, GLubyte pY, GLuby
         //next y-1, a, b, c, d, e... where a: is an int, is greater than next y-1, is not next y, therefore must be atleast next y+1
         else{target.data.emplace(target.data.begin() + (++i), yChunk+1); layer = &target.data.at(i); continue;} //place layer at i+1
     }
-};
-
-void PartialFillStructure :: placeSelf(ChunkData &target, GLubyte pX, GLubyte pY, GLubyte pZ) const{
-
 };
