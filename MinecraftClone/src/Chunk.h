@@ -70,6 +70,7 @@ class Chunk{
 
         void genChunkMesh();
         void render(Shader shader);
+        void renderWater(Shader shader);
         void getPos(int &x, int &z){x = int(pos_world.x/(1<<(4+LOD))); z = int(pos_world.z/(1<<(4+LOD)));}
 
         ChunkData* data, *left, *right, *front, *back;
@@ -85,9 +86,11 @@ class Chunk{
 };
 namespace ChunkFlags{
     enum CHUNKFLAGS : unsigned char{
-        READY = (unsigned char)(1<<7),
-        GENERATED = 1,
-        MODIFIED = 2,
-        FILE_STORED =4
+        LOADED = 1,
+        GENERATED = 2,
+        LAND_READY = 4,
+        WATER_READY = 8,
+        MODIFIED = 16,
+        FILE_STORED = 32
     };
 };

@@ -53,6 +53,6 @@ void Structure :: placeSelf(ChunkData &target, GLbyte pX, GLbyte pY, GLbyte pZ) 
 
         //data:
         //next y-1, a, b, c, d, e... where a: is an int, is greater than next y-1, is not next y, therefore must be atleast next y+1
-        else{target.data.emplace(target.data.begin() + (++i), yChunk+1); layer = &target.data.at(i); continue;} //place layer at i+1
+        else{i++; target.data.emplace(target.data.begin() + i, yChunk+1); layer = &target.data.at(i); continue;} //place layer at i+1
     }
 };

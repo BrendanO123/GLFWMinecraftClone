@@ -30,7 +30,7 @@ Chunk :: ~Chunk(){
 }
 
 void Chunk :: genChunkMesh(){
-    GLuint vOffset=0, transLVOff = 0, BoardVOff = 0, index, y;
+    GLuint vOffset=0, transLVOff = 0, BoardVOff = 0, y;
     Block block, adjacentBlock;
     GLubyte type, adjacentType;
     vector<GLubyte> layer;
@@ -41,8 +41,7 @@ void Chunk :: genChunkMesh(){
     for(int i=data->data.size()-1; i>=0; i--){
         for(GLubyte x=0; x<16; x++){
             for(GLbyte z=0; z<16; z++){
-                index = z + (int(x) << 4);
-                type = data->data.at(i).data[index];
+                type = data->data.at(i).data[z + (int(x) << 4)];
                 block = Blocks :: blocks[type];
                 if(type){
                     y=data->data.at(i).y;
@@ -295,7 +294,7 @@ void Chunk :: genChunkMesh(){
 
 void Chunk :: render(Shader shader){
     
-    if(!(flagByte & ChunkFlags :: READY)){
+    if(!(flagByte & ChunkFlags :: LAND_READY)){
         if(!(flagByte & ChunkFlags :: GENERATED)){return;}
         glGenVertexArrays(1, &VAONorm);
         glBindVertexArray(VAONorm);
@@ -315,26 +314,6 @@ void Chunk :: render(Shader shader){
         glEnableVertexAttribArray(posLoc);
         glVertexAttribPointer(posLoc, 3, GL_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, posX)));
 
-
-
-        glGenVertexArrays(1, &VAOTranslucent);
-        glBindVertexArray(VAOTranslucent);
-
-        glGenBuffers(1, &VBOTranslucent);
-        glBindBuffer(GL_ARRAY_BUFFER, VBOTranslucent);
-        glBufferData(GL_ARRAY_BUFFER, translucentVerticies.size() * sizeof(Vertex), translucentVerticies.data(), GL_STATIC_DRAW);
-
-        glGenBuffers(1, &VBOTranslucent);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOTranslucent);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, translucentIndicies.size() * sizeof(GLuint), translucentIndicies.data(), GL_STATIC_DRAW);
-
-        glEnableVertexAttribArray(vtexPos_location);
-        glVertexAttribPointer(vtexPos_location, 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, texPosX)));
-        glEnableVertexAttribArray(posLoc);
-        glVertexAttribPointer(posLoc, 3, GL_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, posX)));
-
-
-
         glGenVertexArrays(1, &VAOBoard);
         glBindVertexArray(VAOBoard);
 
@@ -352,7 +331,7 @@ void Chunk :: render(Shader shader){
         glVertexAttribPointer(vtexPos_location, 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(BillboardVertex), (void*)(offsetof(BillboardVertex, texPosX)));
 
         modelMatLoc = glGetUniformLocation(shader.program, "model");
-        flagByte |= ChunkFlags :: READY;
+        flagByte |= ChunkFlags :: LAND_READY;
     }
 
     glm :: mat4 model = glm ::mat4(1.0f);
@@ -366,7 +345,37 @@ void Chunk :: render(Shader shader){
     glDisable(GL_CULL_FACE);
     glBindVertexArray(VAOBoard);
     glDrawElements(GL_TRIANGLES, billboardIndicies.size(), GL_UNSIGNED_INT, 0);
+}
 
+void Chunk :: renderWater(Shader shader){
+    
+    if(!(flagByte & ChunkFlags :: WATER_READY)){
+        if(!(flagByte & ChunkFlags :: GENERATED)){return;}
+        glGenVertexArrays(1, &VAOTranslucent);
+        glBindVertexArray(VAOTranslucent);
+
+        glGenBuffers(1, &VBOTranslucent);
+        glBindBuffer(GL_ARRAY_BUFFER, VBOTranslucent);
+        glBufferData(GL_ARRAY_BUFFER, translucentVerticies.size() * sizeof(Vertex), translucentVerticies.data(), GL_STATIC_DRAW);
+
+        glGenBuffers(1, &VBOTranslucent);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOTranslucent);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, translucentIndicies.size() * sizeof(GLuint), translucentIndicies.data(), GL_STATIC_DRAW);
+
+        GLuint posLoc = glGetAttribLocation(shader.program, "vPos");
+        GLuint vtexPos_location = glGetAttribLocation(shader.program, "vtexPos");
+        glEnableVertexAttribArray(vtexPos_location);
+        glVertexAttribPointer(vtexPos_location, 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, texPosX)));
+        glEnableVertexAttribArray(posLoc);
+        glVertexAttribPointer(posLoc, 3, GL_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, posX)));
+        flagByte |= ChunkFlags :: WATER_READY;
+    }
+
+    glm :: mat4 model = glm ::mat4(1.0f);
+    model = glm :: translate(model, pos_world);
+    glUniformMatrix4fv(modelMatLoc, 1, GL_FALSE, glm :: value_ptr(model));
+
+    glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     //only water and other liquid textues will want cull face off 
     //so if I add other translucent blocks like stained glass I will have to break this into liquid VAO and translucent VAO

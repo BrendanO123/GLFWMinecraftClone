@@ -37,10 +37,12 @@ void World :: update(glm :: vec3 camPos, bool menu){
     chunksLoading = numChunks = numChunksRendered = 0;
 
     //iterate over stored chunks
+    queue<Chunk*> renderables;
     for(auto iterate = chunks.begin(); iterate != chunks.end();){
         numChunks++;
 
         //if the chunk is not ready but stored it must be loading
+        if(!(iterate->second->flagByte & ChunkFlags :: LOADED)){continue;}
         if(!(iterate->second->flagByte & ChunkFlags :: GENERATED)){chunksLoading++;}
         else{
 
@@ -48,7 +50,7 @@ void World :: update(glm :: vec3 camPos, bool menu){
             int chunkX, chunkZ; iterate->second->getPos(chunkX, chunkZ);
 
             //if it is ready to render
-            if(iterate->second->flagByte & ChunkFlags :: READY){
+            if(((iterate->second->flagByte & ChunkFlags :: LAND_READY) != 0) && ((iterate->second->flagByte & ChunkFlags :: WATER_READY) != 0)){
                 //if it has moved out of render
                 if((abs(chunkX - camX_chunk) > renderDistance || abs(chunkZ - camZ_chunk) > renderDistance)){
 
@@ -61,9 +63,8 @@ void World :: update(glm :: vec3 camPos, bool menu){
 
                     numChunksRendered++; //inc num rendered
 
-                    //mute.unlock();
                     iterate->second->render(*shader); //render it
-                    //mute.lock();
+                    renderables.push(iterate->second);
 
                     //continue
                     ++iterate;
@@ -72,14 +73,18 @@ void World :: update(glm :: vec3 camPos, bool menu){
             else{
                 numChunksRendered++; //inc num rendered
 
-                //mute.unlock();
                 iterate->second->render(*shader); //render it
-                //mute.lock();
+                renderables.push(iterate->second);
 
                 //continue
                 ++iterate;
             }
         }
+    }
+    while(!renderables.empty()){
+        Chunk* chunk = renderables.front();
+        renderables.pop();
+        chunk->renderWater(*shader);
     }
     mute.unlock();
 }
@@ -213,6 +218,7 @@ void World :: threadUpdate(){
                 chunk->genChunkMesh();
 
                 mute.lock();
+                chunk->flagByte |= ChunkFlags :: LOADED;
                 chunks[chunkTuple] = chunk;
             }
             mute.unlock();
