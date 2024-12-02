@@ -42,15 +42,15 @@ void World :: update(glm :: vec3 camPos, bool menu){
         numChunks++;
 
         //if the chunk is not ready but stored it must be loading
-        if(!(iterate->second->flagByte & ChunkFlags :: LOADED)){continue;}
-        if(!(iterate->second->flagByte & ChunkFlags :: GENERATED)){chunksLoading++;}
+        if(!(iterate->second->flagByte & ChunkFlags :: HAS_STRUCTURES)){continue;}
+        if(!(iterate->second->flagByte & ChunkFlags :: HAS_MESH)){chunksLoading++;}
         else{
 
             //get location of chunk     
             int chunkX, chunkZ; iterate->second->getPos(chunkX, chunkZ);
 
             //if it is ready to render
-            if(((iterate->second->flagByte & ChunkFlags :: LAND_READY) != 0) && ((iterate->second->flagByte & ChunkFlags :: WATER_READY) != 0)){
+            if(((iterate->second->flagByte & ChunkFlags :: LAND_RENDERABLE) != 0) && ((iterate->second->flagByte & ChunkFlags :: WATER_RENDERABLE) != 0)){
                 //if it has moved out of render
                 if((abs(chunkX - camX_chunk) > renderDistance || abs(chunkZ - camZ_chunk) > renderDistance)){
 
@@ -136,11 +136,12 @@ void World :: threadUpdate(){
                 Chunk* chunk = new Chunk(0, next);
 
                 mute.lock();
+                //center
                 if(chunkData.find(chunkTuple)==chunkData.end()){
                     mute.unlock();
 
                     ChunkData* newChunkData = new ChunkData();
-                    WorldGen :: generateChunkData(next.x, next.y, 16, newChunkData);
+                    WorldGen :: getChunkBasics(next.x, next.y, 16, newChunkData);
 
                     chunk->data=newChunkData;
 
@@ -152,11 +153,12 @@ void World :: threadUpdate(){
                 else{chunk->data=chunkData.at(chunkTuple); mute.unlock();}
 
                 mute.lock();
+                //EAST
                 if(chunkData.find(tuple<int,int>(next.x+1, next.y))==chunkData.end()){
                     mute.unlock();
 
                     ChunkData* newChunkData = new ChunkData();
-                    WorldGen :: generateChunkData(next.x+1, next.y, 16, newChunkData);
+                    WorldGen :: getChunkBasics(next.x+1, next.y, 16, newChunkData);
 
                     chunk->right=newChunkData;
 
@@ -168,11 +170,12 @@ void World :: threadUpdate(){
                 else{chunk->right=chunkData.at(tuple<int,int>(next.x+1, next.y)); mute.unlock();}
 
                 mute.lock();
+                //WEST
                 if(chunkData.find(tuple<int,int>(next.x-1, next.y))==chunkData.end()){
                     mute.unlock();
 
                     ChunkData* newChunkData = new ChunkData();
-                    WorldGen :: generateChunkData(next.x-1, next.y, 16, newChunkData);
+                    WorldGen :: getChunkBasics(next.x-1, next.y, 16, newChunkData);
 
                     chunk->left=newChunkData;
 
@@ -184,11 +187,12 @@ void World :: threadUpdate(){
                 else{chunk->left=chunkData.at(tuple<int,int>(next.x-1, next.y)); mute.unlock();}
 
                 mute.lock();
+                //NORTH
                 if(chunkData.find(tuple<int,int>(next.x, next.y+1))==chunkData.end()){
                     mute.unlock();
 
                     ChunkData* newChunkData = new ChunkData();
-                    WorldGen :: generateChunkData(next.x, next.y+1, 16, newChunkData);
+                    WorldGen :: getChunkBasics(next.x, next.y+1, 16, newChunkData);
 
                     chunk->back=newChunkData;
 
@@ -200,11 +204,12 @@ void World :: threadUpdate(){
                 else{chunk->back=chunkData.at(tuple<int,int>(next.x, next.y+1)); mute.unlock();}
 
                 mute.lock();
+                //SOUTH
                 if(chunkData.find(tuple<int,int>(next.x, next.y-1))==chunkData.end()){
                     mute.unlock();
 
                     ChunkData* newChunkData = new ChunkData();
-                    WorldGen :: generateChunkData(next.x, next.y-1, 16, newChunkData);
+                    WorldGen :: getChunkBasics(next.x, next.y-1, 16, newChunkData);
 
                     chunk->front=newChunkData;
 
@@ -215,13 +220,94 @@ void World :: threadUpdate(){
                 }
                 else{chunk->front=chunkData.at(tuple<int,int>(next.x, next.y-1)); mute.unlock();}
 
-                chunk->genChunkMesh();
-
                 mute.lock();
-                chunk->flagByte |= ChunkFlags :: LOADED;
-                chunks[chunkTuple] = chunk;
+                chunk->flagByte |= ChunkFlags :: HAS_BASICS;
+                if(chunk->flagByte & ChunkFlags :: HAS_STRUCTURES){
+                    mute.unlock();
+
+                    chunk->genChunkMesh();
+
+                    mute.lock();
+                    cout << "inserted chunk" << endl;
+                    chunks[chunkTuple] = chunk;
+                    mute.unlock();
+                }
+                else{
+                    mute.unlock();
+
+                    mute.lock();
+                    ChunkData* NW;
+                    //NW
+                    if(chunkData.find(tuple<int,int>(next.x-1, next.y+1))==chunkData.end()){
+                        mute.unlock();
+
+                        NW = new ChunkData();
+                        WorldGen :: getChunkBasics(next.x-1, next.y+1, 16, NW);
+
+                        mute.lock();
+                        chunkData[tuple<int,int>(next.x-1, next.y+1)] = NW;
+                        mute.unlock();
+
+                    }
+                    else{NW=chunkData.at(tuple<int,int>(next.x-1, next.y+1)); mute.unlock();}
+
+                    mute.lock();
+                    ChunkData* NE;
+                    //NE
+                    if(chunkData.find(tuple<int,int>(next.x+1, next.y+1))==chunkData.end()){
+                        mute.unlock();
+
+                        NE = new ChunkData();
+                        WorldGen :: getChunkBasics(next.x+1, next.y+1, 16, NE);
+
+                        mute.lock();
+                        chunkData[tuple<int,int>(next.x+1, next.y+1)] = NE;
+                        mute.unlock();
+
+                    }
+                    else{NE=chunkData.at(tuple<int,int>(next.x+1, next.y+1)); mute.unlock();}
+
+                    mute.lock();
+                    ChunkData* SW;
+                    //SW
+                    if(chunkData.find(tuple<int,int>(next.x-1, next.y-1))==chunkData.end()){
+                        mute.unlock();
+
+                        SW = new ChunkData();
+                        WorldGen :: getChunkBasics(next.x-1, next.y-1, 16, SW);
+
+                        mute.lock();
+                        chunkData[tuple<int,int>(next.x-1, next.y-1)] = SW;
+                        mute.unlock();
+
+                    }
+                    else{SW=chunkData.at(tuple<int,int>(next.x-1, next.y-1)); mute.unlock();}
+
+                    mute.lock();
+                    ChunkData* SE;
+                    //SE
+                    if(chunkData.find(tuple<int,int>(next.x+1, next.y-1))==chunkData.end()){
+                        mute.unlock();
+
+                        SE = new ChunkData();
+                        WorldGen :: getChunkBasics(next.x+1, next.y-1, 16, SE);
+
+                        mute.lock();
+                        chunkData[tuple<int,int>(next.x+1, next.y-1)] = SE;
+                        mute.unlock();
+
+                    }
+                    else{SE=chunkData.at(tuple<int,int>(next.x+1, next.y-1)); mute.unlock();}
+
+                    WorldGen :: resolveStructures(chunk->data, NW, chunk->back, NE, chunk->left, chunk->right, SW, chunk->front, SE);
+                    chunk->genChunkMesh();
+
+                    mute.lock();
+                    chunk->flagByte |= ChunkFlags :: HAS_STRUCTURES;
+                    chunks[chunkTuple] = chunk;
+                    mute.unlock();
+                }
             }
-            mute.unlock();
         }
         else{
             mute.unlock();
@@ -235,15 +321,36 @@ void World :: threadUpdate(){
             {
                 glm :: ivec2 chunkPos = iterate->second->pos;
 
-                if (chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y)) == chunks.end() &&
-                    chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y)) == chunks.end() &&
-                    chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y+1)) == chunks.end() &&
-                    chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y-1)) == chunks.end() &&
-                    chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y+1)) == chunks.end() &&
-                    chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y-1)) == chunks.end() &&
-                    chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y)) == chunks.end() &&
-                    chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y+1)) == chunks.end() &&
-                    chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y-1)) == chunks.end())
+                if (
+                    (chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y)) == chunks.end()) &&
+
+
+                    ((chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y+1)) == chunks.end()) || 
+                        ((chunks.at(tuple<int, int>(chunkPos.x+1, chunkPos.y+1))->flagByte & ChunkFlags :: HAS_STRUCTURES) != 0)) &&
+                        
+                    ((chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y)) == chunks.end()) || 
+                        ((chunks.at(tuple<int, int>(chunkPos.x+1, chunkPos.y))->flagByte & ChunkFlags :: HAS_MESH) != 0)) &&
+
+                    ((chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y-1)) == chunks.end()) || 
+                        ((chunks.at(tuple<int, int>(chunkPos.x+1, chunkPos.y-1))->flagByte & ChunkFlags :: HAS_STRUCTURES) != 0)) &&
+
+
+                    ((chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y+1)) == chunks.end()) || 
+                        ((chunks.at(tuple<int, int>(chunkPos.x, chunkPos.y+1))->flagByte & ChunkFlags :: HAS_MESH) != 0)) &&
+
+                    ((chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y-1)) == chunks.end()) || 
+                        ((chunks.at(tuple<int, int>(chunkPos.x, chunkPos.y-1))->flagByte & ChunkFlags :: HAS_MESH) != 0)) &&
+
+
+                    ((chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y+1)) == chunks.end()) || 
+                        ((chunks.at(tuple<int, int>(chunkPos.x-1, chunkPos.y+1))->flagByte & ChunkFlags :: HAS_STRUCTURES) != 0)) &&
+                        
+                    ((chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y)) == chunks.end()) || 
+                        ((chunks.at(tuple<int, int>(chunkPos.x-1, chunkPos.y))->flagByte & ChunkFlags :: HAS_MESH) != 0)) &&
+                    
+                    ((chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y-1)) == chunks.end()) || 
+                        ((chunks.at(tuple<int, int>(chunkPos.x-1, chunkPos.y-1))->flagByte & ChunkFlags :: HAS_STRUCTURES) != 0))
+                )
                 {
                     delete chunkData.at(iterate->first);
                     iterate = chunkData.erase(iterate);

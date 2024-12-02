@@ -86,11 +86,12 @@ class Chunk{
 };
 namespace ChunkFlags{
     enum CHUNKFLAGS : unsigned char{
-        LOADED = 1,
-        GENERATED = 2,
-        LAND_READY = 4,
-        WATER_READY = 8,
-        MODIFIED = 16,
-        FILE_STORED = 32
+        HAS_BASICS = 1,
+        HAS_STRUCTURES = 2,
+        HAS_MESH = 4,
+        LAND_RENDERABLE = 8,
+        WATER_RENDERABLE = 16,
+        MODIFIED = 32,
+        FILE_STORED = 64
     };
 };

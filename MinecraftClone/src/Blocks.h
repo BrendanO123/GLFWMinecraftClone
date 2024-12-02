@@ -45,7 +45,7 @@ namespace Blocks{
     /**
      * @brief The block type values (also indicies in the blocks array) that are actually stored in chunks and their corresponding name.
      */
-    enum BLOCKS{
+    enum BLOCKS : unsigned char{
         AIR = 0,
         DIRT = 1,
         GRASS = 2,

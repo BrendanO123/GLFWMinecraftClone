@@ -14,7 +14,7 @@
 #include <stdio.h>
 
 Chunk :: Chunk(GLuint lod, glm :: ivec2 chunkPos) : LOD(lod){
-    pos_world = glm ::vec3(((int)chunkPos.x) << (4+LOD), 0, ((int)chunkPos.y) << (4+LOD)); //will niot actually work if LOD is changed
+    pos_world = glm ::vec3(((int)chunkPos.x) << (4+LOD), 0, ((int)chunkPos.y) << (4+LOD)); //will not actually work if LOD is changed
 }
 Chunk :: ~Chunk(){
     
@@ -289,13 +289,13 @@ void Chunk :: genChunkMesh(){
         }
     }
 
-    flagByte |= ChunkFlags :: GENERATED;
+    flagByte |= ChunkFlags :: HAS_MESH;
 }
 
 void Chunk :: render(Shader shader){
     
-    if(!(flagByte & ChunkFlags :: LAND_READY)){
-        if(!(flagByte & ChunkFlags :: GENERATED)){return;}
+    if(!(flagByte & ChunkFlags :: LAND_RENDERABLE)){
+        if(!(flagByte & ChunkFlags :: HAS_MESH)){return;}
         glGenVertexArrays(1, &VAONorm);
         glBindVertexArray(VAONorm);
 
@@ -331,7 +331,7 @@ void Chunk :: render(Shader shader){
         glVertexAttribPointer(vtexPos_location, 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(BillboardVertex), (void*)(offsetof(BillboardVertex, texPosX)));
 
         modelMatLoc = glGetUniformLocation(shader.program, "model");
-        flagByte |= ChunkFlags :: LAND_READY;
+        flagByte |= ChunkFlags :: LAND_RENDERABLE;
     }
 
     glm :: mat4 model = glm ::mat4(1.0f);
@@ -349,8 +349,8 @@ void Chunk :: render(Shader shader){
 
 void Chunk :: renderWater(Shader shader){
     
-    if(!(flagByte & ChunkFlags :: WATER_READY)){
-        if(!(flagByte & ChunkFlags :: GENERATED)){return;}
+    if(!(flagByte & ChunkFlags :: WATER_RENDERABLE)){
+        if(!(flagByte & ChunkFlags :: HAS_MESH)){return;}
         glGenVertexArrays(1, &VAOTranslucent);
         glBindVertexArray(VAOTranslucent);
 
@@ -368,7 +368,7 @@ void Chunk :: renderWater(Shader shader){
         glVertexAttribPointer(vtexPos_location, 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, texPosX)));
         glEnableVertexAttribArray(posLoc);
         glVertexAttribPointer(posLoc, 3, GL_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, posX)));
-        flagByte |= ChunkFlags :: WATER_READY;
+        flagByte |= ChunkFlags :: WATER_RENDERABLE;
     }
 
     glm :: mat4 model = glm ::mat4(1.0f);

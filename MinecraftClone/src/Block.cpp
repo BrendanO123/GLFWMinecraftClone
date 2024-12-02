@@ -24,7 +24,7 @@ Block :: Block(
     bottomLowX=bottomMinX; bottomHighX=bottomMaxX; bottomLowY=bottomMinY; bottomHighY=bottomMaxY;
     
     flagByte = 
-        (transparent ? Blocks ::TRANSPARENT_BIT : 0) + 
+        (transparent ? Blocks :: TRANSPARENT_BIT : 0) + 
         (billboard ? Blocks :: BILLBOARD_BIT : 0)+ 
         (solid ? Blocks :: SOLID_BIT : 0) + 
         (waterLogable ? Blocks :: WATER_LOGABLE_BIT : 0) + 

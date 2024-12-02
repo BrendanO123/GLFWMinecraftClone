@@ -32,7 +32,7 @@ struct Block{
     char topMinX, char topMaxX, char topMinY, char topMaxY,
     char sideMinX, char sideMaxX, char sideMinY, char sideMaxY, 
     char bottomMinX, char bottomMaxX, char bottomMinY, char bottomMaxY,
-    bool transparent = false, bool billboard = false, bool solid = false, bool waterLogable = false, bool traslucent = false);
+    bool transparent = false, bool billboard = false, bool solid = true, bool waterLogable = false, bool traslucent = false);
 
 
     /**

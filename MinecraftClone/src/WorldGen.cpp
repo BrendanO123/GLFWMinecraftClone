@@ -2,6 +2,7 @@
 
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
+#include <iostream>
 
 #include "Blocks.h"
 #include "Structures.h"
@@ -17,7 +18,44 @@ void WorldGen :: fillLayer(int index, int chunkSize, ChunkData* chunkData, GLuby
     }
 }
 
-void WorldGen :: generateChunkData(int x, int z, int chunkSize, ChunkData* chunkData){
+void WorldGen :: placeStruct(ChunkData* chunkData, GLubyte id, GLubyte x, GLubyte y, GLubyte z){
+    bool overspill;
+    overspill = Structures :: Structs[id].placeSelf(*chunkData, x, y, z);
+    if(overspill){
+        StructNode* newStruct = new StructNode(id, x, y, z);
+        if(chunkData->Structs.count == 0){
+            chunkData->Structs.count++;
+            chunkData->Structs.first = newStruct;
+            chunkData->Structs.last = newStruct;
+        }
+        else{
+            chunkData->Structs.count++;
+            chunkData->Structs.last->next = newStruct;
+            chunkData->Structs.last = newStruct;
+        }
+    }
+}
+
+using namespace std;
+
+void WorldGen :: resolveStructures(ChunkData* target, 
+        ChunkData* NW, ChunkData* N, ChunkData* NE, 
+        ChunkData* W,                ChunkData* E, 
+        ChunkData* SW, ChunkData* S, ChunkData* SE){
+
+            NW->place(target, glm :: i8vec2(-16, 16));
+            N->place(target, glm :: i8vec2(0, 16));
+            NE->place(target, glm :: i8vec2(16, 16));
+
+            W->place(target, glm :: i8vec2(-16, 0));
+            E->place(target, glm :: i8vec2(16, 0));
+
+            SW->place(target, glm :: i8vec2(-16, -16));
+            S->place(target, glm :: i8vec2(0, -16));
+            SE->place(target, glm :: i8vec2(16, -16));
+        }
+
+void WorldGen :: getChunkBasics(int x, int z, int chunkSize, ChunkData* chunkData){
     //TODO: actual world gen
 
     chunkData->pos=glm :: ivec2(x,z);
@@ -47,19 +85,9 @@ void WorldGen :: generateChunkData(int x, int z, int chunkSize, ChunkData* chunk
     chunkData->data.emplace_back((unsigned char)10);
     chunkData->data.emplace_back((unsigned char)11);
 
-    Structures :: Structs[Structures :: OAK_TREE].placeSelf(*chunkData, 2, 5, 2);
-    Structures :: Structs[Structures :: OAK_TREE].placeSelf(*chunkData, 6, 5, 5);
+    placeStruct(chunkData, Structures :: OAK_TREE, 2, 5, 2);
+    placeStruct(chunkData, Structures :: OAK_TREE, 6, 5, 5);
 
-    Structures :: Structs[Structures :: POND].placeSelf(*chunkData, 12-16, 3, 14-16);
-    Structures :: Structs[Structures :: POND].placeSelf(*chunkData, 12-16, 3, 14);
-    Structures :: Structs[Structures :: POND].placeSelf(*chunkData, 12-16, 3, 14+16);
-
-    Structures :: Structs[Structures :: POND].placeSelf(*chunkData, 12, 3, 14-16);
-    Structures :: Structs[Structures :: POND].placeSelf(*chunkData, 12, 3, 14);
-    Structures :: Structs[Structures :: POND].placeSelf(*chunkData, 12, 3, 14+16);
-
-    Structures :: Structs[Structures :: POND].placeSelf(*chunkData, 12+16, 3, 14-16);
-    Structures :: Structs[Structures :: POND].placeSelf(*chunkData, 12+16, 3, 14);
-    Structures :: Structs[Structures :: POND].placeSelf(*chunkData, 12+16, 3, 14+16);
+    placeStruct(chunkData, Structures :: POND, 12, 3, 14);
 
 }

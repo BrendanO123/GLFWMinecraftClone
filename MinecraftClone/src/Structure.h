@@ -51,6 +51,7 @@ class Structure{
          * @param pX The position in chunk space along the x axis.
          * @param pY The position in chunk space along the y axis.
          * @param pZ The position in chunk space along the z axis.
+         * @return A boolean storing wether the structure extrudes past the targeted chunks edges. Used to create structure list for chunk. 
          */
-        void placeSelf(ChunkData &target, GLbyte pX, GLbyte pY, GLbyte pZ) const;
+        bool placeSelf(ChunkData &target, GLbyte pX, GLbyte pY, GLbyte pZ) const;
 };
