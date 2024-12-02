@@ -22,6 +22,9 @@ struct StructureList{
     int count;
     StructNode* first;
     StructNode* last;
+
+    StructureList(int newCount = 0, StructNode* next = nullptr) : count(newCount), first(next), last(next){}
+    ~StructureList();
 };
 
 struct ChunkData{
@@ -29,11 +32,12 @@ struct ChunkData{
     //data
     vector<Layer> data;
     glm :: ivec2 pos;
-    StructureList Structs;
+    StructureList Structs = StructureList();
 
     //constructors
     ChunkData() : data(vector<Layer>()), pos(glm :: ivec2()){}
     ChunkData(vector<Layer> Data, glm :: ivec2 loc) : data(Data), pos(loc){}
+    ~ChunkData(){}
 
     void place(ChunkData* other, glm :: i8vec2 offset);
 

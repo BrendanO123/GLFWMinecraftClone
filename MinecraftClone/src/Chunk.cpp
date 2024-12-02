@@ -30,6 +30,7 @@ Chunk :: ~Chunk(){
 }
 
 void Chunk :: genChunkMesh(){
+    if(!(flagByte & ChunkFlags :: HAS_STRUCTURES)){return;}
     GLuint vOffset=0, transLVOff = 0, BoardVOff = 0, y;
     Block block, adjacentBlock;
     GLubyte type, adjacentType;

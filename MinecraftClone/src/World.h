@@ -43,7 +43,7 @@ class World{
         unordered_map<tuple<int, int>, Chunk*> chunks;
         unordered_map<tuple<int, int>, ChunkData*> chunkData;
 
-        queue<glm::vec2> chunkQueue;
+        queue<glm::ivec2> chunkQueue;
 
         std :: thread updateThread;
 

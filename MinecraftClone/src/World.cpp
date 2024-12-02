@@ -95,6 +95,7 @@ void World :: threadUpdate(){
     while(!shouldEnd){
 
         if(!isMenu){ //if stuff is happening
+
             //if player moves into new chunk
             mute.lock();
             if(camX_chunk != lastCamX || camZ_chunk != lastCamZ){
@@ -119,7 +120,7 @@ void World :: threadUpdate(){
         if(chunksLoading == 0 && !chunkQueue.empty()){
 
             //remove next chunk and add get its location
-            glm :: vec2 next = chunkQueue.front();
+            glm :: ivec2 next = chunkQueue.front();
             chunkQueue.pop();
             mute.unlock();
 
@@ -228,14 +229,10 @@ void World :: threadUpdate(){
                     chunk->genChunkMesh();
 
                     mute.lock();
-                    cout << "inserted chunk" << endl;
                     chunks[chunkTuple] = chunk;
                     mute.unlock();
                 }
                 else{
-                    mute.unlock();
-
-                    mute.lock();
                     ChunkData* NW;
                     //NW
                     if(chunkData.find(tuple<int,int>(next.x-1, next.y+1))==chunkData.end()){
@@ -299,14 +296,20 @@ void World :: threadUpdate(){
                     }
                     else{SE=chunkData.at(tuple<int,int>(next.x+1, next.y-1)); mute.unlock();}
 
+                    mute.lock();
                     WorldGen :: resolveStructures(chunk->data, NW, chunk->back, NE, chunk->left, chunk->right, SW, chunk->front, SE);
+                    chunk->flagByte |= ChunkFlags :: HAS_STRUCTURES;
+                    mute.unlock();
+
                     chunk->genChunkMesh();
 
                     mute.lock();
-                    chunk->flagByte |= ChunkFlags :: HAS_STRUCTURES;
                     chunks[chunkTuple] = chunk;
                     mute.unlock();
                 }
+            }
+            else{
+                mute.unlock();
             }
         }
         else{

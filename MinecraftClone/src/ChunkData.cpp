@@ -7,6 +7,16 @@
 
 using namespace std;
 
+StructureList :: ~StructureList(){
+    StructNode* iterate = first;
+    StructNode* next;
+    while(iterate != nullptr){
+        next = iterate->next;
+        delete iterate;
+        iterate = next;
+    }
+}
+
 void ChunkData :: place(ChunkData* target, glm :: i8vec2 offset){
     StructNode* iterate = Structs.first;
     //for(int i = 0; i<Structs.count; i++){
