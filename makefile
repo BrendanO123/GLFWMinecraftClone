@@ -52,20 +52,20 @@ clean_exc:
 	@echo "DONE"
 
 runV:
-	@DYLD_LIBRARY_PATH=Dependencies/lib
-	@export DYLD_LIBRARY_PATH
+	@make makeVulk -s
 	@DYLD_LIBRARY_PATH=Dependencies/lib ./VulkanBuild.out
-makeVulk : VulkanBuild.out
+
 cleanVulk:
 	@rm -f VulkanBuild.out $(OBJ_PATH)VulkanTest.o
 	@rm -rf VulkanBuild.out.dSYM
-	@echo "DONE"
+	@echo "CLEANED"
 
+makeVulk : VulkanBuild.out
 VulkanBuild.out : $(OBJ_PATH)VulkanTest.o
 	@DYLD_LIBRARY_PATH=Dependencies/lib
 	@export DYLD_LIBRARY_PATH
 	@$(CC) $(CFLAGS) $(CPPVERSION) -o VulkanBuild.out $(OBJ_PATH)VulkanTest.o -I$(INCLUDE) -IDependencies/include/VulkanInclude -lglfw3 -lvulkan.1 -lvulkan.1.3.296 -lMoltenVK -lSDL2 -lSDL2main -framework Cocoa -framework IOKit -L$(LIB_PATH)
-	@echo "DONE"
+	@echo "RECOMPILED"
 
 $(OBJ_PATH)VulkanTest.o : $(SRC_PATH)VulkanMainTesting/VulkanTest.cpp
 	@@$(CC) $(CFLAGS) $(CPPVERSION) -c -o $(OBJ_PATH)VulkanTest.o $(SRC_PATH)VulkanMainTesting/VulkanTest.cpp -I$(INCLUDE) -IDependencies/include/VulkanInclude
