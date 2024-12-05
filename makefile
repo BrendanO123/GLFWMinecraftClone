@@ -53,7 +53,7 @@ clean_exc:
 
 runV:
 	@make makeVulk -s
-	@DYLD_LIBRARY_PATH=Dependencies/lib ./VulkanBuild.out
+	@DYLD_LIBRARY_PATH=Dependencies/lib    VK_ICD_FILENAMES=Dependencies/Vulkan/share/vulkan/icd.d/MoltenVK_icd.json    VK_LAYER_PATH=Dependencies/Vulkan/share/vulkan/explicit_layer.d    ./VulkanBuild.out
 
 cleanVulk:
 	@rm -f VulkanBuild.out $(OBJ_PATH)VulkanTest.o
@@ -62,10 +62,8 @@ cleanVulk:
 
 makeVulk : VulkanBuild.out
 VulkanBuild.out : $(OBJ_PATH)VulkanTest.o
-	@DYLD_LIBRARY_PATH=Dependencies/lib
-	@export DYLD_LIBRARY_PATH
-	@$(CC) $(CFLAGS) $(CPPVERSION) -o VulkanBuild.out $(OBJ_PATH)VulkanTest.o -I$(INCLUDE) -IDependencies/include/VulkanInclude -lglfw3 -lvulkan.1 -lvulkan.1.3.296 -lMoltenVK -lSDL2 -lSDL2main -framework Cocoa -framework IOKit -L$(LIB_PATH)
+	@$(CC) $(CFLAGS) $(CPPVERSION) -o VulkanBuild.out $(OBJ_PATH)VulkanTest.o -I$(INCLUDE) -IDependencies/Vulkan/include -lglfw3 -lvulkan.1 -lvulkan.1.3.296 -lMoltenVK -lSDL2 -lSDL2main -framework Cocoa -framework IOKit -L$(LIB_PATH)
 	@echo "RECOMPILED"
 
 $(OBJ_PATH)VulkanTest.o : $(SRC_PATH)VulkanMainTesting/VulkanTest.cpp
-	@@$(CC) $(CFLAGS) $(CPPVERSION) -c -o $(OBJ_PATH)VulkanTest.o $(SRC_PATH)VulkanMainTesting/VulkanTest.cpp -I$(INCLUDE) -IDependencies/include/VulkanInclude
+	@@$(CC) $(CFLAGS) $(CPPVERSION) -c -o $(OBJ_PATH)VulkanTest.o $(SRC_PATH)VulkanMainTesting/VulkanTest.cpp -I$(INCLUDE) -IDependencies/Vulkan/include
