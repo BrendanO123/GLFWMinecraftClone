@@ -5,7 +5,7 @@
 
 World* World :: world = nullptr;
 //costructor: store shader
-World :: World(Shader* shader) : shader(shader){
+World :: World(Shader* shader, int render) : shader(shader), renderDistance(render){
     updateThread = std :: thread(&World :: threadUpdate, this);
 }
 
@@ -195,14 +195,14 @@ void World :: threadUpdate(){
                     ChunkData* newChunkData = new ChunkData();
                     WorldGen :: getChunkBasics(next.x, next.y+1, 16, newChunkData, fractal);
 
-                    chunk->back=newChunkData;
+                    chunk->front=newChunkData;
 
                     mute.lock();
                     chunkData[tuple<int,int>(next.x, next.y+1)] = newChunkData;
                     mute.unlock();
 
                 }
-                else{chunk->back=chunkData.at(tuple<int,int>(next.x, next.y+1)); mute.unlock();}
+                else{chunk->front=chunkData.at(tuple<int,int>(next.x, next.y+1)); mute.unlock();}
 
                 mute.lock();
                 //SOUTH
@@ -212,14 +212,14 @@ void World :: threadUpdate(){
                     ChunkData* newChunkData = new ChunkData();
                     WorldGen :: getChunkBasics(next.x, next.y-1, 16, newChunkData, fractal);
 
-                    chunk->front=newChunkData;
+                    chunk->back=newChunkData;
 
                     mute.lock();
                     chunkData[tuple<int,int>(next.x, next.y-1)] = newChunkData;
                     mute.unlock();
 
                 }
-                else{chunk->front=chunkData.at(tuple<int,int>(next.x, next.y-1)); mute.unlock();}
+                else{chunk->back=chunkData.at(tuple<int,int>(next.x, next.y-1)); mute.unlock();}
 
                 mute.lock();
                 chunk->flagByte |= ChunkFlags :: HAS_BASICS;

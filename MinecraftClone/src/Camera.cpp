@@ -9,7 +9,7 @@ Camera :: Camera() : maxFov(110.f), minFov(15.0f), defaultFov(70.f){
     lastX = 400;
     lastY = 300;
 
-    CameraPos = glm :: vec3(8.f, 5.f, 8.f);
+    CameraPos = glm :: vec3(8.f, 60.f, 8.f);
 
     fov = defaultFov;
     mouseSensitivity = 0.1f;

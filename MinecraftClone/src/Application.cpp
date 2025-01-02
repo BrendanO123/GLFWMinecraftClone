@@ -166,11 +166,13 @@ int main(){
     glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    World :: world = new World(&shader);
+    int chunkRenderDist = 12;
+    float renderDist = int(chunkRenderDist*16*1.6 + 0.5f);
+
+    World :: world = new World(&shader, chunkRenderDist);
 
     glm ::mat4 view = glm :: identity<glm :: mat4>();
     glm ::mat4 projection = glm :: identity<glm :: mat4>();
-    float renderDist = 160.f;
 
     glClearColor(135/255.0f, 206/255.0f, 235/255.0f, 1.0f);
     float deltaTime, currentFrame, lastFrame = 0.0f;

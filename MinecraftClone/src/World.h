@@ -19,7 +19,7 @@ using namespace std;
 
 class World{
     public:
-        World(Shader* shader);
+        World(Shader* shader, int render);
         ~World();
         
         Chunk* getChunk(int x, int z);
@@ -59,6 +59,6 @@ class World{
         int lastCamX = -100, lastCamZ = -100;
         int camX_chunk = -101, camZ_chunk = -101;
 
-        int renderDistance = 5;
+        int renderDistance = 8;
         unsigned int chunkSize = 16;
 };
