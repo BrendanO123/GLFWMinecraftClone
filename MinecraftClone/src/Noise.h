@@ -9,47 +9,44 @@ using namespace std;
 namespace noise{
     class Noise{
         public:
-            NoiseMapSettings settings;
-            Noise(NoiseMapSettings set) : settings(set){};
             Noise(){};
+
+            void calcFracBounding(NoiseMapSettings &set) const;
+
+            float SinglePerlin(int seed, float x, float y) const;
+            glm :: vec3 analyticalPerlin(int seed, float x, float y) const;
 
         private:
             static const int PrimeX = 501125321;
             static const int PrimeY = 1136930381;
             static const int PrimeZ = 1720413743;
 
-            float calcFracBounding(NoiseMapSettings set);
-
             //fast math
-            inline float FastAbs(float f) { return f < 0 ? -f : f; }
-            inline int FastFloor(float f) { return f >= 0 ? (int)f : (int)f - 1; }
-            inline float FastMin(float a, float b) { return a < b ? a : b; }
-            inline float FastMax(float a, float b) { return a > b ? a : b; }
-            inline int FastRound(float f) { return f >= 0 ? (int)(f + 0.5f) : (int)(f - 0.5f); }
+            inline float FastAbs(float f) const{ return f < 0 ? -f : f; }
+            inline int FastFloor(float f) const{ return f >= 0 ? (int)f : (int)f - 1; }
+            inline float FastMin(float a, float b) const{ return a < b ? a : b; }
+            inline float FastMax(float a, float b) const{ return a > b ? a : b; }
+            inline int FastRound(float f) const{ return f >= 0 ? (int)(f + 0.5f) : (int)(f - 0.5f); }
 
-            inline float FastSqrt(float f) { return (float)sqrt(f); }
-            inline float Clamp(float a, float b, float t){return (t>=b ? b : (t<=a ? a : t));}
-            inline float length(float a, float b){return FastSqrt((a * a) + (b * b));} 
+            inline float FastSqrt(float f) const{ return (float)sqrt(f); }
+            inline float Clamp(float a, float b, float t) const{return (t>=b ? b : (t<=a ? a : t));}
+            inline float length(float a, float b) const{return FastSqrt((a * a) + (b * b));} 
 
             //lerp and interp
-            inline float Lerp(float a, float b, float t) { return a + t * (b - a); }
-            inline float InterpQuintic(float t) { return t * t * t * (t * (t * 6 - 15) + 10); }
-            inline float d_dxInterp(float t){ return t * t * 30 * (t * (t-2) + 1); }
-            inline float SCurve(float t) { return t * t * (3 - 2 * t); }
+            inline float Lerp(float a, float b, float t) const{ return a + t * (b - a); }
+            inline float InterpQuintic(float t) const{ return t * t * t * (t * (t * 6 - 15) + 10); }
+            inline float d_dxInterp(float t) const{ return t * t * 30 * (t * (t-2) + 1); }
+            inline float SCurve(float t) const{ return t * t * (3 - 2 * t); }
 
 
-            float SinglePerlin(int seed, float x, float y);
-            glm :: vec3 analyticalPerlin(int seed, float x, float y);
-
-
-            inline int Hash(int seed, int xPrimed, int yPrimed)
+            inline int Hash(int seed, int xPrimed, int yPrimed) const
             {
                 int hash = seed ^ xPrimed ^ yPrimed;
 
                 hash *= 0x27d4eb2d;
                 return hash;
             }
-            inline int Hash(int seed, int xPrimed, int yPrimed, int zPrimed)
+            inline int Hash(int seed, int xPrimed, int yPrimed, int zPrimed) const
             {
                 int hash = seed ^ xPrimed ^ yPrimed ^ zPrimed;
 
@@ -57,7 +54,7 @@ namespace noise{
                 return hash;
             }
 
-            inline float ValCoord(int seed, int xPrimed, int yPrimed)
+            inline float ValCoord(int seed, int xPrimed, int yPrimed) const
             {
                 int hash = Hash(seed, xPrimed, yPrimed);
 
@@ -66,7 +63,7 @@ namespace noise{
                 return hash * (1 / 2147483648.0f);
             }
 
-            inline float ValCoord(int seed, int xPrimed, int yPrimed, int zPrimed)
+            inline float ValCoord(int seed, int xPrimed, int yPrimed, int zPrimed) const
             {
                 int hash = Hash(seed, xPrimed, yPrimed, zPrimed);
 
@@ -75,7 +72,7 @@ namespace noise{
                 return hash * (1 / 2147483648.0f);
             }
 
-            inline float GradCoord(int seed, int xPrimed, int yPrimed, float xd, float yd)
+            inline float GradCoord(int seed, int xPrimed, int yPrimed, float xd, float yd) const
             {
                 int hash = Hash(seed, xPrimed, yPrimed);
                 hash ^= hash >> 15;
@@ -87,7 +84,7 @@ namespace noise{
                 return xd * xg + yd * yg;
             }
 
-            inline float GradCoord(int seed, int xPrimed, int yPrimed, int zPrimed, float xd, float yd, float zd)
+            inline float GradCoord(int seed, int xPrimed, int yPrimed, int zPrimed, float xd, float yd, float zd) const
             {
                 int hash = Hash(seed, xPrimed, yPrimed, zPrimed);
                 hash ^= hash >> 15;

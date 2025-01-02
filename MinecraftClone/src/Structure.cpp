@@ -1,6 +1,7 @@
-
-
 #include "Structure.h"
+
+#include <iostream>
+
 #include "Layer.h"
 
 using namespace std;

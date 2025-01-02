@@ -10,6 +10,7 @@
 #include "ChunkData.h"
 #include "Camera.h"
 #include "Blocks.h"
+#include "Fractal.h"
 
 #include <ScuffedMinecraft/TupleHash.h>
 
@@ -48,6 +49,8 @@ class World{
         std :: thread updateThread;
 
         Shader* shader;
+
+        noise :: Fractal fractal;
 
         bool shouldEnd=false;
         bool isMenu=false;

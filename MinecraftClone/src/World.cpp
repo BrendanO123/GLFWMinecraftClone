@@ -142,7 +142,7 @@ void World :: threadUpdate(){
                     mute.unlock();
 
                     ChunkData* newChunkData = new ChunkData();
-                    WorldGen :: getChunkBasics(next.x, next.y, 16, newChunkData);
+                    WorldGen :: getChunkBasics(next.x, next.y, 16, newChunkData, fractal);
 
                     chunk->data=newChunkData;
 
@@ -159,7 +159,7 @@ void World :: threadUpdate(){
                     mute.unlock();
 
                     ChunkData* newChunkData = new ChunkData();
-                    WorldGen :: getChunkBasics(next.x+1, next.y, 16, newChunkData);
+                    WorldGen :: getChunkBasics(next.x+1, next.y, 16, newChunkData, fractal);
 
                     chunk->right=newChunkData;
 
@@ -176,7 +176,7 @@ void World :: threadUpdate(){
                     mute.unlock();
 
                     ChunkData* newChunkData = new ChunkData();
-                    WorldGen :: getChunkBasics(next.x-1, next.y, 16, newChunkData);
+                    WorldGen :: getChunkBasics(next.x-1, next.y, 16, newChunkData, fractal);
 
                     chunk->left=newChunkData;
 
@@ -193,7 +193,7 @@ void World :: threadUpdate(){
                     mute.unlock();
 
                     ChunkData* newChunkData = new ChunkData();
-                    WorldGen :: getChunkBasics(next.x, next.y+1, 16, newChunkData);
+                    WorldGen :: getChunkBasics(next.x, next.y+1, 16, newChunkData, fractal);
 
                     chunk->back=newChunkData;
 
@@ -210,7 +210,7 @@ void World :: threadUpdate(){
                     mute.unlock();
 
                     ChunkData* newChunkData = new ChunkData();
-                    WorldGen :: getChunkBasics(next.x, next.y-1, 16, newChunkData);
+                    WorldGen :: getChunkBasics(next.x, next.y-1, 16, newChunkData, fractal);
 
                     chunk->front=newChunkData;
 
@@ -239,7 +239,7 @@ void World :: threadUpdate(){
                         mute.unlock();
 
                         NW = new ChunkData();
-                        WorldGen :: getChunkBasics(next.x-1, next.y+1, 16, NW);
+                        WorldGen :: getChunkBasics(next.x-1, next.y+1, 16, NW, fractal);
 
                         mute.lock();
                         chunkData[tuple<int,int>(next.x-1, next.y+1)] = NW;
@@ -255,7 +255,7 @@ void World :: threadUpdate(){
                         mute.unlock();
 
                         NE = new ChunkData();
-                        WorldGen :: getChunkBasics(next.x+1, next.y+1, 16, NE);
+                        WorldGen :: getChunkBasics(next.x+1, next.y+1, 16, NE, fractal);
 
                         mute.lock();
                         chunkData[tuple<int,int>(next.x+1, next.y+1)] = NE;
@@ -271,7 +271,7 @@ void World :: threadUpdate(){
                         mute.unlock();
 
                         SW = new ChunkData();
-                        WorldGen :: getChunkBasics(next.x-1, next.y-1, 16, SW);
+                        WorldGen :: getChunkBasics(next.x-1, next.y-1, 16, SW, fractal);
 
                         mute.lock();
                         chunkData[tuple<int,int>(next.x-1, next.y-1)] = SW;
@@ -287,7 +287,7 @@ void World :: threadUpdate(){
                         mute.unlock();
 
                         SE = new ChunkData();
-                        WorldGen :: getChunkBasics(next.x+1, next.y-1, 16, SE);
+                        WorldGen :: getChunkBasics(next.x+1, next.y-1, 16, SE, fractal);
 
                         mute.lock();
                         chunkData[tuple<int,int>(next.x+1, next.y-1)] = SE;

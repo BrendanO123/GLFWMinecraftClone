@@ -30,9 +30,7 @@ namespace noise{
     };
     enum fractalTypes : unsigned char{
         NONE = 0,
-        FBM = 1,
-        FBM_PARTIALS = 2,
-        ERROSION = 3
+        FBM = 1
     };
 
     struct NoiseMapSettings{
@@ -49,21 +47,21 @@ namespace noise{
         float fractalBounding;
 
         NoiseMapSettings(){
-            NoiseMapSettings(false, noiseTypes :: PERLIN, fractalTypes :: NONE, 1.0f/1000, 0.5f, 2.0f, 3, 1/1.75f);
+            NoiseMapSettings(1337, false, noiseTypes :: PERLIN, fractalTypes :: NONE, 1.0f/1000, 0.5f, 2.0f, 3, 1/1.75f);
         }
-        NoiseMapSettings(bool partials, unsigned char type, unsigned char fractalMode, float f, float g, float l, int o, float bounding)
-         : includePartials(partials), noiseType(type), fractalType(fractalMode), 
+        NoiseMapSettings(int Seed, bool partials, unsigned char type, unsigned char fractalMode, float f, float g, float l, int o, float bounding)
+         : seed(Seed), includePartials(partials), noiseType(type), fractalType(fractalMode), 
          frequency(f), gain(g), lacunarity(l), octaves(o), fractalBounding(bounding){}
     };
 
     const unsigned char mapCount = 6;
     enum noiseSettings : unsigned char{
-        tempNoise = 0,
-        rainNoise = 1,
-        errosionMap = 2,
-        continentalMap = 3,
-        StructMaop = 4,
-        FoliageMap = 5
+        TEMP_NOISE = 0,
+        RAIN_NOISE = 1,
+        EROSION_MAP = 2,
+        CONTINENTAL_MAP = 3,
+        STRUCT_MAP = 4,
+        FOLIAGE_MAP = 5
     };
     struct NoiseTotalSettings{
         NoiseMapSettings settings[mapCount] = 

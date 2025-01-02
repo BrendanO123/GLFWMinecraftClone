@@ -3,8 +3,19 @@
 #include "Noise.h"
 
 using namespace noise;
+void Noise :: calcFracBounding(NoiseMapSettings &set) const{
+    float gain = FastAbs(set.gain);
+    float amp = gain;
+    float ampFractal = 1.0f;
+    for (int i = 1; i < set.octaves; i++)
+    {
+        ampFractal += amp;
+        amp *= gain;
+    }
+    set.fractalBounding = 1 / ampFractal;
+}
 
-float Noise :: SinglePerlin(int seed, float x, float y){
+float Noise :: SinglePerlin(int seed, float x, float y) const{
 
     int xi = FastFloor(x); //floor x
     int yi = FastFloor(y); //floor y
@@ -36,7 +47,7 @@ float Noise :: SinglePerlin(int seed, float x, float y){
         //then the max will be below 1/sqrt(2) and the factor (seen above at the end of the return) should be > sqrt(2)
 }
 
-glm :: vec3 Noise :: analyticalPerlin(int seed, float x, float y){
+glm :: vec3 Noise :: analyticalPerlin(int seed, float x, float y) const{
     int xi = FastFloor(x); //floor x
     int yi = FastFloor(y); //floor y
 
@@ -76,5 +87,5 @@ glm :: vec3 Noise :: analyticalPerlin(int seed, float x, float y){
             Lerp(g00.x * xf0 + g00.y * yf0, g10.x * xf_1 + g10.y * yf0, xs),
             Lerp(g01.x * xf0 + g01.y * yf_1, g11.x * xf_1 + g11.y * yf_1, xs),
             ys
-        ) * 1.4247691104677813f, dx, dy);
+        ) * 1.4247691104677813f, d_dx, d_dy);
 }
