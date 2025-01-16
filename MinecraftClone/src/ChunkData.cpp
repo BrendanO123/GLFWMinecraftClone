@@ -19,7 +19,6 @@ StructureList :: ~StructureList(){
 
 void ChunkData :: place(ChunkData* target, glm :: i8vec2 offset){
     StructNode* iterate = Structs.first;
-    //for(int i = 0; i<Structs.count; i++){
     while(iterate != nullptr){
         Structure iterateActual = Structures :: Structs[iterate->id];
 

@@ -16,13 +16,31 @@ namespace noise{
             float SinglePerlin(int seed, float x, float y) const;
             glm :: vec3 analyticalPerlin(int seed, float x, float y) const;
 
-        private:
+            //lerp and interp
+            inline float Lerp(float a, float b, float t) const{ return a + t * (b - a); }
+            inline float InterpQuintic(float t) const{ return t * t * t * (t * (t * 6 - 15) + 10); }
+            inline float SCurve(float t) const{ return t * t * (3 - 2 * t); }
+            inline float d_dxInterp(float t) const{ return t * t * 30 * (t * (t-2) + 1); }
+
+            inline float FastAbs(float f) const{ return f < 0 ? -f : f; }
+
+
             static const int PrimeX = 501125321;
             static const int PrimeY = 1136930381;
             static const int PrimeZ = 1720413743;
 
+            inline float ValCoord(int seed, int xPrimed, int yPrimed) const
+            {
+                int hash = Hash(seed, xPrimed, yPrimed);
+
+                hash *= hash;
+                hash ^= hash << 19;
+                return hash * (1 / 2147483648.0f);
+            }
+
+        private:
+
             //fast math
-            inline float FastAbs(float f) const{ return f < 0 ? -f : f; }
             inline int FastFloor(float f) const{ return f >= 0 ? (int)f : (int)f - 1; }
             inline float FastMin(float a, float b) const{ return a < b ? a : b; }
             inline float FastMax(float a, float b) const{ return a > b ? a : b; }
@@ -31,12 +49,6 @@ namespace noise{
             inline float FastSqrt(float f) const{ return (float)sqrt(f); }
             inline float Clamp(float a, float b, float t) const{return (t>=b ? b : (t<=a ? a : t));}
             inline float length(float a, float b) const{return FastSqrt((a * a) + (b * b));} 
-
-            //lerp and interp
-            inline float Lerp(float a, float b, float t) const{ return a + t * (b - a); }
-            inline float InterpQuintic(float t) const{ return t * t * t * (t * (t * 6 - 15) + 10); }
-            inline float d_dxInterp(float t) const{ return t * t * 30 * (t * (t-2) + 1); }
-            inline float SCurve(float t) const{ return t * t * (3 - 2 * t); }
 
 
             inline int Hash(int seed, int xPrimed, int yPrimed) const
@@ -52,15 +64,6 @@ namespace noise{
 
                 hash *= 0x27d4eb2d;
                 return hash;
-            }
-
-            inline float ValCoord(int seed, int xPrimed, int yPrimed) const
-            {
-                int hash = Hash(seed, xPrimed, yPrimed);
-
-                hash *= hash;
-                hash ^= hash << 19;
-                return hash * (1 / 2147483648.0f);
             }
 
             inline float ValCoord(int seed, int xPrimed, int yPrimed, int zPrimed) const

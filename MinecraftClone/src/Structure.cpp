@@ -20,13 +20,13 @@ bool Structure :: placeSelf(ChunkData &target, GLbyte pX, GLbyte pY, GLbyte pZ) 
         for(char x = 0; x < sizeX; x++){
 
             xChunk = int(pX)-(sizeX>>1)+x;
-            if(xChunk > 15){returnBool = true; /*break;*/ continue;}
+            if(xChunk > 15){returnBool = true; break;}
             if(xChunk < 0){returnBool = true; continue;}
 
             for(char z = 0; z < sizeZ; z++){
 
                 zChunk = int(pZ)-(sizeZ>>1)+z;
-                if(zChunk > 15){returnBool = true; /*break;*/ continue;}
+                if(zChunk > 15){returnBool = true; break;}
                 if(zChunk < 0){returnBool = true; continue;}
 
                 id = contents[z+(int(x)*sizeZ)+(int(y)*sizeZ*sizeX)];

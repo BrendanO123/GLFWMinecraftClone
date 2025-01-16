@@ -19,7 +19,7 @@ using namespace std;
 
 class World{
     public:
-        World(Shader* shader, int render);
+        World(Shader* shader, int render, int seed);
         ~World();
         
         Chunk* getChunk(int x, int z);

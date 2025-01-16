@@ -41,16 +41,16 @@ void WorldGen :: resolveStructures(ChunkData* target,
         ChunkData* W,                ChunkData* E, 
         ChunkData* SW, ChunkData* S, ChunkData* SE){
 
-            NW->place(target, glm :: i8vec2(-16, 16));
+            NW->place(target, glm :: i8vec2(-16, -16));
             N->place(target, glm :: i8vec2(0, 16));
-            NE->place(target, glm :: i8vec2(16, 16));
+            NE->place(target, glm :: i8vec2(16, -16));
 
             W->place(target, glm :: i8vec2(-16, 0));
             E->place(target, glm :: i8vec2(16, 0));
 
-            SW->place(target, glm :: i8vec2(-16, -16));
+            SW->place(target, glm :: i8vec2(-16, 16));
             S->place(target, glm :: i8vec2(0, -16));
-            SE->place(target, glm :: i8vec2(16, -16));
+            SE->place(target, glm :: i8vec2(16, 16));
         }
 
 void WorldGen :: getChunkBasics(int x, int z, int chunkSize, ChunkData* chunkData, noise :: Fractal fractal){
@@ -60,21 +60,17 @@ void WorldGen :: getChunkBasics(int x, int z, int chunkSize, ChunkData* chunkDat
     chunkData->pos=glm :: ivec2(x,z);
 
     chunkData->data.clear();
+    NoiseReturnStruct noiseValues = fractal.getNoise(glm :: ivec2(x, z));
+    int minHeight = noiseValues.minHeight;
+    int maxHeight = noiseValues.maxHeight;
 
-    int minHeight = 127, maxHeight = 0, temp;
-    int height[chunkSize][chunkSize];
-
-    NoiseMapSettings settings = NoiseMapSettings(1337, false, noise :: PERLIN, noise :: FBM, 0.008f, 0.5f, 2.0f, 5, 1.0f);
-    fractal.noise.calcFracBounding(settings);
-
-    for(int iterX = 0; iterX < chunkSize; iterX++){
-        for(int iterZ = 0; iterZ < chunkSize; iterZ++){
-            temp = int(35 * fractal.tempFBM(glm :: ivec2(iterX + x * chunkSize, z * chunkSize - iterZ), settings).x + 40);
-            height[iterZ][iterX] = temp;
-            if(temp < minHeight){minHeight = temp;}
-            if(temp > maxHeight){maxHeight = temp;}
+    for(int iterX =0; iterX < chunkSize; iterX++){
+        for(int iterZ=0; iterZ<chunkSize; iterZ++){
+            if(noiseValues.TerrainHeight[iterZ + int(iterX << 4)] < minHeight){minHeight = noiseValues.TerrainHeight[iterZ + int(iterX << 4)];}
+            if(noiseValues.TerrainHeight[iterZ + int(iterX << 4)] > maxHeight){maxHeight = noiseValues.TerrainHeight[iterZ + int(iterX << 4)];}
         }
     }
+    if(maxHeight < noise :: Fractal :: waterLevel){maxHeight = noise :: Fractal :: waterLevel;}
 
     chunkData->data.reserve(maxHeight);
     for(int i = 0; i < maxHeight; i++){
@@ -82,41 +78,116 @@ void WorldGen :: getChunkBasics(int x, int z, int chunkSize, ChunkData* chunkDat
         if(i < minHeight-3){
             fillLayer(i, chunkSize, chunkData, Blocks :: STONE);
         }
+        else if(i < noise :: Fractal :: waterLevel){
+            fillLayer(i, chunkSize, chunkData, Blocks :: WATER);
+        }
     }
 
     for(int iterX = 0; iterX < chunkSize; iterX++){
         for(int iterZ = 0; iterZ < chunkSize; iterZ++){
-            for(int i = minHeight-3; i<height[iterZ][iterX] - 3; i++){
+            for(int i = minHeight-3; i<noiseValues.TerrainHeight[iterZ + int(iterX << 4)] - 3; i++){
                 chunkData->data.at(i).data[iterZ + (iterX<<4)] = Blocks :: STONE;
             }
 
-            chunkData->data.at(height[iterZ][iterX]-3).data[iterZ + (iterX<<4)] = Blocks :: DIRT;
-            chunkData->data.at(height[iterZ][iterX]-2).data[iterZ + (iterX<<4)] = Blocks :: DIRT;
-            chunkData->data.at(height[iterZ][iterX]-1).data[iterZ + (iterX<<4)] = Blocks :: GRASS;
+            if(noiseValues.surfaceType[iterZ + int(iterX << 4)] == Blocks :: GRASS){
+                chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-3).data[iterZ + (iterX<<4)] = Blocks :: DIRT;
+                chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-2).data[iterZ + (iterX<<4)] = Blocks :: DIRT;
+                chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-1).data[iterZ + (iterX<<4)] = Blocks :: GRASS;
+                
+                
+                /*if(iterX == 0 || iterX == 15 || iterZ == 0 || iterZ == 15){
+                    chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-1).data[iterZ + (iterX<<4)] = Blocks :: DIRT;
+                }*/
+            }
+            else{
+                chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-3).data[iterZ + (iterX<<4)] = noiseValues.surfaceType[iterZ + int(iterX << 4)];
+                chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-2).data[iterZ + (iterX<<4)] = noiseValues.surfaceType[iterZ + int(iterX << 4)];
+                chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-1).data[iterZ + (iterX<<4)] = noiseValues.surfaceType[iterZ + int(iterX << 4)];
+            }
         }
     }
 
-    if(height[1][0] == maxHeight){
-        chunkData->data.emplace_back((unsigned char)maxHeight);
-        chunkData->data.emplace_back((unsigned char)(maxHeight+1));
-    }
-    else if(
-        height[0][0] == maxHeight || height[0][1] == maxHeight || height[1][1] == maxHeight ||
-        height[0][2] == maxHeight || height[1][0] == maxHeight-1 || height[1][2] == maxHeight
-        ){
-            chunkData->data.emplace_back((unsigned char)maxHeight);
-        }
+    /*WorldGen :: placeStruct(
+                    chunkData, 
+                    Structures :: OAK_TREE, 
+                    14, 
+                    noiseValues.TerrainHeight[0 + int(14 << 4)] - 1, 
+                    0
+                );
+
+    WorldGen :: placeStruct(
+                    chunkData, 
+                    Structures :: OAK_TREE, 
+                    1, 
+                    noiseValues.TerrainHeight[0 + int(1 << 4)] - 1, 
+                    0
+                );
     
-    chunkData->data.at(height[0][0]).data[0 + (0<<4)] = Blocks :: SHORT_GRASS;
-    chunkData->data.at(height[1][0]).data[1 + (0<<4)] = Blocks :: TALL_GRASS_BOTTOM;
-    chunkData->data.at(height[0][1]).data[0 + (1<<4)] = Blocks :: ROSE;
-    chunkData->data.at(height[1][1]).data[1 + (1<<4)] = Blocks :: TULIP_WHITE;
-    chunkData->data.at(height[0][2]).data[0 + (2<<4)] = Blocks :: TULIP_ORANGE;
-    chunkData->data.at(height[1][2]).data[1 + (2<<4)] = Blocks :: TULIP_PINK;
+    WorldGen :: placeStruct(
+                    chunkData, 
+                    Structures :: OAK_TREE, 
+                    14, 
+                    noiseValues.TerrainHeight[15 + int(14 << 4)] - 1, 
+                    15
+                );
 
-    chunkData->data.at(height[1][0]+1).data[1 + (0<<4)] = Blocks :: TALL_GRASS_TOP;
+    WorldGen :: placeStruct(
+                    chunkData, 
+                    Structures :: OAK_TREE, 
+                    1, 
+                    noiseValues.TerrainHeight[15 + int(1 << 4)] - 1, 
+                    15
+                );
+    
+    WorldGen :: placeStruct(
+                    chunkData, 
+                    Structures :: OAK_TREE, 
+                    14, 
+                    noiseValues.TerrainHeight[0 + int(14 << 4)] - 1, 
+                    5
+                );
 
-    WorldGen :: placeStruct(chunkData, Structures :: OAK_TREE, 2, height[2][2]-1, 2);
-    WorldGen :: placeStruct(chunkData, Structures :: OAK_TREE, 6, height[5][6]-1, 5);
+    WorldGen :: placeStruct(
+                    chunkData, 
+                    Structures :: OAK_TREE, 
+                    1, 
+                    noiseValues.TerrainHeight[0 + int(1 << 4)] - 1, 
+                    5
+                );
+    
+    WorldGen :: placeStruct(
+                    chunkData, 
+                    Structures :: OAK_TREE, 
+                    9, 
+                    noiseValues.TerrainHeight[15 + int(14 << 4)] - 1, 
+                    15
+                );
+
+    WorldGen :: placeStruct(
+                    chunkData, 
+                    Structures :: OAK_TREE, 
+                    5, 
+                    noiseValues.TerrainHeight[15 + int(1 << 4)] - 1, 
+                    15
+                );*/
+    
+
+    for(int iterX = 0; iterX < chunkSize; iterX++){
+        for(int iterZ = 0; iterZ < chunkSize; iterZ++){
+            GLubyte type = noiseValues.foliage[iterZ + int(iterX << 4)];
+            if(type != (unsigned char) 255){
+                int offset = (type == Structures :: OAK_TREE ? -1 : 0);
+                WorldGen :: placeStruct(
+                    chunkData, 
+                    type, 
+                    iterX, 
+                    noiseValues.TerrainHeight[iterZ + int(iterX << 4)] + offset, 
+                    iterZ
+                );
+                
+            }
+        }
+    }
+
     }
 }

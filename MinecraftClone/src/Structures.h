@@ -8,7 +8,7 @@ using namespace std;
 
 namespace Structures{
 
-    const GLubyte StructureCount = 2;
+    const GLubyte StructureCount = 8;
 
 
     using namespace Blocks;
@@ -26,8 +26,8 @@ namespace Structures{
             AIR, AIR, LOG_OAK,  AIR,  AIR,//  V
             AIR, AIR, AIR,      AIR,  AIR,//  
             AIR, AIR, AIR,      AIR,  AIR,//  +X      |    
-            //--> +Z                                        |
-                                                        //  |
+            //--> +Z                                  |
+                                                  //  |
             AIR, AIR, AIR,      AIR,  AIR,        //  V
             AIR, AIR, AIR,      AIR,  AIR,    
             AIR, AIR, LOG_OAK,  AIR,  AIR,        //  +Y
@@ -129,7 +129,16 @@ namespace Structures{
             AIR, AIR,  AIR,  AIR,  AIR,  SAND, AIR,  AIR,  SAND, AIR,  AIR,  AIR,  AIR,  AIR,  AIR,  AIR,
             AIR, AIR,  AIR,  AIR,  AIR,  AIR,  SAND, SAND, AIR,  AIR,  AIR,  AIR,  AIR,  AIR,  AIR,  AIR,
             AIR, AIR,  AIR,  AIR,  AIR,  AIR,  AIR,  AIR,  AIR,  AIR,  AIR,  AIR,  AIR,  AIR,  AIR,  AIR,
-        }
+        },
+
+        //basics
+
+        {
+            TALL_GRASS_BOTTOM,
+            TALL_GRASS_TOP
+        },
+        
+        {SHORT_GRASS}, {ROSE}, {TULIP_WHITE}, {TULIP_ORANGE}, {TULIP_PINK}
 
 
     };
@@ -150,7 +159,7 @@ namespace Structures{
            false, false, false, false, false,// 
            false, false, false, false, false,//  +X      |   
            //--> +Z                                      |
-                                                    //   |
+                                                     //  |
            false, false, false, false, false,        //  V
            false, false, false, false, false,   
            false, false, true,  false, false,        // +Y
@@ -259,7 +268,16 @@ namespace Structures{
             false, false, false, false, false, false, true,  true,  false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
-        }
+        },
+
+        //basics
+
+        {
+            true,
+            true
+        },
+
+        {true}, {true}, {true}, {true}, {true}
 
 
     };
@@ -268,7 +286,10 @@ namespace Structures{
      * @brief The const list of all implemented structures that do require the ability to selectivly delete blocks.
      */
     const Structure Structs[StructureCount]={
-        Structure(5, 7, 5, StructsData[0].data(), StructsForcedArr[0]), Structure(16, 4, 16, StructsData[1].data(), StructsForcedArr[1])
+        Structure(5, 7, 5, StructsData[0].data(), StructsForcedArr[0]), Structure(16, 4, 16, StructsData[1].data(), StructsForcedArr[1]),
+        Structure(1, 2, 1, StructsData[2].data(), StructsForcedArr[2]), Structure(1, 1, 1, StructsData[3].data(), StructsForcedArr[3]),
+        Structure(1, 1, 1, StructsData[4].data(), StructsForcedArr[4]), Structure(1, 1, 1, StructsData[5].data(), StructsForcedArr[5]),
+        Structure(1, 1, 1, StructsData[6].data(), StructsForcedArr[6]), Structure(1, 1, 1, StructsData[7].data(), StructsForcedArr[7])
     };
 
     /**
@@ -276,6 +297,12 @@ namespace Structures{
      */
     enum STRUCT_ASSETS : unsigned char{
         OAK_TREE = 0,
-        POND = 1
+        POND = 1,
+        TALL_GRASS = 2,
+        SHORT_GRASS_STRUCT = 3,
+        ROSE_STRUCT = 4,
+        TULIP_WHITE_STRUCT = 5,
+        TULIP_ORANGE_STRUCT = 6,
+        TULIP_PINK_STRUCT = 7
     };
 };

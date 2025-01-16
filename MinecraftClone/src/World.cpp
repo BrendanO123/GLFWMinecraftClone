@@ -5,8 +5,21 @@
 
 World* World :: world = nullptr;
 //costructor: store shader
-World :: World(Shader* shader, int render) : shader(shader), renderDistance(render){
+World :: World(Shader* shader, int render, int seed) : shader(shader), fractal(noise :: Fractal(seed)), renderDistance(render){
     updateThread = std :: thread(&World :: threadUpdate, this);
+    fractal.settings.settings[noise :: TREE_MAP].gain = 0.95f;
+    fractal.settings.settings[noise :: TREE_MAP].octaves = 5;
+    fractal.settings.settings[noise :: TREE_MAP].frequency = 32/1.09617844793f;
+    fractal.noise.calcFracBounding(fractal.settings.settings[noise :: TREE_MAP]);
+
+    fractal.settings.settings[noise :: GRASS_MAP].gain = 0.9f;
+    fractal.settings.settings[noise :: GRASS_MAP].octaves = 5;
+    fractal.settings.settings[noise :: GRASS_MAP].frequency = 25/1.09617844793f;
+    fractal.noise.calcFracBounding(fractal.settings.settings[noise :: GRASS_MAP]);
+
+    fractal.settings.settings[noise :: EROSION_MAP].octaves = 6;
+    fractal.settings.settings[noise :: EROSION_MAP].gain = 0.6f;
+    fractal.noise.calcFracBounding(fractal.settings.settings[noise :: EROSION_MAP]);
 }
 
 //destructor
@@ -140,6 +153,7 @@ void World :: threadUpdate(){
                 //center
                 if(chunkData.find(chunkTuple)==chunkData.end()){
                     mute.unlock();
+                    
 
                     ChunkData* newChunkData = new ChunkData();
                     WorldGen :: getChunkBasics(next.x, next.y, 16, newChunkData, fractal);

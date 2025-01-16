@@ -115,6 +115,32 @@ int main(){
 
 
     /** TODO:
+     * c++:
+     * png writing for temp and rainfall maps
+     *      could always also do biome maps if needed
+     * 
+     * minecraft:
+     * oceans / lakes
+     *      create threshold for sand instead of grass and dirt
+     *      create lower threshold for water instead of air
+     * trees and foliage
+     *      make tall grass a structure
+     *      perlin layer -> % chance grass becomes flower
+     *      perlin layer -> flower type threshold
+     *      FBM skip a few layers -> tree placement threshold
+     * 
+     * math:
+     * rainfall math
+     *      distance to ocean and rainshadow dot product math
+     * temperature math
+     *      perlin noise, z cord, rainfall * constant
+     * terrain math:
+     *      continental controls midline and amplitude
+     *      errosion controls gain
+     *      at a set layer, anaylize derrizative and recalc gain
+     * 
+     * 
+     * old but useful todo list:
      * fix transparent textures
      * add way more block types and sprites
      * add f3 screen and png writing for underlying maps
@@ -169,7 +195,15 @@ int main(){
     int chunkRenderDist = 12;
     float renderDist = int(chunkRenderDist*16*1.6 + 0.5f);
 
-    World :: world = new World(&shader, chunkRenderDist);
+
+    int seed = (int)time(0);
+    srand(seed); 
+
+    int i = (rand() & 15) + 1;
+    for(int j = 0; j<i; j++){rand();}
+
+    World :: world = new World(&shader, chunkRenderDist, rand());
+
 
     glm ::mat4 view = glm :: identity<glm :: mat4>();
     glm ::mat4 projection = glm :: identity<glm :: mat4>();
