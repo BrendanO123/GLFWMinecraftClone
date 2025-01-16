@@ -20,27 +20,32 @@ struct Vertex
 {
     GLubyte texPosX, texPosY;
     GLbyte posX, posY, posZ;
+    GLubyte NormalSelector;
 
-    Vertex(glm :: vec3 Pos, glm :: vec2 TexPos){
-        posX = (char)int(Pos.x); 
-        posY=(char)int(Pos.y); 
-        posZ=(char)int(Pos.z); 
-        texPosX = (unsigned char)TexPos.x;
-        texPosY = (unsigned char)TexPos.y;
-    }
-    Vertex(glm :: vec3 Pos, GLubyte texX, GLubyte texY){
-        posX = (char)int(Pos.x); 
-        posY=(char)int(Pos.y); 
-        posZ=(char)int(Pos.z); 
-        texPosX = texX; 
-        texPosY = texY;
-    }
-    Vertex(GLbyte x, GLbyte y, GLbyte z, glm :: vec2 TexPos){
-        posX=x; posY=y; posZ=z; 
-        texPosX = (unsigned char)TexPos.x; texPosY = (unsigned char)TexPos.y;
-    }
-    Vertex(GLbyte x, GLbyte y, GLbyte z, GLubyte texX, GLubyte texY){posX=x; posY=y; posZ=z; texPosX = texX; texPosY = texY;}
-    Vertex(){posX = 0; posY = 0; posZ = 0; texPosX = 0; texPosY = 0;}
+    Vertex(glm :: vec3 Pos, glm :: vec2 TexPos, GLubyte Normal) : 
+        texPosX((unsigned char)TexPos.x), texPosY((unsigned char)TexPos.y),
+        posX((unsigned char)Pos.x), posY((unsigned char)Pos.y), posZ((unsigned char)Pos.z),
+        NormalSelector(Normal){}
+
+    Vertex(glm :: vec3 Pos, GLubyte texX, GLubyte texY, GLubyte Normal) : 
+        texPosX((unsigned char)texX), texPosY((unsigned char)texY),
+        posX((unsigned char)Pos.x), posY((unsigned char)Pos.y), posZ((unsigned char)Pos.z),
+        NormalSelector(Normal){}
+        
+    Vertex(GLbyte x, GLbyte y, GLbyte z, glm :: vec2 TexPos, GLubyte Normal) : 
+        texPosX((unsigned char)TexPos.x), texPosY((unsigned char)TexPos.y),
+        posX((unsigned char)x), posY((unsigned char)y), posZ((unsigned char)z),
+        NormalSelector(Normal){}
+        
+    Vertex(GLbyte x, GLbyte y, GLbyte z, GLubyte texX, GLubyte texY, GLubyte Normal) : 
+        texPosX((unsigned char)texX), texPosY((unsigned char)texY),
+        posX((unsigned char)x), posY((unsigned char)y), posZ((unsigned char)z),
+        NormalSelector(Normal){}
+        
+    Vertex(GLubyte Normal) : 
+        texPosX(0), texPosY(0),
+        posX(0), posY(0), posZ(0),
+        NormalSelector(Normal){}
 };
 
 /**
@@ -50,10 +55,17 @@ struct BillboardVertex
 {
     glm :: vec3 pos;
     GLubyte texPosX, texPosY;
+    GLubyte NormalSelector = 4;
 
-    BillboardVertex(glm :: vec3 Pos, glm :: vec2 TexPos){pos=Pos; texPosX = (unsigned char)TexPos.x; texPosY = (unsigned char)TexPos.y;}
-    BillboardVertex(glm :: vec3 Pos, GLubyte texX, GLubyte texY){pos=Pos; texPosX = texX; texPosY = texY;}
-    BillboardVertex(){pos= glm ::vec3(1); texPosX = 0; texPosY = 0;}
+    BillboardVertex(glm :: vec3 Pos, glm :: vec2 TexPos) : 
+    pos(Pos), 
+    texPosX((unsigned char)TexPos.x), texPosY((unsigned char)TexPos.y){}
+
+    BillboardVertex(glm :: vec3 Pos, GLubyte texX, GLubyte texY) : 
+    pos(Pos), 
+    texPosX((unsigned char)texX), texPosY((unsigned char)texY){}
+
+    BillboardVertex() : pos(glm :: vec3(1)), texPosX(0), texPosY(0){}
 };
 
 /**
