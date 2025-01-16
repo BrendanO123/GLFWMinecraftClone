@@ -17,4 +17,4 @@ This project is still in early development. It may contain bugs, crashes, or eve
 
 #### Controls
 
-This project closely resembles Minecraft™ spectator mode so the controls are quite simple: Use WASD, Space, and Left Shift to move around, Right Shift to sprint, scroll to zoom, and press V to reset the zoom. Additionally, Escape pauses the game and releases the mouse and Shift + Escape closes the game. 
+This project closely resembles Minecraft spectator mode so the controls are quite simple: Use WASD, Space, and Left Shift to move around, Right Shift to sprint, scroll to zoom, and press V to reset the zoom. Additionally, Escape pauses the game and releases the mouse and Shift + Escape closes the game. 
