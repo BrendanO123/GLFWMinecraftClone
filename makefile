@@ -53,6 +53,9 @@ $(OBJ_PATH)%.o : $(SRC_PATH)%.cpp $(SRC_PATH)%.h
 $(GL_OBJ) : $(GL_SRC)
 	@$(CC) $(CXXFLAGS) -c -o $@ $< -I$(INCLUDE)
 
+build:
+	@make -s
+	@rm -f $(OBJS)
 
 #recompile .out if neccessary and run
 run:
@@ -67,31 +70,7 @@ clean:
 	@echo "CLEANED"
 
 #clean .out file
-clean_exc:
+delete_exc:
 	@rm -f $(TARGET)
 	@rm -rf $(TARGET).dSYM
 	@echo "CLEANED EXECUTABLE"
-
-
-
-#extra makefile code for the vulkan testing.
-
-#I am thinking I will not port to Vulkan just yet, so I will likely put the Vulkan Code into its own repository soon.
-#Once it is seperated from this project I will clean out this code.
-#I might get around to properly port to Vulkan after my science fair in January.
-runV:
-	@make makeVulk -s
-	@DYLD_LIBRARY_PATH=Dependencies/lib    VK_ICD_FILENAMES=Dependencies/Vulkan/share/vulkan/icd.d/MoltenVK_icd.json    VK_LAYER_PATH=Dependencies/Vulkan/share/vulkan/explicit_layer.d    ./VulkanBuild.out
-
-cleanVulk:
-	@rm -f VulkanBuild.out $(OBJ_PATH)VKApplication.o
-	@rm -rf VulkanBuild.out.dSYM
-	@echo "CLEANED VULKAN"
-
-makeVulk : VulkanBuild.out
-VulkanBuild.out : $(OBJ_PATH)VKApplication.o
-	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -o $@ $< -I$(INCLUDE) -IDependencies/Vulkan/include -lglfw3 -lvulkan.1 -lvulkan.1.3.296 -lMoltenVK -lSDL2 -lSDL2main -framework Cocoa -framework IOKit -L$(LIB_PATH)
-	@echo "RECOMPILED VULKAN"
-
-$(OBJ_PATH)VKApplication.o : $(SRC_PATH)VulkanMainTesting/VKApplication.cpp $(SRC_PATH)VulkanMainTesting/VKApplication.h
-	@@$(CXX) $(CXXFLAGS) $(CPPVERSION) -c -o $@ $< -I$(INCLUDE) -IDependencies/Vulkan/include
