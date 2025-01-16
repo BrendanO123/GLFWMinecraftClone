@@ -8,7 +8,7 @@ World* World :: world = nullptr;
 World :: World(Shader* shader, int render, int seed) : shader(shader), fractal(noise :: Fractal(seed)), renderDistance(render){
     updateThread = std :: thread(&World :: threadUpdate, this);
     fractal.settings.settings[noise :: TREE_MAP].gain = 0.95f;
-    fractal.settings.settings[noise :: TREE_MAP].octaves = 5;
+    fractal.settings.settings[noise :: TREE_MAP].octaves = 4;
     fractal.settings.settings[noise :: TREE_MAP].frequency = 32/1.09617844793f;
     fractal.noise.calcFracBounding(fractal.settings.settings[noise :: TREE_MAP]);
 
@@ -18,7 +18,7 @@ World :: World(Shader* shader, int render, int seed) : shader(shader), fractal(n
     fractal.noise.calcFracBounding(fractal.settings.settings[noise :: GRASS_MAP]);
 
     fractal.settings.settings[noise :: EROSION_MAP].octaves = 6;
-    fractal.settings.settings[noise :: EROSION_MAP].gain = 0.6f;
+    fractal.settings.settings[noise :: EROSION_MAP].gain = 0.75f;
     fractal.noise.calcFracBounding(fractal.settings.settings[noise :: EROSION_MAP]);
 }
 

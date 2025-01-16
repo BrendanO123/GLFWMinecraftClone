@@ -119,16 +119,6 @@ int main(){
      * png writing for temp and rainfall maps
      *      could always also do biome maps if needed
      * 
-     * minecraft:
-     * oceans / lakes
-     *      create threshold for sand instead of grass and dirt
-     *      create lower threshold for water instead of air
-     * trees and foliage
-     *      make tall grass a structure
-     *      perlin layer -> % chance grass becomes flower
-     *      perlin layer -> flower type threshold
-     *      FBM skip a few layers -> tree placement threshold
-     * 
      * math:
      * rainfall math
      *      distance to ocean and rainshadow dot product math

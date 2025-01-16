@@ -42,7 +42,7 @@ namespace noise{
         unsigned char noiseType = noiseTypes :: PERLIN;
         unsigned char fractalType = fractalTypes :: NONE;
         
-        float frequency = 1.0f/100;
+        float frequency = 7.f/1000;
         float gain = 0.5f;
         float lacunarity = 2.0f;
 
@@ -58,21 +58,20 @@ namespace noise{
          frequency(f), gain(g), lacunarity(l), octaves(o), fractalBounding(bounding){}
     };
 
-    const unsigned char mapCount = 7;
+    const unsigned char mapCount = 6;
     enum noiseSettings : unsigned char{
         TEMP_NOISE = 0,
         RAIN_NOISE = 1,
         EROSION_MAP = 2,
         CONTINENTAL_MAP = 3,
-        STRUCT_MAP = 4,
-        GRASS_MAP = 5,
-        TREE_MAP = 6
+        GRASS_MAP = 4,
+        TREE_MAP = 5
     };
     struct NoiseTotalSettings{
         int terrainSeed = 1337;
-        float terrainFrequency = 0.01f;
+        float terrainFrequency = 0.007f;
         NoiseMapSettings settings[mapCount] = 
-        {NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings()};
+        {NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings()};
 
         NoiseTotalSettings(int seed){
             for(int i = 0; i < mapCount; i++){

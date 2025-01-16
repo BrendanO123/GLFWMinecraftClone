@@ -261,7 +261,7 @@ glm :: u8vec2 Fractal :: getTerrain(glm :: ivec2 pos, glm :: vec3 erosion, glm :
     noise.calcFracBounding(set);
 
     unsigned char height = (unsigned char) (FBM(pos, set).x * (amplitudeFactorErosion(erosion.x) * amplitudeFactorContinental(continental.x) * (worldAmplitude / 6.f)) + midline);*/
-    unsigned char height = (unsigned char)(int((SCurve(erosion.x * 0.5f + 0.5f) * 2.f - 1.f) * worldAmplitude)+63);
+    unsigned char height = (unsigned char)(int((SCurve(erosion.x * 0.5f + 0.5f) * 2.f) * worldAmplitude) + 5);
     return 
     glm :: u8vec2(
         height, 
