@@ -51,8 +51,8 @@ void Chunk :: genChunkMesh(){
                         if(block.flagByte & BILLBOARD_BIT){
 
                             //positive front
-                            billboardVerticies.emplace_back(glm :: vec3(x+0.14645f, y, -0.85355f-z), block.sideLowX, block.sideLowY);
-                            billboardVerticies.emplace_back(glm :: vec3(x+0.85355f, y, -0.14645f-z), block.sideHighX, block.sideLowY);
+                            billboardVerticies.emplace_back(glm :: vec3(x+0.14645f, y,   -0.85355f-z), block.sideLowX, block.sideLowY);
+                            billboardVerticies.emplace_back(glm :: vec3(x+0.85355f, y,   -0.14645f-z), block.sideHighX, block.sideLowY);
                             billboardVerticies.emplace_back(glm :: vec3(x+0.14645f, y+1, -0.85355f-z), block.sideLowX, block.sideHighY);
                             billboardVerticies.emplace_back(glm :: vec3(x+0.85355f, y+1, -0.14645f-z), block.sideHighX, block.sideHighY);
 
@@ -61,8 +61,8 @@ void Chunk :: genChunkMesh(){
                             BoardVOff+=4;
 
                             //negative front
-                            billboardVerticies.emplace_back(glm :: vec3(x+0.14645f, y, -0.14645f-z), block.sideLowX, block.sideLowY);
-                            billboardVerticies.emplace_back(glm :: vec3(x+0.85355f, y, -0.85355f-z), block.sideHighX, block.sideLowY);
+                            billboardVerticies.emplace_back(glm :: vec3(x+0.14645f, y,   -0.14645f-z), block.sideLowX, block.sideLowY);
+                            billboardVerticies.emplace_back(glm :: vec3(x+0.85355f, y,   -0.85355f-z), block.sideHighX, block.sideLowY);
                             billboardVerticies.emplace_back(glm :: vec3(x+0.14645f, y+1, -0.14645f-z), block.sideLowX, block.sideHighY);
                             billboardVerticies.emplace_back(glm :: vec3(x+0.85355f, y+1, -0.85355f-z), block.sideHighX, block.sideHighY);
 
@@ -86,20 +86,20 @@ void Chunk :: genChunkMesh(){
 
                             if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || (((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0) && (adjacentType!=type))){
                                 if(transL){
-                                    translucentVerticies.emplace_back(x, y, -z, block.sideLowX, block.sideLowY, 0);
-                                    translucentVerticies.emplace_back(x+1, y, -z, block.sideHighX, block.sideLowY, 0);
-                                    translucentVerticies.emplace_back(x, y+1, -z, block.sideLowX, block.sideHighY, 0);
-                                    translucentVerticies.emplace_back(x+1, y+1, -z, block.sideHighX, block.sideHighY, 0);
+                                    translucentVerticies.emplace_back(                   x, y,   -z, block.sideLowX, block.sideLowY, 0);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y,   -z, block.sideHighX, block.sideLowY, 0);
+                                    translucentVerticies.emplace_back(                   x, y+1, -z, block.sideLowX, block.sideHighY, 0);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y+1, -z, block.sideHighX, block.sideHighY, 0);
 
                                     translucentIndicies.push_back(transLVOff); translucentIndicies.push_back(transLVOff+2); translucentIndicies.push_back(transLVOff+1);
                                     translucentIndicies.push_back(transLVOff+3); translucentIndicies.push_back(transLVOff+1); translucentIndicies.push_back(transLVOff+2);
                                     transLVOff+=4;
                                 }
                                 else{
-                                    verticies.emplace_back(x, y, -z, block.sideLowX, block.sideLowY, 0);
-                                    verticies.emplace_back(x+1, y, -z, block.sideHighX, block.sideLowY, 0);
-                                    verticies.emplace_back(x, y+1, -z, block.sideLowX, block.sideHighY, 0);
-                                    verticies.emplace_back(x+1, y+1, -z, block.sideHighX, block.sideHighY, 0);
+                                    verticies.emplace_back(                   x, y,   -z, block.sideLowX, block.sideLowY, 0);
+                                    verticies.emplace_back((unsigned char)(x+1), y,   -z, block.sideHighX, block.sideLowY, 0);
+                                    verticies.emplace_back(                   x, y+1, -z, block.sideLowX, block.sideHighY, 0);
+                                    verticies.emplace_back((unsigned char)(x+1), y+1, -z, block.sideHighX, block.sideHighY, 0);
 
                                     indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
                                     indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
@@ -119,20 +119,20 @@ void Chunk :: genChunkMesh(){
 
                             if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || (((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0) && (adjacentType!=type))){
                                 if(transL){
-                                    translucentVerticies.emplace_back(x+1, y, -z, block.sideLowX, block.sideLowY, 2);
-                                    translucentVerticies.emplace_back(x+1, y, -z-1, block.sideHighX, block.sideLowY, 2);
-                                    translucentVerticies.emplace_back(x+1, y+1, -z, block.sideLowX, block.sideHighY, 2);
-                                    translucentVerticies.emplace_back(x+1, y+1, -z-1, block.sideHighX, block.sideHighY, 2);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y,   -z,                    block.sideLowX, block.sideLowY, 2);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y,   (unsigned char)(-z-1), block.sideHighX, block.sideLowY, 2);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y+1, -z,                    block.sideLowX, block.sideHighY, 2);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y+1, (unsigned char)(-z-1), block.sideHighX, block.sideHighY, 2);
 
                                     translucentIndicies.push_back(transLVOff); translucentIndicies.push_back(transLVOff+2); translucentIndicies.push_back(transLVOff+1);
                                     translucentIndicies.push_back(transLVOff+3); translucentIndicies.push_back(transLVOff+1); translucentIndicies.push_back(transLVOff+2);
                                     transLVOff+=4;
                                 }
                                 else{
-                                    verticies.emplace_back(x+1, y, -z, block.sideLowX, block.sideLowY, 2);
-                                    verticies.emplace_back(x+1, y, -z-1, block.sideHighX, block.sideLowY, 2);
-                                    verticies.emplace_back(x+1, y+1, -z, block.sideLowX, block.sideHighY, 2);
-                                    verticies.emplace_back(x+1, y+1, -z-1, block.sideHighX, block.sideHighY, 2);
+                                    verticies.emplace_back((unsigned char)(x+1), y,   -z,                    block.sideLowX, block.sideLowY, 2);
+                                    verticies.emplace_back((unsigned char)(x+1), y,   (unsigned char)(-z-1), block.sideHighX, block.sideLowY, 2);
+                                    verticies.emplace_back((unsigned char)(x+1), y+1, -z,                    block.sideLowX, block.sideHighY, 2);
+                                    verticies.emplace_back((unsigned char)(x+1), y+1, (unsigned char)(-z-1), block.sideHighX, block.sideHighY, 2);
 
                                     indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
                                     indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
@@ -152,20 +152,20 @@ void Chunk :: genChunkMesh(){
 
                             if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || (((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0) && (adjacentType!=type))){
                                 if(transL){
-                                    translucentVerticies.emplace_back(x+1, y, -z-1, block.sideLowX, block.sideLowY, 1);
-                                    translucentVerticies.emplace_back(x, y, -z-1, block.sideHighX, block.sideLowY, 1);
-                                    translucentVerticies.emplace_back(x+1, y+1, -z-1, block.sideLowX, block.sideHighY, 1);
-                                    translucentVerticies.emplace_back(x, y+1, -z-1, block.sideHighX, block.sideHighY, 1);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y,   (unsigned char)(-z-1), block.sideLowX, block.sideLowY, 1);
+                                    translucentVerticies.emplace_back(                   x, y,   (unsigned char)(-z-1), block.sideHighX, block.sideLowY, 1);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y+1, (unsigned char)(-z-1), block.sideLowX, block.sideHighY, 1);
+                                    translucentVerticies.emplace_back(                   x, y+1, (unsigned char)(-z-1), block.sideHighX, block.sideHighY, 1);
 
                                     translucentIndicies.push_back(transLVOff); translucentIndicies.push_back(transLVOff+2); translucentIndicies.push_back(transLVOff+1);
                                     translucentIndicies.push_back(transLVOff+3); translucentIndicies.push_back(transLVOff+1); translucentIndicies.push_back(transLVOff+2);
                                     transLVOff+=4;
                                 }
                                 else{
-                                    verticies.emplace_back(x+1, y, -z-1, block.sideLowX, block.sideLowY, 1);
-                                    verticies.emplace_back(x, y, -z-1, block.sideHighX, block.sideLowY, 1);
-                                    verticies.emplace_back(x+1, y+1, -z-1, block.sideLowX, block.sideHighY, 1);
-                                    verticies.emplace_back(x, y+1, -z-1, block.sideHighX, block.sideHighY, 1);
+                                    verticies.emplace_back((unsigned char)(x+1), y,   (unsigned char)(-z-1), block.sideLowX, block.sideLowY, 1);
+                                    verticies.emplace_back(                   x, y,   (unsigned char)(-z-1), block.sideHighX, block.sideLowY, 1);
+                                    verticies.emplace_back((unsigned char)(x+1), y+1, (unsigned char)(-z-1), block.sideLowX, block.sideHighY, 1);
+                                    verticies.emplace_back(                   x, y+1, (unsigned char)(-z-1), block.sideHighX, block.sideHighY, 1);
 
                                     indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
                                     indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
@@ -185,20 +185,20 @@ void Chunk :: genChunkMesh(){
 
                             if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || (((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0) && (adjacentType!=type))){
                                 if(transL){
-                                    translucentVerticies.emplace_back(x, y, -z-1, block.sideLowX, block.sideLowY, 3);
-                                    translucentVerticies.emplace_back(x, y, -z, block.sideHighX, block.sideLowY, 3);
-                                    translucentVerticies.emplace_back(x, y+1, -z-1, block.sideLowX, block.sideHighY, 3);
-                                    translucentVerticies.emplace_back(x, y+1, -z, block.sideHighX, block.sideHighY, 3);
+                                    translucentVerticies.emplace_back(                    x, y,   (unsigned char)(-z-1), block.sideLowX, block.sideLowY, 3);
+                                    translucentVerticies.emplace_back(                    x, y,   -z,                    block.sideHighX, block.sideLowY, 3);
+                                    translucentVerticies.emplace_back(                    x, y+1, (unsigned char)(-z-1), block.sideLowX, block.sideHighY, 3);
+                                    translucentVerticies.emplace_back(                    x, y+1, -z,                    block.sideHighX, block.sideHighY, 3);
 
                                     translucentIndicies.push_back(transLVOff); translucentIndicies.push_back(transLVOff+2); translucentIndicies.push_back(transLVOff+1);
                                     translucentIndicies.push_back(transLVOff+3); translucentIndicies.push_back(transLVOff+1); translucentIndicies.push_back(transLVOff+2);
                                     transLVOff+=4;
                                 }
                                 else{
-                                    verticies.emplace_back(x, y, -z-1, block.sideLowX, block.sideLowY, 3);
-                                    verticies.emplace_back(x, y, -z, block.sideHighX, block.sideLowY, 3);
-                                    verticies.emplace_back(x, y+1, -z-1, block.sideLowX, block.sideHighY, 3);
-                                    verticies.emplace_back(x, y+1, -z, block.sideHighX, block.sideHighY, 3);
+                                    verticies.emplace_back(                   x, y,   (unsigned char)(-z-1), block.sideLowX, block.sideLowY, 3);
+                                    verticies.emplace_back(                   x, y,   -z,                    block.sideHighX, block.sideLowY, 3);
+                                    verticies.emplace_back(                   x, y+1, (unsigned char)(-z-1), block.sideLowX, block.sideHighY, 3);
+                                    verticies.emplace_back(                   x, y+1, -z,                    block.sideHighX, block.sideHighY, 3);
 
                                     indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
                                     indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
@@ -224,20 +224,20 @@ void Chunk :: genChunkMesh(){
 
                             if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || (((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0) && (adjacentType!=type))){
                                 if(transL){
-                                    translucentVerticies.emplace_back(x, y+1, -z, block.topLowX, block.topLowY, 4);
-                                    translucentVerticies.emplace_back(x+1, y+1, -z, block.topHighX, block.topLowY, 4);
-                                    translucentVerticies.emplace_back(x, y+1, -z-1, block.topLowX, block.topHighY, 4);
-                                    translucentVerticies.emplace_back(x+1, y+1, -z-1, block.topHighX, block.topHighY, 4);
+                                    translucentVerticies.emplace_back(                   x, y+1, -z,                    block.topLowX, block.topLowY, 4);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y+1, -z,                    block.topHighX, block.topLowY, 4);
+                                    translucentVerticies.emplace_back(                   x, y+1, (unsigned char)(-z-1), block.topLowX, block.topHighY, 4);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y+1, (unsigned char)(-z-1), block.topHighX, block.topHighY, 4);
 
                                     translucentIndicies.push_back(transLVOff); translucentIndicies.push_back(transLVOff+2); translucentIndicies.push_back(transLVOff+1);
                                     translucentIndicies.push_back(transLVOff+3); translucentIndicies.push_back(transLVOff+1); translucentIndicies.push_back(transLVOff+2);
                                     transLVOff+=4;
                                 }
                                 else{
-                                    verticies.emplace_back(x, y+1, -z, block.topLowX, block.topLowY, 4);
-                                    verticies.emplace_back(x+1, y+1, -z, block.topHighX, block.topLowY, 4);
-                                    verticies.emplace_back(x, y+1, -z-1, block.topLowX, block.topHighY, 4);
-                                    verticies.emplace_back(x+1, y+1, -z-1, block.topHighX, block.topHighY, 4);
+                                    verticies.emplace_back(                   x, y+1, -z,                    block.topLowX, block.topLowY, 4);
+                                    verticies.emplace_back((unsigned char)(x+1), y+1, -z,                    block.topHighX, block.topLowY, 4);
+                                    verticies.emplace_back(                   x, y+1, (unsigned char)(-z-1), block.topLowX, block.topHighY, 4);
+                                    verticies.emplace_back((unsigned char)(x+1), y+1, (unsigned char)(-z-1), block.topHighX, block.topHighY, 4);
 
                                     indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
                                     indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
@@ -263,20 +263,20 @@ void Chunk :: genChunkMesh(){
 
                             if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || (((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0) && (adjacentType!=type))){
                                 if(transL){
-                                    translucentVerticies.emplace_back(x, y, -z-1, block.bottomLowX, block.bottomLowY, 5);
-                                    translucentVerticies.emplace_back(x+1, y, -z-1, block.bottomHighX, block.bottomLowY, 5);
-                                    translucentVerticies.emplace_back(x, y, -z, block.bottomLowX, block.bottomHighY, 5);
-                                    translucentVerticies.emplace_back(x+1, y, -z, block.bottomHighX, block.bottomHighY, 5);
+                                    translucentVerticies.emplace_back(                    x, y,   (unsigned char)(-z-1), block.bottomLowX, block.bottomLowY, 5);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y,   (unsigned char)(-z-1), block.bottomHighX, block.bottomLowY, 5);
+                                    translucentVerticies.emplace_back(                    x, y,   -z,                      block.bottomLowX, block.bottomHighY, 5);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y,   -z,                   block.bottomHighX, block.bottomHighY, 5);
 
                                     translucentIndicies.push_back(transLVOff); translucentIndicies.push_back(transLVOff+2); translucentIndicies.push_back(transLVOff+1);
                                     translucentIndicies.push_back(transLVOff+3); translucentIndicies.push_back(transLVOff+1); translucentIndicies.push_back(transLVOff+2);
                                     transLVOff+=4;
                                 }
                                 else{
-                                    verticies.emplace_back(x, y, -z-1, block.bottomLowX, block.bottomLowY, 5);
-                                    verticies.emplace_back(x+1, y, -z-1, block.bottomHighX, block.bottomLowY, 5);
-                                    verticies.emplace_back(x, y, -z, block.bottomLowX, block.bottomHighY, 5);
-                                    verticies.emplace_back(x+1, y, -z, block.bottomHighX, block.bottomHighY, 5);
+                                    verticies.emplace_back(                   x, y,   (unsigned char)(-z-1), block.bottomLowX, block.bottomLowY, 5);
+                                    verticies.emplace_back((unsigned char)(x+1), y,   (unsigned char)(-z-1), block.bottomHighX, block.bottomLowY, 5);
+                                    verticies.emplace_back(                   x, y,   -z,                      block.bottomLowX, block.bottomHighY, 5);
+                                    verticies.emplace_back((unsigned char)(x+1), y,   -z,                      block.bottomHighX, block.bottomHighY, 5);
 
                                     indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
                                     indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
@@ -308,15 +308,26 @@ void Chunk :: render(Shader shader){
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBONorm);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicies.size() * sizeof(GLuint), indicies.data(), GL_STATIC_DRAW);
 
+
         GLuint posLoc = glGetAttribLocation(shader.program, "vPos");
+        GLuint heightLoc = glGetAttribLocation(shader.program, "height");
         GLuint vtexPos_location = glGetAttribLocation(shader.program, "vtexPos");
-        GLuint vNormalPos = glGetAttribLocation(shader.program, "normal");
+        GLuint vNormalLoc = glGetAttribLocation(shader.program, "normal");
+
+
         glEnableVertexAttribArray(vtexPos_location);
         glVertexAttribPointer(vtexPos_location, 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, texPosX)));
+
         glEnableVertexAttribArray(posLoc);
-        glVertexAttribPointer(posLoc, 3, GL_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, posX)));
-        glEnableVertexAttribArray(vNormalPos);
-        glVertexAttribPointer(vNormalPos, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, NormalSelector)));
+        glVertexAttribPointer(posLoc, 2, GL_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, posX)));
+
+        glEnableVertexAttribArray(heightLoc);
+        glVertexAttribPointer(heightLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, posY)));
+
+        glEnableVertexAttribArray(vNormalLoc);
+        glVertexAttribPointer(vNormalLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, NormalSelector)));
+
+    
 
         glGenVertexArrays(1, &VAOBoard);
         glBindVertexArray(VAOBoard);
@@ -330,11 +341,17 @@ void Chunk :: render(Shader shader){
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, billboardIndicies.size() * sizeof(GLuint), billboardIndicies.data(), GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(posLoc);
-        glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(BillboardVertex), (void*)(offsetof(BillboardVertex, pos)));
+        glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, sizeof(BillboardVertex), (void*)(offsetof(BillboardVertex, pos)));
+
+        glEnableVertexAttribArray(heightLoc);
+        glVertexAttribPointer(heightLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(BillboardVertex), (void*) (offsetof(BillboardVertex, height)));
+
         glEnableVertexAttribArray(vtexPos_location);
         glVertexAttribPointer(vtexPos_location, 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(BillboardVertex), (void*)(offsetof(BillboardVertex, texPosX)));
-        glEnableVertexAttribArray(vNormalPos);
-        glVertexAttribPointer(vNormalPos, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(BillboardVertex), (void*) (offsetof(BillboardVertex, NormalSelector)));
+
+        glEnableVertexAttribArray(vNormalLoc);
+        glVertexAttribPointer(vNormalLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(BillboardVertex), (void*) (offsetof(BillboardVertex, NormalSelector)));
+
 
         modelMatLoc = glGetUniformLocation(shader.program, "model");
         flagByte |= ChunkFlags :: LAND_RENDERABLE;
@@ -367,13 +384,27 @@ void Chunk :: renderWater(Shader shader){
         glGenBuffers(1, &VBOTranslucent);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOTranslucent);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, translucentIndicies.size() * sizeof(GLuint), translucentIndicies.data(), GL_STATIC_DRAW);
+        
 
         GLuint posLoc = glGetAttribLocation(shader.program, "vPos");
+        GLuint heightLoc = glGetAttribLocation(shader.program, "height");
         GLuint vtexPos_location = glGetAttribLocation(shader.program, "vtexPos");
+        GLuint vNormalLoc = glGetAttribLocation(shader.program, "normal");
+
+
         glEnableVertexAttribArray(vtexPos_location);
         glVertexAttribPointer(vtexPos_location, 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, texPosX)));
+
         glEnableVertexAttribArray(posLoc);
-        glVertexAttribPointer(posLoc, 3, GL_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, posX)));
+        glVertexAttribPointer(posLoc, 2, GL_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, posX)));
+
+        glEnableVertexAttribArray(heightLoc);
+        glVertexAttribPointer(heightLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, posY)));
+
+        glEnableVertexAttribArray(vNormalLoc);
+        glVertexAttribPointer(vNormalLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, NormalSelector)));
+
+
         flagByte |= ChunkFlags :: WATER_RENDERABLE;
     }
 

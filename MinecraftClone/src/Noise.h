@@ -12,6 +12,7 @@ namespace noise{
             Noise(){};
 
             void calcFracBounding(NoiseMapSettings &set) const;
+            void calcFracBounding_HL_Noise(NoiseMapSettings &set) const;
 
             float SinglePerlin(int seed, float x, float y) const;
             glm :: vec3 analyticalPerlin(int seed, float x, float y) const;
@@ -58,6 +59,16 @@ namespace noise{
                 hash *= 0x27d4eb2d;
                 return hash;
             }
+            inline int GradHash(int seed, int xPrimed, int yPrimed) const{
+                int hash = seed ^ xPrimed ^ yPrimed;
+
+                hash *= 0x27d4eb2d;
+
+                hash ^= hash >> 15;
+                hash &= 255 << 1;
+
+                return hash;
+            }
             inline int Hash(int seed, int xPrimed, int yPrimed, int zPrimed) const
             {
                 int hash = seed ^ xPrimed ^ yPrimed ^ zPrimed;
@@ -79,7 +90,7 @@ namespace noise{
             {
                 int hash = Hash(seed, xPrimed, yPrimed);
                 hash ^= hash >> 15;
-                hash &= 127 << 1;
+                hash &= 255 << 1;
 
                 float xg = Gradients2D[hash];
                 float yg = Gradients2D[hash | 1];

@@ -10,21 +10,14 @@ namespace noise{
             NoiseTotalSettings settings;
             Noise noise = Noise();
 
-            static const unsigned char waterLevel = 40;
+            static const unsigned char waterLevel = 95;
             static const unsigned char sandLevel = waterLevel+2;
 
             Fractal(NoiseTotalSettings set) : settings(set){calcBoundings();};
-            Fractal(int seed) : settings(NoiseTotalSettings(seed)){
-                calcBoundings(); 
-                settings.settings[noise :: TREE_MAP].gain = 0.6f;
-                settings.settings[noise :: TREE_MAP].lacunarity = 2.5f;
-                settings.settings[noise :: TREE_MAP].octaves = 2;
-
-                settings.settings[noise :: GRASS_MAP].octaves = 3;
-            };
+            Fractal(int seed) : settings(NoiseTotalSettings(seed)){calcBoundings(); };
 
             NoiseReturnStruct getNoise(glm :: ivec2 pos) const;
-            glm :: vec3 FBM(glm :: ivec2 pos, NoiseMapSettings setting) const;
+            glm :: vec3 FBM(glm :: ivec2 pos, const NoiseMapSettings setting) const;
 
             void calcBoundings(){
                 for(int i = 0; i < noise :: mapCount; i++){
@@ -34,7 +27,7 @@ namespace noise{
 
         private:
 
-            glm :: u8vec2 getTerrain(glm :: ivec2 pos, glm :: vec3 erosion, glm :: vec3 continental) const;
+            glm :: u8vec2 getTerrain(glm :: ivec2 pos, float erosionS, glm :: vec3 continental) const;
 
 
             float midlineFactorErosion(float e) const;

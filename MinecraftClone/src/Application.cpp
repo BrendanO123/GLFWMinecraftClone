@@ -58,7 +58,7 @@ void processInput(GLFWwindow* window, float deltaTime=1.f){if(!menu){cam.process
 
 
 
-const string title = "To Be Minecraft Clone";
+const string title = "Minecraft Clone";
 
 int main(){
     glfwSetErrorCallback(error_callback);
@@ -187,6 +187,7 @@ int main(){
 
 
     int seed = (int)time(0);
+    seed = 1342;
     srand(seed); 
 
     int i = (rand() & 15) + 1;

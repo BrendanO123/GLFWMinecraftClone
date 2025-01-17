@@ -4,6 +4,7 @@
 #include "Structures.h"
 
 using namespace noise;
+inline float SCurve(float t) { return t * t * (3 - 2 * t); }
 
 NoiseReturnStruct Fractal :: getNoise(glm :: ivec2 pos) const{
     NoiseReturnStruct returnStruct = NoiseReturnStruct();
@@ -20,7 +21,15 @@ NoiseReturnStruct Fractal :: getNoise(glm :: ivec2 pos) const{
             erosion = FBM(glm :: ivec2(pos.x * dispatchSize + x, pos.y * dispatchSize + z), settings.settings[EROSION_MAP]);
             continental = FBM(glm :: ivec2(pos.x * dispatchSize + x, pos.y * dispatchSize + z), settings.settings[CONTINENTAL_MAP]);
 
-            terrain = getTerrain(glm :: ivec2(pos.x * dispatchSize + x, pos.y * dispatchSize + z), erosion, continental);
+            float erosionS = (noise.InterpQuintic(erosion.x * 0.5f + 0.5f));
+            float temp = noise.Lerp(
+                settings.settings[noise :: HIGH_NOISE].fractalBounding, 
+                settings.settings[noise :: LOW_NOISE].fractalBounding, 
+                erosionS
+            );
+            continental.y *= temp; continental.z *=temp;
+
+            terrain = getTerrain(glm :: ivec2(pos.x * dispatchSize + x, pos.y * dispatchSize + z), erosionS, continental);
             returnStruct.TerrainHeight[index]=terrain.x;
             returnStruct.surfaceType[index]=terrain.y;
 
@@ -60,7 +69,7 @@ glm :: vec3 Fractal :: genNoiseSingle(glm :: vec2 pos, int seed, bool includePar
     }
 }
 
-glm :: vec3 Fractal :: FBM(glm :: ivec2 Pos, NoiseMapSettings Settings) const{
+glm :: vec3 Fractal :: FBM(glm :: ivec2 Pos, const NoiseMapSettings Settings) const{
     int seed = Settings.seed;
     glm :: vec2 pos = glm :: vec2 (float(Pos.x + Settings.xOffset) * Settings.frequency, float(Pos.y + Settings.yOffset) * Settings.frequency);
 
@@ -83,18 +92,17 @@ glm :: vec3 Fractal :: FBM(glm :: ivec2 Pos, NoiseMapSettings Settings) const{
 
             return sum;
         default:
-            return genNoiseSingle(pos, seed, Settings.includePartials, Settings.noiseType);
+            return genNoiseSingle(pos, seed++, Settings.includePartials, Settings.noiseType);
     }
 }
 
 
 
 
-inline float SCurve(float t) { return t * t * (3 - 2 * t); }
 
 
 const float flowerChance = 1 - 0.3f;
-const float threshold = 0.65f;
+const float threshold = 0.52f;
 GLubyte Fractal :: getFoliage(glm :: ivec2 pos, GLubyte surfaceType, float rain, float temp) const{
     if(surfaceType != Blocks :: GRASS){return (unsigned char)(-1);}
     
@@ -102,8 +110,8 @@ GLubyte Fractal :: getFoliage(glm :: ivec2 pos, GLubyte surfaceType, float rain,
     float grassValue =/*(noise.ValCoord(settings.settings[noise :: GRASS_MAP].seed, pos.x * noise.PrimeX, pos.y * noise.PrimeY) + */FBM(glm :: ivec2(pos.x, pos.y), settings.settings[noise :: GRASS_MAP]).x/*/3)/(1+1/3.f)*/;
 
     if(treeValue >= threshold){return Structures :: OAK_TREE;}
-    else if(grassValue >= 0.6f){return Structures :: TALL_GRASS;}
-    else if(grassValue >= 0.25f){
+    else if(grassValue >= 0.4f){return Structures :: TALL_GRASS;}
+    else if(grassValue >= 0.125f){
         if(noise.ValCoord(settings.settings[noise :: GRASS_MAP].seed+1, pos.x * noise.PrimeX, pos.y * noise.PrimeY) >= flowerChance){
             switch(int(SCurve((noise.SinglePerlin(
                         settings.settings[noise :: GRASS_MAP].seed+
@@ -133,6 +141,29 @@ GLubyte Fractal :: getFoliage(glm :: ivec2 pos, GLubyte surfaceType, float rain,
 }
 
 
+//world amplitude
+const float worldAmplitude = 100;
+
+glm :: u8vec2 Fractal :: getTerrain(glm :: ivec2 pos, float erosionS, glm :: vec3 continental) const{
+
+    float high = (SCurve(FBM(pos, settings.settings[noise :: HIGH_NOISE]).x * 0.5f + 0.5f) * 2.f -1) + continental.x * settings.settings[noise :: HIGH_NOISE].fractalBounding;
+    float low = FBM(pos, settings.settings[noise :: LOW_NOISE]).x + continental.x * settings.settings[noise :: LOW_NOISE].fractalBounding;
+
+    unsigned char height = (unsigned char)(int((noise.Lerp(high, low, erosionS) + 1) * worldAmplitude) + 5);
+
+    return 
+    glm :: u8vec2(
+        height, 
+        (height <= sandLevel ? Blocks :: SAND : Blocks :: GRASS)
+    );
+}
+
+//TODO
+float Fractal :: getRain(glm :: ivec2 pos, glm :: vec3 erosion, glm :: vec3 continental) const{return 1.0f;}
+float Fractal :: getTemp(glm :: ivec2 pos, float rainfall) const{return 1.0f;}
+
+
+/*
 //e to midline variables
 const float eMidlineFactorMin = 0.7f;
 const float eMidlineFactorMax = 1.5f;
@@ -244,31 +275,4 @@ const float cToLGMinFactor = 0.6f;
 inline float Fractal :: detailFactorContinental(const float c) const{
     float C = noise.FastAbs(c);
     return (C >= cToLGBoundDist ? 1 : (1 - cToLGMinFactor) * SCurve(C / cToLGBoundDist) + cToLGMinFactor);
-}
-
-
-//world amplitude
-const float worldAmplitude = 40;
-
-glm :: u8vec2 Fractal :: getTerrain(glm :: ivec2 pos, glm :: vec3 erosion, glm :: vec3 continental) const{
-
-    /*unsigned char midline = (unsigned char)(int(midlineFactorErosion(erosion.x) * midlineFactorErosion(continental.x) * (worldAmplitude / 1.2f)) + 63);
-    float gain = detailToLFunc(detailFactorContinental(continental.x) * (erosion.x + 1) - 1);
-    float lacunarity = detailToGFunc(detailFactorContinental(continental.x) * (erosion.x + 1) - 1);
-    
-    
-    NoiseMapSettings set = NoiseMapSettings(settings.terrainSeed, false, noise :: PERLIN, noise :: FBM, settings.terrainFrequency, gain, lacunarity, 6, 1.0f);
-    noise.calcFracBounding(set);
-
-    unsigned char height = (unsigned char) (FBM(pos, set).x * (amplitudeFactorErosion(erosion.x) * amplitudeFactorContinental(continental.x) * (worldAmplitude / 6.f)) + midline);*/
-    unsigned char height = (unsigned char)(int((SCurve(erosion.x * 0.5f + 0.5f) * 2.f) * worldAmplitude) + 5);
-    return 
-    glm :: u8vec2(
-        height, 
-        (height <= sandLevel ? Blocks :: SAND : Blocks :: GRASS)
-    );
-}
-
-//TODO
-float Fractal :: getRain(glm :: ivec2 pos, glm :: vec3 erosion, glm :: vec3 continental) const{return 1.0f;}
-float Fractal :: getTemp(glm :: ivec2 pos, float rainfall) const{return 1.0f;}
+}*/

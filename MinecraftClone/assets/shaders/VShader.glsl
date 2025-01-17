@@ -7,7 +7,8 @@ uniform mat4 projection;
 uniform float blockMapW_blocks;
 uniform float blockMapH_blocks;
 
-in vec3 vPos;
+in vec2 vPos;
+in int height;
 in vec2 vtexPos;
 
 in int normal;
@@ -26,7 +27,7 @@ const vec3 normals[] = vec3[](
 
 
 void main(){
-    gl_Position = projection * view * model * vec4(vPos, 1.0);
+    gl_Position = projection * view * model * vec4(vPos.x, height, vPos.y, 1.0);
     TexCoord = vec2(vtexPos.x / blockMapW_blocks, vtexPos.y / blockMapH_blocks);
     
     Normal = normals[normal];

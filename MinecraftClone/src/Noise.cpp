@@ -3,6 +3,18 @@
 #include "Noise.h"
 
 using namespace noise;
+void Noise :: calcFracBounding_HL_Noise(NoiseMapSettings &set) const{
+    float gain = FastAbs(set.gain);
+    float amp = gain;
+    float ampFractal = 1.0f;
+    for (int i = 1; i < set.octaves; i++)
+    {
+        ampFractal += amp;
+        amp *= gain;
+    }
+    set.fractalBounding = 1 / (ampFractal + 1);
+}
+
 void Noise :: calcFracBounding(NoiseMapSettings &set) const{
     float gain = FastAbs(set.gain);
     float amp = gain;
@@ -67,10 +79,10 @@ glm :: vec3 Noise :: analyticalPerlin(int seed, float x, float y) const{
     int xi1 = xi + PrimeX; //Hashing for right two grad vectors
     int yi1 = yi + PrimeY; //Hashing for bottom two grad vectors
 
-    int hash = Hash(seed, xi, yi); glm :: vec2 g00 = glm :: vec2(Gradients2D[hash], Gradients2D[hash | 1]); //grad vec a (0, 0)
-    hash = Hash(seed, xi1, yi); glm :: vec2 g10 = glm :: vec2(Gradients2D[hash], Gradients2D[hash | 1]); //grad vec b (1, 0)
-    hash = Hash(seed, xi, yi1); glm :: vec2 g01 = glm :: vec2(Gradients2D[hash], Gradients2D[hash | 1]); //grad vec c (0, 1)
-    hash = Hash(seed, xi1, yi1); glm :: vec2 g11 = glm :: vec2(Gradients2D[hash], Gradients2D[hash | 1]); // grad vec d (1, 1)
+    int hash = GradHash(seed, xi, yi); glm :: vec2 g00 = glm :: vec2(Gradients2D[hash], Gradients2D[hash | 1]); //grad vec a (0, 0)
+    hash = GradHash(seed, xi1, yi); glm :: vec2 g10 = glm :: vec2(Gradients2D[hash], Gradients2D[hash | 1]); //grad vec b (1, 0)
+    hash = GradHash(seed, xi, yi1); glm :: vec2 g01 = glm :: vec2(Gradients2D[hash], Gradients2D[hash | 1]); //grad vec c (0, 1)
+    hash = GradHash(seed, xi1, yi1); glm :: vec2 g11 = glm :: vec2(Gradients2D[hash], Gradients2D[hash | 1]); // grad vec d (1, 1)
 
     float d_dx =    g00.x * (1 - xs - ys + (xs * ys)) + (xf0 * g00.x + yf0 * g00.y) * (dx * (ys - 1)) + //a
                     g10.x * (xs * (1 - ys)) + (xf_1 * g10.x + yf0 * g10.y) * (dx * (1 - ys)) + //b

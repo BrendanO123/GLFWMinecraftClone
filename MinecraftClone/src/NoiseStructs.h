@@ -40,7 +40,7 @@ namespace noise{
         int seed = 1337;
         bool includePartials = false;
         unsigned char noiseType = noiseTypes :: PERLIN;
-        unsigned char fractalType = fractalTypes :: NONE;
+        unsigned char fractalType = fractalTypes :: FBM;
         
         float frequency = 7.f/1000;
         float gain = 0.5f;
@@ -58,20 +58,20 @@ namespace noise{
          frequency(f), gain(g), lacunarity(l), octaves(o), fractalBounding(bounding){}
     };
 
-    const unsigned char mapCount = 6;
+    const unsigned char mapCount = 8;
     enum noiseSettings : unsigned char{
         TEMP_NOISE = 0,
         RAIN_NOISE = 1,
         EROSION_MAP = 2,
         CONTINENTAL_MAP = 3,
         GRASS_MAP = 4,
-        TREE_MAP = 5
+        TREE_MAP = 5,
+        LOW_NOISE = 6,
+        HIGH_NOISE = 7
     };
     struct NoiseTotalSettings{
-        int terrainSeed = 1337;
-        float terrainFrequency = 0.007f;
         NoiseMapSettings settings[mapCount] = 
-        {NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings()};
+        {NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings()};
 
         NoiseTotalSettings(int seed){
             for(int i = 0; i < mapCount; i++){
@@ -79,7 +79,6 @@ namespace noise{
                 settings[i].xOffset = (rand() & 1023) + 1;
                 settings[i].yOffset = (rand() & 1023) + 1;
             }
-            terrainSeed = rand(); 
         }
     };
 
