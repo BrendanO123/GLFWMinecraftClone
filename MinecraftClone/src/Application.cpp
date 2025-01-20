@@ -186,8 +186,11 @@ int main(){
     float renderDist = int(chunkRenderDist*16*1.6 + 0.5f);
 
 
+#ifdef SETSEED
+    int seed = 1342;
+#else
     int seed = (int)time(0);
-    //int seed = 1342;
+#endif
     srand(seed); 
 
     int i = (rand() & 15) + 1;

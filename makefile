@@ -6,6 +6,7 @@ CPPVERSION = -std=c++17
 
 #.out file name
 TARGET = build.out
+VERSION = .0.1
 
 #Framworks for .out file
 F = -framework
@@ -57,6 +58,27 @@ build:
 	@make -s
 	@rm -f $(OBJS)
 
+setSeed:
+	@rm -f $(OBJ_PATH)Application.o 
+	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -DSETSEED -c -o $(OBJ_PATH)Application.o $(SRC_PATH)Application.cpp -I$(INCLUDE)
+	@make -s
+	@cp $(TARGET) setSeed$(VERSION)
+
+randSeed: 
+	@rm -f $(OBJ_PATH)Application.o 
+	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -c -o $(OBJ_PATH)Application.o $(SRC_PATH)Application.cpp -I$(INCLUDE)
+	@make -s
+	@cp $(TARGET) randSeed$(VERSION)
+
+run_setSeed:
+	@make setSeed -s
+	@./setSeed$(VERSION)
+
+run_randSeed:
+	@make randSeed -s
+	@./randSeed$(VERSION)
+
+
 #recompile .out if neccessary and run
 run:
 	@make -s
@@ -66,11 +88,15 @@ run:
 #clean .o and .out files
 clean:
 	@rm -f $(TARGET) $(OBJS)
+	@rm -f randSeed$(VERSION)
+	@rm -f setSeed$(VERSION)
 	@rm -rf $(TARGET).dSYM
 	@echo "CLEANED"
 
 #clean .out file
 delete_exc:
 	@rm -f $(TARGET)
+	@rm -f randSeed$(VERSION)
+	@rm -f setSeed$(VERSION)
 	@rm -rf $(TARGET).dSYM
 	@echo "CLEANED EXECUTABLE"

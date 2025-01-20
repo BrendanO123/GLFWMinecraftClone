@@ -78,9 +78,6 @@ void WorldGen :: getChunkBasics(int x, int z, int chunkSize, ChunkData* chunkDat
         if(i < minHeight-3){
             if(fullStone){fillLayer(i, chunkSize, chunkData, Blocks :: STONE);}
         }
-        else if(i < noise :: Fractal :: waterLevel){
-            fillLayer(i, chunkSize, chunkData, Blocks :: WATER);
-        }
     }
 
     for(int iterX = 0; iterX < chunkSize; iterX++){
@@ -90,6 +87,9 @@ void WorldGen :: getChunkBasics(int x, int z, int chunkSize, ChunkData* chunkDat
                     chunkData->data.at(i).data[iterZ + (iterX<<4)] = Blocks :: STONE;
                 }
             }
+            for(int i = noiseValues.TerrainHeight[iterZ + int(iterX << 4)] - 3; i < noise :: Fractal :: waterLevel; i++){
+                    chunkData->data.at(i).data[iterZ + (iterX<<4)] = Blocks :: WATER;
+                }
 
             if(noiseValues.surfaceType[iterZ + int(iterX << 4)] == Blocks :: GRASS){
                 chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-3).data[iterZ + (iterX<<4)] = Blocks :: DIRT;
