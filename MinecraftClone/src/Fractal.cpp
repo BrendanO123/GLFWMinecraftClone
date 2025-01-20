@@ -102,35 +102,76 @@ glm :: vec3 Fractal :: FBM(glm :: ivec2 Pos, const NoiseMapSettings Settings) co
 
 
 const float flowerChance = 1 - 0.3f;
+const float flowerChanceTall = 1 - 0.35f;
 const float threshold = 0.52f;
 GLubyte Fractal :: getFoliage(glm :: ivec2 pos, GLubyte surfaceType, float rain, float temp) const{
     if(surfaceType != Blocks :: GRASS){return (unsigned char)(-1);}
     
-    float treeValue = /*(noise.GradCoord(settings.settings[noise :: TREE_MAP].seed, pos.x * noise.PrimeX, pos.y * noise.PrimeY) + */FBM(glm :: ivec2(pos.x, pos.y), settings.settings[noise :: TREE_MAP]).x/*/2)/(1+1.f/2)*/;
-    float grassValue =/*(noise.ValCoord(settings.settings[noise :: GRASS_MAP].seed, pos.x * noise.PrimeX, pos.y * noise.PrimeY) + */FBM(glm :: ivec2(pos.x, pos.y), settings.settings[noise :: GRASS_MAP]).x/*/3)/(1+1/3.f)*/;
+    float treeValue = FBM(glm :: ivec2(pos.x, pos.y), settings.settings[noise :: TREE_MAP]).x;
+    float grassValue = FBM(glm :: ivec2(pos.x, pos.y), settings.settings[noise :: GRASS_MAP]).x;
 
     if(treeValue >= threshold){return Structures :: OAK_TREE;}
-    else if(grassValue >= 0.4f){return Structures :: TALL_GRASS;}
+    else if(grassValue >= 0.4f){
+        if(noise.ValCoord(settings.settings[noise :: FLOWER_NOISE].seed+1, pos.x * noise.PrimeX, pos.y * noise.PrimeY) >= flowerChanceTall){
+            float value = noise.SinglePerlin(
+                        settings.settings[noise :: FLOWER_NOISE].seed + 2, 
+                        pos.x * settings.settings[noise :: FLOWER_NOISE].frequency, 
+                        pos.y * settings.settings[noise :: FLOWER_NOISE].frequency);
+            
+            if(value > 0.1450043f){
+                if(value > 0.341477f){
+                    return Structures :: TALL_GRASS;
+                }
+                return Structures :: LILAC;
+            }
+            else{
+                if(value > -0.00028687f){
+                    return Structures :: PEONY;
+                }
+                else{
+                    if(value > -0.14565087f){
+                        return Structures :: ROSEBUSH;
+                    }
+                    return Structures :: TALL_GRASS;
+                }
+            }
+        }
+        return Structures :: TALL_GRASS;
+    }
     else if(grassValue >= 0.125f){
-        if(noise.ValCoord(settings.settings[noise :: GRASS_MAP].seed+1, pos.x * noise.PrimeX, pos.y * noise.PrimeY) >= flowerChance){
-            switch(int(SCurve((noise.SinglePerlin(
-                        settings.settings[noise :: GRASS_MAP].seed+
-                            settings.settings[noise :: GRASS_MAP].octaves+
-                            1, 
-                        pos.x * settings.settings[noise :: GRASS_MAP].frequency / 2.5f, 
-                        pos.y * settings.settings[noise :: GRASS_MAP].frequency / 2.5f)
-                     + 1) / 2.0f) * 5)){
-                case 1:
-                    return Structures :: ROSE_STRUCT;
-                
-                case 2:
+        if(noise.ValCoord(settings.settings[noise :: FLOWER_NOISE].seed+1, pos.x * noise.PrimeX, pos.y * noise.PrimeY) >= flowerChance){
+            float value = noise.SinglePerlin(
+                        settings.settings[noise :: FLOWER_NOISE].seed + 2, 
+                        pos.x * settings.settings[noise :: FLOWER_NOISE].frequency, 
+                        pos.y * settings.settings[noise :: FLOWER_NOISE].frequency);
+            
+            if(value > -0.00028687f){
+                if(value > 0.2001854f){
+                    if(value > 0.341477f){
+                        return Structures :: BLUE_LILAC_STRUCT;
+                    }
+                    return Structures :: CORNFLOWER_STRUCT;
+                }
+                else{
+                    if(value > 0.094439f){
+                        return Structures :: ALLIUM_STRUCT;
+                    }
                     return Structures :: TULIP_PINK_STRUCT;
-
-                case 3:
+                }
+            }
+            else{
+                if(value > -0.2009057f){
+                    if(value > -0.0950426f){
+                        return Structures :: ROSE_STRUCT;
+                    }
                     return Structures :: TULIP_ORANGE_STRUCT;
-
-                default:
+                }
+                else{
+                    if(value > -0.34265f){
+                        return Structures :: DANDILION_STRUCT;
+                    }
                     return Structures :: TULIP_WHITE_STRUCT;
+                }
             }
         }
         return Structures :: SHORT_GRASS_STRUCT;
@@ -150,12 +191,9 @@ glm :: u8vec2 Fractal :: getTerrain(glm :: ivec2 pos, float erosionS, glm :: vec
     float low = FBM(pos, settings.settings[noise :: LOW_NOISE]).x + continental.x * settings.settings[noise :: LOW_NOISE].fractalBounding;
 
     unsigned char height = (unsigned char)(int((noise.Lerp(high, low, erosionS) + 1) * worldAmplitude) + 5);
-
-    return 
-    glm :: u8vec2(
-        height, 
-        (height <= sandLevel ? Blocks :: SAND : Blocks :: GRASS)
-    );
+    if(height > sandLevel){return glm :: u8vec2(height, Blocks :: GRASS);}
+    if(height < gravelLevel + int(SCurve(noise.SinglePerlin(settings.settings[noise :: FLOWER_NOISE].seed+12, pos.x / 25.f, pos.y / 25.f) * 0.5f + 0.5f) *  6) - 3){return glm :: u8vec2(height, Blocks :: GRAVEL);}
+    return glm :: u8vec2(height, Blocks :: SAND);
 }
 
 //TODO

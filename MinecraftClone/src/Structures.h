@@ -8,7 +8,7 @@ using namespace std;
 
 namespace Structures{
 
-    const GLubyte StructureCount = 8;
+    const GLubyte StructureCount = 15;
 
 
     using namespace Blocks;
@@ -136,11 +136,11 @@ namespace Structures{
         {
             TALL_GRASS_BOTTOM,
             TALL_GRASS_TOP
-        },
+        }, {SHORT_GRASS},
         
-        {SHORT_GRASS}, {ROSE}, {TULIP_WHITE}, {TULIP_ORANGE}, {TULIP_PINK}
+        {BLUE_LILAC}, {CORNFLOWER}, {ALLIUM}, {TULIP_PINK}, {ROSE}, {TULIP_ORANGE}, {DANDILION}, {TULIP_WHITE},
 
-
+        {LILAC_BOTTOM, LILAC_TOP}, {PEONY_BOTTOM, PEONY_TOP}, {ROSEBUSH_BOTTOM, ROSEBUSH_TOP}
     };
 
     const vector<vector<bool>> StructsForcedArr = {
@@ -277,7 +277,9 @@ namespace Structures{
             true
         },
 
-        {true}, {true}, {true}, {true}, {true}
+        {true}, {true}, {true}, {true}, {true}, {true}, {true}, {true}, {true},
+
+        {true, true}, {true, true}, {true, true}
 
 
     };
@@ -288,8 +290,14 @@ namespace Structures{
     const Structure Structs[StructureCount]={
         Structure(5, 7, 5, StructsData[0].data(), StructsForcedArr[0]), Structure(16, 4, 16, StructsData[1].data(), StructsForcedArr[1]),
         Structure(1, 2, 1, StructsData[2].data(), StructsForcedArr[2]), Structure(1, 1, 1, StructsData[3].data(), StructsForcedArr[3]),
+
         Structure(1, 1, 1, StructsData[4].data(), StructsForcedArr[4]), Structure(1, 1, 1, StructsData[5].data(), StructsForcedArr[5]),
-        Structure(1, 1, 1, StructsData[6].data(), StructsForcedArr[6]), Structure(1, 1, 1, StructsData[7].data(), StructsForcedArr[7])
+        Structure(1, 1, 1, StructsData[6].data(), StructsForcedArr[6]), Structure(1, 1, 1, StructsData[7].data(), StructsForcedArr[7]),
+        Structure(1, 1, 1, StructsData[8].data(), StructsForcedArr[8]), Structure(1, 1, 1, StructsData[9].data(), StructsForcedArr[9]),
+        Structure(1, 1, 1, StructsData[10].data(), StructsForcedArr[10]), Structure(1, 1, 1, StructsData[11].data(), StructsForcedArr[11]),
+
+        Structure(1, 2, 1, StructsData[12].data(), StructsForcedArr[12]), Structure(1, 2, 1, StructsData[13].data(), StructsForcedArr[13]),
+        Structure(1, 2, 1, StructsData[14].data(), StructsForcedArr[14])
     };
 
     /**
@@ -298,11 +306,21 @@ namespace Structures{
     enum STRUCT_ASSETS : unsigned char{
         OAK_TREE = 0,
         POND = 1,
+
         TALL_GRASS = 2,
         SHORT_GRASS_STRUCT = 3,
-        ROSE_STRUCT = 4,
-        TULIP_WHITE_STRUCT = 5,
-        TULIP_ORANGE_STRUCT = 6,
-        TULIP_PINK_STRUCT = 7
+
+        BLUE_LILAC_STRUCT = 4,
+        CORNFLOWER_STRUCT = 5,
+        ALLIUM_STRUCT = 6,
+        TULIP_PINK_STRUCT = 7,
+        ROSE_STRUCT = 8,
+        TULIP_ORANGE_STRUCT = 9,
+        DANDILION_STRUCT = 10,
+        TULIP_WHITE_STRUCT = 11,
+
+        LILAC = 12,
+        PEONY = 13,
+        ROSEBUSH = 14
     };
 };

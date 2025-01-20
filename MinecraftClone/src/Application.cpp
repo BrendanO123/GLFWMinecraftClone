@@ -187,7 +187,7 @@ int main(){
 
 
     int seed = (int)time(0);
-    seed = 1342;
+    //int seed = 1342;
     srand(seed); 
 
     int i = (rand() & 15) + 1;

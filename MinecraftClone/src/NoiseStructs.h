@@ -58,7 +58,7 @@ namespace noise{
          frequency(f), gain(g), lacunarity(l), octaves(o), fractalBounding(bounding){}
     };
 
-    const unsigned char mapCount = 8;
+    const unsigned char mapCount = 9;
     enum noiseSettings : unsigned char{
         TEMP_NOISE = 0,
         RAIN_NOISE = 1,
@@ -67,11 +67,12 @@ namespace noise{
         GRASS_MAP = 4,
         TREE_MAP = 5,
         LOW_NOISE = 6,
-        HIGH_NOISE = 7
+        HIGH_NOISE = 7,
+        FLOWER_NOISE = 8
     };
     struct NoiseTotalSettings{
         NoiseMapSettings settings[mapCount] = 
-        {NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings()};
+        {NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings(), NoiseMapSettings()};
 
         NoiseTotalSettings(int seed){
             for(int i = 0; i < mapCount; i++){

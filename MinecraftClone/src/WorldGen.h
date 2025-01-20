@@ -8,6 +8,8 @@
 
 namespace WorldGen{
 
+    const bool fullStone = false;
+
     /**
      * @brief Fills the layer at an index in a chunkData with one block type.
      * @param index The index of the layer to fill in.

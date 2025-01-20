@@ -14,9 +14,8 @@ World :: World(Shader* shader, int render, int seed) : shader(shader), fractal(n
     fractal.noise.calcFracBounding(fractal.settings.settings[noise :: TREE_MAP]);
 
     fractal.settings.settings[noise :: GRASS_MAP].frequency = 22/1.09617844793f;
-    fractal.settings.settings[noise :: TREE_MAP].octaves = 2;
-    fractal.settings.settings[noise :: TREE_MAP].fractalType = noise :: FBM;
-    fractal.noise.calcFracBounding(fractal.settings.settings[noise :: GRASS_MAP]);
+    fractal.settings.settings[noise :: FLOWER_NOISE].frequency = 1.09617844793f / 32.f;
+    fractal.settings.settings[noise :: FLOWER_NOISE].fractalType = noise :: NONE;
 
     fractal.settings.settings[noise :: CONTINENTAL_MAP].includePartials = true;
     fractal.settings.settings[noise :: CONTINENTAL_MAP].fractalType = noise :: NONE;
@@ -38,6 +37,26 @@ World :: World(Shader* shader, int render, int seed) : shader(shader), fractal(n
     fractal.settings.settings[noise :: LOW_NOISE].frequency = fractal.settings.settings[noise :: CONTINENTAL_MAP].frequency * fractal.settings.settings[noise :: LOW_NOISE].lacunarity;
     fractal.noise.calcFracBounding_HL_Noise(fractal.settings.settings[noise :: LOW_NOISE]);
     fractal.settings.settings[noise :: LOW_NOISE].fractalBounding *= 1.f / 8;
+
+    /*float value;
+    float stdev = 0.f, mean = 0.f;
+    int scale = 5000;
+    for(int x = 0; x<scale; x++){
+        for(int y = 0; y<scale; y++){
+            value = fractal.noise.SinglePerlin(seed, 1.09617844793f / 30 * x, 1.09617844793f / 30 * y);
+            mean += value;
+        }
+    }
+    mean /= (scale * scale);
+    for(int x = 0; x<scale; x++){
+        for(int y = 0; y<scale; y++){
+            value = fractal.noise.SinglePerlin(seed, 1.09617844793f / 30 * x, 1.09617844793f / 30 * y) - mean;
+            stdev += value * value;
+        }
+    }
+    stdev /= (scale * scale);
+    std :: cout << "stdev: " << sqrt(stdev) << std :: endl;
+     std :: cout << "mean: " << mean << std :: endl;*/
 }
 
 //destructor

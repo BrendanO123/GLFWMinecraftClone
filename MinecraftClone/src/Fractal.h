@@ -12,6 +12,7 @@ namespace noise{
 
             static const unsigned char waterLevel = 95;
             static const unsigned char sandLevel = waterLevel+2;
+            static const unsigned char gravelLevel = waterLevel-5;
 
             Fractal(NoiseTotalSettings set) : settings(set){calcBoundings();};
             Fractal(int seed) : settings(NoiseTotalSettings(seed)){calcBoundings(); };
