@@ -84,6 +84,28 @@ void Chunk :: genChunkMesh(){
                                 adjacentBlock = blocks[adjacentType];
                             }
 
+                            /*if(transL){
+                                if(adjacentType != type){
+                                    translucentVerticies.emplace_back(                   x, y,   -z, block.sideLowX, block.sideLowY, 0);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y,   -z, block.sideHighX, block.sideLowY, 0);
+                                    translucentVerticies.emplace_back(                   x, y+1, -z, block.sideLowX, block.sideHighY, 0);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y+1, -z, block.sideHighX, block.sideHighY, 0);
+
+                                    translucentIndicies.push_back(transLVOff); translucentIndicies.push_back(transLVOff+2); translucentIndicies.push_back(transLVOff+1);
+                                    translucentIndicies.push_back(transLVOff+3); translucentIndicies.push_back(transLVOff+1); translucentIndicies.push_back(transLVOff+2);
+                                    transLVOff+=4;
+                                }
+                            }
+                            else if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || ((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0)){
+                                verticies.emplace_back(                   x, y,   -z, block.sideLowX, block.sideLowY, 0);
+                                verticies.emplace_back((unsigned char)(x+1), y,   -z, block.sideHighX, block.sideLowY, 0);
+                                verticies.emplace_back(                   x, y+1, -z, block.sideLowX, block.sideHighY, 0);
+                                verticies.emplace_back((unsigned char)(x+1), y+1, -z, block.sideHighX, block.sideHighY, 0);
+
+                                indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
+                                indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
+                                vOffset+=4;
+                            }*/
                             if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || (((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0) && (adjacentType!=type))){
                                 if(transL){
                                     translucentVerticies.emplace_back(                   x, y,   -z, block.sideLowX, block.sideLowY, 0);
@@ -117,6 +139,28 @@ void Chunk :: genChunkMesh(){
                                 adjacentBlock = blocks[adjacentType];
                             }
 
+                            /*if(transL){
+                                if(adjacentType != type){
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y,   -z,                    block.sideLowX, block.sideLowY, 2);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y,   (unsigned char)(-z-1), block.sideHighX, block.sideLowY, 2);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y+1, -z,                    block.sideLowX, block.sideHighY, 2);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y+1, (unsigned char)(-z-1), block.sideHighX, block.sideHighY, 2);
+
+                                    translucentIndicies.push_back(transLVOff); translucentIndicies.push_back(transLVOff+2); translucentIndicies.push_back(transLVOff+1);
+                                    translucentIndicies.push_back(transLVOff+3); translucentIndicies.push_back(transLVOff+1); translucentIndicies.push_back(transLVOff+2);
+                                    transLVOff+=4;
+                                }
+                            }
+                            else if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || ((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0)){
+                                verticies.emplace_back((unsigned char)(x+1), y,   -z,                    block.sideLowX, block.sideLowY, 2);
+                                verticies.emplace_back((unsigned char)(x+1), y,   (unsigned char)(-z-1), block.sideHighX, block.sideLowY, 2);
+                                verticies.emplace_back((unsigned char)(x+1), y+1, -z,                    block.sideLowX, block.sideHighY, 2);
+                                verticies.emplace_back((unsigned char)(x+1), y+1, (unsigned char)(-z-1), block.sideHighX, block.sideHighY, 2);
+
+                                indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
+                                indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
+                                vOffset+=4;
+                            }*/
                             if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || (((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0) && (adjacentType!=type))){
                                 if(transL){
                                     translucentVerticies.emplace_back((unsigned char)(x+1), y,   -z,                    block.sideLowX, block.sideLowY, 2);
@@ -150,6 +194,28 @@ void Chunk :: genChunkMesh(){
                                 adjacentBlock = blocks[adjacentType];
                             }
 
+                            /*if(transL){
+                                if(adjacentType != type){
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y,   (unsigned char)(-z-1), block.sideLowX, block.sideLowY, 1);
+                                    translucentVerticies.emplace_back(                   x, y,   (unsigned char)(-z-1), block.sideHighX, block.sideLowY, 1);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y+1, (unsigned char)(-z-1), block.sideLowX, block.sideHighY, 1);
+                                    translucentVerticies.emplace_back(                   x, y+1, (unsigned char)(-z-1), block.sideHighX, block.sideHighY, 1);
+
+                                    translucentIndicies.push_back(transLVOff); translucentIndicies.push_back(transLVOff+2); translucentIndicies.push_back(transLVOff+1);
+                                    translucentIndicies.push_back(transLVOff+3); translucentIndicies.push_back(transLVOff+1); translucentIndicies.push_back(transLVOff+2);
+                                    transLVOff+=4;
+                                }
+                            }
+                            else if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || ((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0)){
+                                verticies.emplace_back((unsigned char)(x+1), y,   (unsigned char)(-z-1), block.sideLowX, block.sideLowY, 1);
+                                verticies.emplace_back(                   x, y,   (unsigned char)(-z-1), block.sideHighX, block.sideLowY, 1);
+                                verticies.emplace_back((unsigned char)(x+1), y+1, (unsigned char)(-z-1), block.sideLowX, block.sideHighY, 1);
+                                verticies.emplace_back(                   x, y+1, (unsigned char)(-z-1), block.sideHighX, block.sideHighY, 1);
+
+                                indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
+                                indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
+                                vOffset+=4;
+                            }*/
                             if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || (((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0) && (adjacentType!=type))){
                                 if(transL){
                                     translucentVerticies.emplace_back((unsigned char)(x+1), y,   (unsigned char)(-z-1), block.sideLowX, block.sideLowY, 1);
@@ -183,6 +249,28 @@ void Chunk :: genChunkMesh(){
                                 adjacentBlock = blocks[adjacentType];
                             }
 
+                            /*if(transL){
+                                if(adjacentType != type){
+                                    translucentVerticies.emplace_back(                    x, y,   (unsigned char)(-z-1), block.sideLowX, block.sideLowY, 3);
+                                    translucentVerticies.emplace_back(                    x, y,   -z,                    block.sideHighX, block.sideLowY, 3);
+                                    translucentVerticies.emplace_back(                    x, y+1, (unsigned char)(-z-1), block.sideLowX, block.sideHighY, 3);
+                                    translucentVerticies.emplace_back(                    x, y+1, -z,                    block.sideHighX, block.sideHighY, 3);
+
+                                    translucentIndicies.push_back(transLVOff); translucentIndicies.push_back(transLVOff+2); translucentIndicies.push_back(transLVOff+1);
+                                    translucentIndicies.push_back(transLVOff+3); translucentIndicies.push_back(transLVOff+1); translucentIndicies.push_back(transLVOff+2);
+                                    transLVOff+=4;
+                                }
+                            }
+                            else if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || ((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0)){
+                                verticies.emplace_back(                   x, y,   (unsigned char)(-z-1), block.sideLowX, block.sideLowY, 3);
+                                verticies.emplace_back(                   x, y,   -z,                    block.sideHighX, block.sideLowY, 3);
+                                verticies.emplace_back(                   x, y+1, (unsigned char)(-z-1), block.sideLowX, block.sideHighY, 3);
+                                verticies.emplace_back(                   x, y+1, -z,                    block.sideHighX, block.sideHighY, 3);
+
+                                indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
+                                indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
+                                vOffset+=4;
+                            }*/
                             if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || (((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0) && (adjacentType!=type))){
                                 if(transL){
                                     translucentVerticies.emplace_back(                    x, y,   (unsigned char)(-z-1), block.sideLowX, block.sideLowY, 3);
@@ -222,6 +310,28 @@ void Chunk :: genChunkMesh(){
                                 }
                             }
 
+                            /*if(transL){
+                                if(adjacentType != type){
+                                    translucentVerticies.emplace_back(                   x, y+1, -z,                    block.topLowX, block.topLowY, 4);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y+1, -z,                    block.topHighX, block.topLowY, 4);
+                                    translucentVerticies.emplace_back(                   x, y+1, (unsigned char)(-z-1), block.topLowX, block.topHighY, 4);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y+1, (unsigned char)(-z-1), block.topHighX, block.topHighY, 4);
+
+                                    translucentIndicies.push_back(transLVOff); translucentIndicies.push_back(transLVOff+2); translucentIndicies.push_back(transLVOff+1);
+                                    translucentIndicies.push_back(transLVOff+3); translucentIndicies.push_back(transLVOff+1); translucentIndicies.push_back(transLVOff+2);
+                                    transLVOff+=4;
+                                }
+                            }
+                            else if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || ((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0)){
+                                verticies.emplace_back(                   x, y+1, -z,                    block.topLowX, block.topLowY, 4);
+                                verticies.emplace_back((unsigned char)(x+1), y+1, -z,                    block.topHighX, block.topLowY, 4);
+                                verticies.emplace_back(                   x, y+1, (unsigned char)(-z-1), block.topLowX, block.topHighY, 4);
+                                verticies.emplace_back((unsigned char)(x+1), y+1, (unsigned char)(-z-1), block.topHighX, block.topHighY, 4);
+
+                                indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
+                                indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
+                                vOffset+=4;
+                            }*/
                             if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || (((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0) && (adjacentType!=type))){
                                 if(transL){
                                     translucentVerticies.emplace_back(                   x, y+1, -z,                    block.topLowX, block.topLowY, 4);
@@ -261,6 +371,28 @@ void Chunk :: genChunkMesh(){
                                 }
                             }
 
+                            /*if(transL){
+                                if(adjacentType != type){
+                                    translucentVerticies.emplace_back(                    x, y,   (unsigned char)(-z-1), block.bottomLowX, block.bottomLowY, 5);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y,   (unsigned char)(-z-1), block.bottomHighX, block.bottomLowY, 5);
+                                    translucentVerticies.emplace_back(                    x, y,   -z,                      block.bottomLowX, block.bottomHighY, 5);
+                                    translucentVerticies.emplace_back((unsigned char)(x+1), y,   -z,                   block.bottomHighX, block.bottomHighY, 5);
+
+                                    translucentIndicies.push_back(transLVOff); translucentIndicies.push_back(transLVOff+2); translucentIndicies.push_back(transLVOff+1);
+                                    translucentIndicies.push_back(transLVOff+3); translucentIndicies.push_back(transLVOff+1); translucentIndicies.push_back(transLVOff+2);
+                                    transLVOff+=4;
+                                }
+                            }
+                            else if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || ((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0)){
+                                verticies.emplace_back(                   x, y,   (unsigned char)(-z-1), block.bottomLowX, block.bottomLowY, 5);
+                                verticies.emplace_back((unsigned char)(x+1), y,   (unsigned char)(-z-1), block.bottomHighX, block.bottomLowY, 5);
+                                verticies.emplace_back(                   x, y,   -z,                      block.bottomLowX, block.bottomHighY, 5);
+                                verticies.emplace_back((unsigned char)(x+1), y,   -z,                      block.bottomHighX, block.bottomHighY, 5);
+
+                                indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
+                                indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
+                                vOffset+=4;
+                            }*/
                             if(((adjacentBlock.flagByte & TRANSPARENT_BIT) != 0) || (((adjacentBlock.flagByte & TRANSLUCENT_BIT) != 0) && (adjacentType!=type))){
                                 if(transL){
                                     translucentVerticies.emplace_back(                    x, y,   (unsigned char)(-z-1), block.bottomLowX, block.bottomLowY, 5);
