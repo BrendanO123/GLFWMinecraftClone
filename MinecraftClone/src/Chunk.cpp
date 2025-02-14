@@ -485,13 +485,11 @@ void Chunk :: render(Shader shader){
         glVertexAttribPointer(vNormalLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(BillboardVertex), (void*) (offsetof(BillboardVertex, NormalSelector)));
 
 
-        modelMatLoc = glGetUniformLocation(shader.program, "model");
+        modelMatLoc = glGetUniformLocation(shader.program, "modelPos");
         flagByte |= ChunkFlags :: LAND_RENDERABLE;
     }
 
-    glm :: mat4 model = glm ::mat4(1.0f);
-    model = glm :: translate(model, pos_world);
-    glUniformMatrix4fv(modelMatLoc, 1, GL_FALSE, glm :: value_ptr(model));
+    glUniform3i(modelMatLoc, pos_world.x, pos_world.y, pos_world.z);
 
     glEnable(GL_CULL_FACE);
     glBindVertexArray(VAONorm);
@@ -540,9 +538,7 @@ void Chunk :: renderWater(Shader shader){
         flagByte |= ChunkFlags :: WATER_RENDERABLE;
     }
 
-    glm :: mat4 model = glm ::mat4(1.0f);
-    model = glm :: translate(model, pos_world);
-    glUniformMatrix4fv(modelMatLoc, 1, GL_FALSE, glm :: value_ptr(model));
+    glUniform3i(modelMatLoc, pos_world.x, pos_world.y, pos_world.z);
 
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);

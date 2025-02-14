@@ -1,4 +1,4 @@
-#include "UnitVoxelRaycasting.h"
+#include "UnitVoxelRaycaster.h"
 
 #include <iostream>
 #include <limits>

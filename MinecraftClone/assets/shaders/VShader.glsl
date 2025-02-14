@@ -1,8 +1,9 @@
 #version 330
 
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+uniform ivec3 modelPos;
+uniform ivec3 cameraPosI;
+
+uniform mat4 viewAndProjectionMatrix;
 
 uniform float blockMapW_blocks;
 uniform float blockMapH_blocks;
@@ -27,7 +28,7 @@ const vec3 normals[] = vec3[](
 
 
 void main(){
-    gl_Position = projection * view * model * vec4(vPos.x, height, vPos.y, 1.0);
+	gl_Position = viewAndProjectionMatrix * vec4(vPos.x + modelPos.x, height + modelPos.y, vPos.y + modelPos.z, 1.0);
     TexCoord = vec2(vtexPos.x / blockMapW_blocks, vtexPos.y / blockMapH_blocks);
     
     Normal = normals[normal];

@@ -1,7 +1,8 @@
 #include "World.h"
-#include "WorldGen.h"
 
 #include <iostream>
+
+#include "WorldGen.h"
 
 World* World :: world = nullptr;
 //costructor: store shader
@@ -74,7 +75,7 @@ World :: ~World(){
 }
 
 //handle player movement and gen new chunks
-void World :: update(glm :: vec3 camPos, bool menu){
+void World :: update(glm :: ivec3 camPos, bool menu){
 
     mute.lock();
     isMenu=menu;
@@ -158,7 +159,7 @@ void World :: threadUpdate(){
                     for (int z = camZ_chunk - renderDistance; z<= camZ_chunk + renderDistance; z++){
 
                         //if we don't have chunk, add to rendering queue
-                        if(chunks.find({x, z}) == chunks.end()){chunkQueue.push({x, z});}
+                        if(chunks.find({x, z}) == chunks.end()){chunkQueue.push(x, z);}
                     }
                 }
             }
@@ -170,7 +171,7 @@ void World :: threadUpdate(){
         if(chunksLoading == 0 && !chunkQueue.empty()){
 
             //remove next chunk and add get its location
-            glm :: ivec2 next = chunkQueue.front();
+            glm :: ivec2 next = chunkQueue.getFirst();
             chunkQueue.pop();
             mute.unlock();
 
@@ -414,6 +415,47 @@ void World :: threadUpdate(){
             mute.unlock();
         }
     }
+}
+
+GLubyte World :: getBlock(int x, int y, int z){
+    //TODO LOD SYSTEM
+
+    ChunkData* data = getChunkData(x / chunkSize, z / chunkSize);
+    if(data == nullptr){return Blocks :: AIR;}
+
+    //does not work if chunk size changes
+    return data->findBlock((z & 15) + ((x & 15) << 4), y);
+}
+bool World :: breakBlock(glm :: ivec3 pos){
+    Chunk* chunk = getChunk(pos.x / chunkSize, pos.z / chunkSize);
+    if(chunk == nullptr){return false;}
+
+    Layer* layer = chunk->data->getLayer(pos.y);
+    if(layer == nullptr){return false;}
+
+    layer->data[(pos.z & 15) + ((pos.x & 15) << 4)] = Blocks :: AIR;
+
+    chunk->flagByte &= ~(ChunkFlags :: HAS_MESH | ChunkFlags :: LAND_RENDERABLE | ChunkFlags :: WATER_RENDERABLE);
+    chunk->flagByte |= ChunkFlags :: MODIFIED;
+    chunkQueue.pushFront(pos.x / chunkSize, pos.z / chunkSize);
+
+    return true;
+}
+
+bool World :: placeBlock(glm :: ivec3 pos, GLubyte blockType){
+    Chunk* chunk = getChunk(pos.x/ chunkSize, pos.z / chunkSize);
+    if(chunk == nullptr){return false;}
+
+    Layer layer = chunk->data->data.at(chunk->data->safeLayerFetch(pos.y));
+    if(layer.data[(pos.z & 15) + ((pos.x & 15) << 4)]){return false;} //return false unless placing in air
+
+    layer.data[(pos.z & 15) + ((pos.x & 15) << 4)] = blockType;
+
+    chunk->flagByte &= ~(ChunkFlags :: HAS_MESH | ChunkFlags :: LAND_RENDERABLE | ChunkFlags :: WATER_RENDERABLE);
+    chunk->flagByte |= ChunkFlags :: MODIFIED;
+    chunkQueue.pushFront(pos.x / chunkSize, pos.z / chunkSize);
+
+    return true;
 }
 
 //get chunk data (vector<Layer> in chunk.data) by chunk cords
