@@ -12,14 +12,16 @@
 #include <stb_image/stb_image.h>
 
 #include <glm/gtc/type_ptr.hpp>
-#include <stdlib.h>
-#include <stddef.h>
-#include <stdio.h>
 
 #include "Shaders.h"
 #include "World.h"
 #include "Blocks.h"
 #include "Player.h"
+#include "Camera.h"
+
+#include <stdlib.h>
+#include <stddef.h>
+#include <stdio.h>
 
 using namespace std;
 
@@ -28,8 +30,7 @@ using namespace std;
 int chunkRenderDist = 12;
 float renderDist = int(chunkRenderDist*16*1.6 + 0.5f);
 
-Shader shader = Shader("MinecraftClone/assets/shaders/VShader.glsl", "MinecraftClone/assets/shaders/FShader.glsl");
-Player player = Player(shader, renderDist);
+Player* player;
 
 bool menu = false;
 
@@ -38,11 +39,11 @@ static void error_callback(int error, const char* description){
 }
 
 static void mouse_callback(GLFWwindow* window, double xpos, double ypos){
-    if(!menu){player.mouse_callback(window, xpos, ypos);}
+    if(!menu){player->mouse_callback(window, xpos, ypos);}
 }
 
 static void scroll_callback(GLFWwindow* window, double xOff, double yOff){
-    if(!menu){player.scroll_callback(window, xOff, yOff);}
+    if(!menu){player->scroll_callback(window, xOff, yOff);}
 }
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -54,20 +55,21 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     else if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
         menu = !menu;
         if(menu){glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);}
-        else{glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); player.setFirstMouse(true);}
+        else{glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); player->setFirstMouse(true);}
     }
 }
 static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods){
-    player.mouseClickCallback(window, button, action, mods);
+    player->mouseClickCallback(window, button, action, mods);
 }
 
-void processInput(GLFWwindow* window, float deltaTime=1.f){if(!menu){player.processInput(window, deltaTime);}}
+void processInput(GLFWwindow* window, float deltaTime=1.f){if(!menu){player->processInput(window, deltaTime);}}
 
 
 
 const string title = "Minecraft Clone";
 
 int main(){
+    std :: cout << "Main Started" << std :: endl;
     glfwSetErrorCallback(error_callback);
 
     if(!glfwInit()){ //GLFW initialization fails
@@ -102,6 +104,9 @@ int main(){
         exit(EXIT_FAILURE); 
     }
     glfwSwapInterval(VSYNC);
+
+    Shader shader = Shader("MinecraftClone/assets/shaders/VShader.glsl", "MinecraftClone/assets/shaders/FShader.glsl");
+    player = new Player(shader, renderDist);
 
     shader.use();
 
@@ -195,10 +200,12 @@ int main(){
     int i = (rand() & 15) + 1;
     for(int j = 0; j<i; j++){rand();}
 
+    std :: cout << "Made it to world init" << std :: endl;
     World :: world = new World(&shader, chunkRenderDist, rand());
 
     glClearColor(135/255.0f, 206/255.0f, 235/255.0f, 1.0f);
     float deltaTime, currentFrame, lastFrame = 0.0f;
+    std :: cout << "Made it to start of main loop" << std :: endl;
     while(!glfwWindowShouldClose(window)){ //while window wants to stay open
 
         currentFrame = glfwGetTime();
@@ -210,18 +217,24 @@ int main(){
         glViewport(0, 0, width, height);
         float ratio = width / (float) height;
 
+        std :: cout << "Made it to buffer clear" << std :: endl;
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        std :: cout << "Made it to process input" << std :: endl;
         processInput(window, deltaTime);
 
-        player.updateMatrixUniforms(ratio);
-        World :: world->update(player.getPosition(), menu);
+        std :: cout << "Made it to uniform updates" << std :: endl;
+        player->updateMatrixUniforms(ratio);
+        std :: cout << "Made it to world updates" << std :: endl;
+        World :: world->update(player->getPosition(), menu);
 
+        std :: cout << "Made it to end of first loop" << std :: endl;
         glfwSwapBuffers(window);
         if(!menu){glfwPollEvents();}
         else{glfwWaitEvents();}
     }
 
     delete(World :: world);
+    delete player;
     glfwDestroyWindow(window);
     glfwTerminate();
     exit(EXIT_SUCCESS);

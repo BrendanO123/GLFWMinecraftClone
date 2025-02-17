@@ -11,7 +11,7 @@
 #include "Camera.h"
 #include "Blocks.h"
 #include "Fractal.h"
-#include "chunkList.h"
+#include "ChunkList.h"
 
 #include <ScuffedMinecraft/TupleHash.h>
 

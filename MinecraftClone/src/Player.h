@@ -4,9 +4,7 @@
 
 #include "Camera.h"
 #include "World.h"
-#include "Blocks.h"
 #include "Shaders.h"
-#include "World.h"
 #include "UnitVoxelRaycaster.h"
 
 class Player{
@@ -31,6 +29,7 @@ class Player{
         bool MClick();
     
         public:
+            Player() : renderDist(307.f){}
             Player(Shader newShader, float renderDist);
 
             void updateMatrixUniforms(float ratio);

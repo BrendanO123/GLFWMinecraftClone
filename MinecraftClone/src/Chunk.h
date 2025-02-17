@@ -2,13 +2,12 @@
 
 #define GL_SILENCE_DEPRECATION
 #include <glad/gl.h>
+#include <vector>
+#include <thread>
 
 #include "Blocks.h"
 #include "ChunkData.h"
 #include "Layer.h"
-#include <vector>
-#include <thread>
-
 #include "Shaders.h"
 
 using namespace std;

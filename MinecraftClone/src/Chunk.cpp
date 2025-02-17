@@ -1,13 +1,14 @@
 #include "Chunk.h"
-#include "Blocks.h"
-#include "Block.h"
-#include "WorldGen.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
 #include <string.h>
+
+#include "Blocks.h"
+#include "Block.h"
+#include "WorldGen.h"
 
 #include <stdlib.h>
 #include <stddef.h>
