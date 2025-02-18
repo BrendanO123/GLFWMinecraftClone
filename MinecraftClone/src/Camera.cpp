@@ -66,12 +66,10 @@ void Camera :: scroll_callback(GLFWwindow* window, double xOff, double yOff){
 void Camera :: processInput(GLFWwindow* window, glm :: vec3 &FPos, glm :: ivec3 &IPos, float deltaTime){
 
     //TODO: create pause menu and f3 screen
-    std :: cout << "Made it to start of camera process input" << std :: endl;
 
     glm :: vec3 move = glm :: vec3 (0.f, 0.f, 0.f);
     bool shouldMove = false;
     if(glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS){fov=defaultFov;}
-    std :: cout << "Made it past first key check" << std :: endl;
     if((glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) ^ (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)){
         shouldMove = true;
         if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){move += CameraFront;}
@@ -89,12 +87,10 @@ void Camera :: processInput(GLFWwindow* window, glm :: vec3 &FPos, glm :: ivec3 
     }
 
     if(shouldMove && normalizedMoveSpeed){move = glm :: normalize(move);}
-    std :: cout << "Made it through key checks" << std :: endl;
     CameraFPos += move * moveSpeed * ((glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) ? 4.5f : 1.0f);
-    CameraIPos += glm :: ivec3((int)CameraFPos.x, (int)CameraFPos.y, (int)CameraFPos.z);
-    CameraFPos = CameraFPos - glm :: vec3(CameraIPos);
+    CameraIPos += glm :: ivec3(CameraFPos);
+    CameraFPos -= glm :: ivec3(CameraFPos);
     IPos = CameraIPos; FPos = CameraFPos;
-    std :: cout << "Made it to end of camera process input" << std :: endl;
 }
 
 glm :: mat4 Camera :: getViewAndProjection(glm :: vec3 &LookDirection, float ratio, float renderDist){

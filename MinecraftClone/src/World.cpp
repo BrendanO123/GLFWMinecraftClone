@@ -81,8 +81,9 @@ void World :: update(glm :: ivec3 camPos, bool menu){
     isMenu=menu;
 
     //get float cam pos into int chunk pos
-    camX_chunk = Floor(camPos.x/chunkSize);
-    camZ_chunk = Floor(camPos.z/chunkSize);
+    camX_chunk = floor(camPos.x/float(chunkSize));
+    camZ_chunk = floor(camPos.z/float(chunkSize));
+    playerPositionSet = true;
 
     //reset attributes
     chunksLoading = numChunks = numChunksRendered = 0;
@@ -108,6 +109,7 @@ void World :: update(glm :: ivec3 camPos, bool menu){
                     //remove from chunk map
                     delete iterate->second;
                     iterate = chunks.erase(iterate);
+                    deletedChunks.push(tuple<int, int>(chunkX, chunkZ));
                 }
                 //if it still needs to be rendered
                 else{
@@ -149,7 +151,7 @@ void World :: threadUpdate(){
 
             //if player moves into new chunk
             mute.lock();
-            if(camX_chunk != lastCamX || camZ_chunk != lastCamZ){
+            if(playerPositionSet && (camX_chunk != lastCamX || camZ_chunk != lastCamZ)){
 
                 //move stored player location
                 lastCamX = camX_chunk; lastCamZ = camZ_chunk;
@@ -159,7 +161,7 @@ void World :: threadUpdate(){
                     for (int z = camZ_chunk - renderDistance; z<= camZ_chunk + renderDistance; z++){
 
                         //if we don't have chunk, add to rendering queue
-                        if(chunks.find({x, z}) == chunks.end()){chunkQueue.push(x, z);}
+                        if(chunks.find({x, z}) == chunks.end()){chunkQueue.pushBack(x, z);}
                     }
                 }
             }
@@ -372,45 +374,34 @@ void World :: threadUpdate(){
 
         if(!isMenu){//if stuff is happening
             mute.lock();
-            for (auto iterate = chunkData.begin(); iterate != chunkData.end();)
-            {
-                glm :: ivec2 chunkPos = iterate->second->pos;
+            if(!deletedChunks.empty()){
+                tuple<int, int> location = deletedChunks.front();
+                deletedChunks.pop();
 
-                if (
-                    (chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y)) == chunks.end()) &&
-
-
-                    ((chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y+1)) == chunks.end()) || 
-                        ((chunks.at(tuple<int, int>(chunkPos.x+1, chunkPos.y+1))->flagByte & ChunkFlags :: HAS_STRUCTURES) != 0)) &&
-                        
-                    ((chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y)) == chunks.end()) || 
-                        ((chunks.at(tuple<int, int>(chunkPos.x+1, chunkPos.y))->flagByte & ChunkFlags :: HAS_MESH) != 0)) &&
-
-                    ((chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y-1)) == chunks.end()) || 
-                        ((chunks.at(tuple<int, int>(chunkPos.x+1, chunkPos.y-1))->flagByte & ChunkFlags :: HAS_STRUCTURES) != 0)) &&
+                if(chunkData.find(location) != chunkData.end()){
+                    glm :: ivec2 chunkPos = chunkData.at(location)->pos;
+                    if (
+                        (chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y)) == chunks.end()) &&
 
 
-                    ((chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y+1)) == chunks.end()) || 
-                        ((chunks.at(tuple<int, int>(chunkPos.x, chunkPos.y+1))->flagByte & ChunkFlags :: HAS_MESH) != 0)) &&
-
-                    ((chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y-1)) == chunks.end()) || 
-                        ((chunks.at(tuple<int, int>(chunkPos.x, chunkPos.y-1))->flagByte & ChunkFlags :: HAS_MESH) != 0)) &&
+                        (chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y+1)) == chunks.end()) &&
+                        (chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y)) == chunks.end()) &&
+                        (chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y-1)) == chunks.end()) &&
 
 
-                    ((chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y+1)) == chunks.end()) || 
-                        ((chunks.at(tuple<int, int>(chunkPos.x-1, chunkPos.y+1))->flagByte & ChunkFlags :: HAS_STRUCTURES) != 0)) &&
-                        
-                    ((chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y)) == chunks.end()) || 
-                        ((chunks.at(tuple<int, int>(chunkPos.x-1, chunkPos.y))->flagByte & ChunkFlags :: HAS_MESH) != 0)) &&
-                    
-                    ((chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y-1)) == chunks.end()) || 
-                        ((chunks.at(tuple<int, int>(chunkPos.x-1, chunkPos.y-1))->flagByte & ChunkFlags :: HAS_STRUCTURES) != 0))
-                )
-                {
-                    delete chunkData.at(iterate->first);
-                    iterate = chunkData.erase(iterate);
+                        (chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y+1)) == chunks.end()) &&
+                        (chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y-1)) == chunks.end()) &&
+
+
+                        (chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y+1)) == chunks.end()) &&
+                        (chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y)) == chunks.end()) &&
+                        (chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y-1)) == chunks.end())
+                    )
+                    {
+                        delete chunkData.at(location);
+                    }
+                    else{deletedChunks.push(location);}
                 }
-                else{iterate++;}
             }
             mute.unlock();
         }
@@ -420,14 +411,14 @@ void World :: threadUpdate(){
 GLubyte World :: getBlock(int x, int y, int z){
     //TODO LOD SYSTEM
 
-    ChunkData* data = getChunkData(x / chunkSize, z / chunkSize);
+    /*ChunkData* data = getChunkData(x / chunkSize, z / chunkSize);
     if(data == nullptr){return Blocks :: AIR;}
 
     //does not work if chunk size changes
-    return data->findBlock((z & 15) + ((x & 15) << 4), y);
+    return data->findBlock((z & 15) + ((x & 15) << 4), y);*/return Blocks :: AIR;
 }
 bool World :: breakBlock(glm :: ivec3 pos){
-    Chunk* chunk = getChunk(pos.x / chunkSize, pos.z / chunkSize);
+    /*Chunk* chunk = getChunk(pos.x / chunkSize, pos.z / chunkSize);
     if(chunk == nullptr){return false;}
 
     Layer* layer = chunk->data->getLayer(pos.y);
@@ -439,11 +430,11 @@ bool World :: breakBlock(glm :: ivec3 pos){
     chunk->flagByte |= ChunkFlags :: MODIFIED;
     chunkQueue.pushFront(pos.x / chunkSize, pos.z / chunkSize);
 
-    return true;
+    return true;*/return false;
 }
 
 bool World :: placeBlock(glm :: ivec3 pos, GLubyte blockType){
-    Chunk* chunk = getChunk(pos.x/ chunkSize, pos.z / chunkSize);
+    /*Chunk* chunk = getChunk(pos.x/ chunkSize, pos.z / chunkSize);
     if(chunk == nullptr){return false;}
 
     Layer layer = chunk->data->data.at(chunk->data->safeLayerFetch(pos.y));
@@ -455,7 +446,7 @@ bool World :: placeBlock(glm :: ivec3 pos, GLubyte blockType){
     chunk->flagByte |= ChunkFlags :: MODIFIED;
     chunkQueue.pushFront(pos.x / chunkSize, pos.z / chunkSize);
 
-    return true;
+    return true;*/return false;
 }
 
 //get chunk data (vector<Layer> in chunk.data) by chunk cords

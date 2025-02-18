@@ -13,11 +13,7 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Shaders.h"
-#include "World.h"
-#include "Blocks.h"
 #include "Player.h"
-#include "Camera.h"
 
 #include <stdlib.h>
 #include <stddef.h>
@@ -59,7 +55,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     }
 }
 static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods){
-    player->mouseClickCallback(window, button, action, mods);
+    if(!menu){player->mouseClickCallback(window, button, action, mods);}
 }
 
 void processInput(GLFWwindow* window, float deltaTime=1.f){if(!menu){player->processInput(window, deltaTime);}}
@@ -69,7 +65,6 @@ void processInput(GLFWwindow* window, float deltaTime=1.f){if(!menu){player->pro
 const string title = "Minecraft Clone";
 
 int main(){
-    std :: cout << "Main Started" << std :: endl;
     glfwSetErrorCallback(error_callback);
 
     if(!glfwInit()){ //GLFW initialization fails
@@ -106,9 +101,8 @@ int main(){
     glfwSwapInterval(VSYNC);
 
     Shader shader = Shader("MinecraftClone/assets/shaders/VShader.glsl", "MinecraftClone/assets/shaders/FShader.glsl");
-    player = new Player(shader, renderDist);
-
     shader.use();
+    player = new Player(shader, renderDist);
 
     float alphaErrorRange=0.2f; //MUST BE >0!!
     glUniform1f(glGetUniformLocation(shader.program, "blockMapW_blocks"), Blocks :: blockMapW_blocks);
@@ -200,12 +194,11 @@ int main(){
     int i = (rand() & 15) + 1;
     for(int j = 0; j<i; j++){rand();}
 
-    std :: cout << "Made it to world init" << std :: endl;
+
     World :: world = new World(&shader, chunkRenderDist, rand());
 
     glClearColor(135/255.0f, 206/255.0f, 235/255.0f, 1.0f);
     float deltaTime, currentFrame, lastFrame = 0.0f;
-    std :: cout << "Made it to start of main loop" << std :: endl;
     while(!glfwWindowShouldClose(window)){ //while window wants to stay open
 
         currentFrame = glfwGetTime();
@@ -217,17 +210,12 @@ int main(){
         glViewport(0, 0, width, height);
         float ratio = width / (float) height;
 
-        std :: cout << "Made it to buffer clear" << std :: endl;
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        std :: cout << "Made it to process input" << std :: endl;
         processInput(window, deltaTime);
 
-        std :: cout << "Made it to uniform updates" << std :: endl;
         player->updateMatrixUniforms(ratio);
-        std :: cout << "Made it to world updates" << std :: endl;
         World :: world->update(player->getPosition(), menu);
 
-        std :: cout << "Made it to end of first loop" << std :: endl;
         glfwSwapBuffers(window);
         if(!menu){glfwPollEvents();}
         else{glfwWaitEvents();}

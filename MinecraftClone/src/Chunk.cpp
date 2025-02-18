@@ -15,7 +15,7 @@
 #include <stdio.h>
 
 Chunk :: Chunk(GLuint lod, glm :: ivec2 chunkPos) : LOD(lod){
-    pos_world = glm ::vec3(((int)chunkPos.x) << (4+LOD), 0, ((int)chunkPos.y) << (4+LOD)); //will not actually work if LOD is changed
+    pos_world = glm :: ivec3(chunkPos.x << (4+LOD), 0, chunkPos.y << (4+LOD)); //will not actually work if LOD is changed
 }
 Chunk :: ~Chunk(){
     
@@ -490,7 +490,7 @@ void Chunk :: render(Shader shader){
         flagByte |= ChunkFlags :: LAND_RENDERABLE;
     }
 
-    glUniform3i(modelMatLoc, pos_world.x, pos_world.y, pos_world.z);
+    glUniform3iv(modelMatLoc, 1, glm::value_ptr(pos_world));
 
     glEnable(GL_CULL_FACE);
     glBindVertexArray(VAONorm);
@@ -535,11 +535,11 @@ void Chunk :: renderWater(Shader shader){
         glEnableVertexAttribArray(vNormalLoc);
         glVertexAttribPointer(vNormalLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, NormalSelector)));
 
-
+        modelMatLoc = glGetUniformLocation(shader.program, "modelPos");
         flagByte |= ChunkFlags :: WATER_RENDERABLE;
     }
 
-    glUniform3i(modelMatLoc, pos_world.x, pos_world.y, pos_world.z);
+    glUniform3iv(modelMatLoc, 1, glm::value_ptr(pos_world));
 
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);

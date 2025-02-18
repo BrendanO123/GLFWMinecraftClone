@@ -49,7 +49,8 @@ class World{
         unordered_map<tuple<int, int>, Chunk*> chunks;
         unordered_map<tuple<int, int>, ChunkData*> chunkData;
 
-        chunkList chunkQueue;
+        chunkList chunkQueue = chunkList();
+        queue<tuple<int, int>> deletedChunks;
 
         std :: thread updateThread;
 
@@ -59,6 +60,7 @@ class World{
 
         bool shouldEnd=false;
         bool isMenu=false;
+        bool playerPositionSet = false;
 
         unsigned int numChunks = 0, numChunksRendered = 0, chunksLoading = 0;
         int lastCamX = -100, lastCamZ = -100;

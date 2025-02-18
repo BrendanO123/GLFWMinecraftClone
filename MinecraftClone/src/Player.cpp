@@ -20,12 +20,12 @@ Player :: Player(Shader newShader, float RenderDist) : shader(newShader), render
 
 void Player :: updateMatrixUniforms(float ratio){
     glUniformMatrix4fv(ViewAndPrespectiveMatLoc, 1, GL_FALSE, glm::value_ptr(cam.getViewAndProjection(lookDirection, ratio, renderDist)));
-    fPos = cam.CameraFPos;
-    glUniform3f(cameraIntVecLoc, fPos.x, fPos.y, fPos.z);
+    intPos = cam.CameraIPos;
+    glUniform3iv(cameraIntVecLoc, 1, glm::value_ptr(intPos));
 }
 
 glm :: ivec3 Player :: getPosition(){return intPos;}
-void Player :: processInput(GLFWwindow* window, float dt){std :: cout << "Made it into player class" << std :: endl; cam.processInput(window, fPos, intPos, dt);}
+void Player :: processInput(GLFWwindow* window, float dt){cam.processInput(window, fPos, intPos, dt);}
 
 void Player :: mouseClickCallback(GLFWwindow* window, int button, int action, int mods){
     if(action == GLFW_PRESS){
@@ -58,22 +58,22 @@ void Player :: scroll_callback(GLFWwindow* window, double xOff, double yOff){
 }
 
 bool Player :: RClick(){
-    /*raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
+    raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
     if(raycast.blockType != Blocks :: AIR){
         return World :: world -> breakBlock(raycast.pos);
         return true;
-    }*/
+    }
     return false;
 }
 bool Player :: LClick(){
-    /*raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
+    raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
     if(raycast.blockType != Blocks :: AIR){
        return World :: world -> placeBlock(raycast.pos + glm :: ivec3(raycast.normal), raycast.blockType);
-    }*/
+    }
     return false;
 }
 bool Player :: MClick(){
-    /*raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
-    if(raycast.blockType != Blocks :: AIR){heldBlock = raycast.blockType; return true;}*/
+    raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
+    if(raycast.blockType != Blocks :: AIR){heldBlock = raycast.blockType; return true;}
     return false;
 }
