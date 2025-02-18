@@ -1,6 +1,11 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <stdlib.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <iostream>
+#include <string.h>
 
 
 struct chunkListNode
@@ -51,13 +56,17 @@ struct chunkList{
 
     glm::ivec2 pop(){return popFront();}
     glm::ivec2 popFront(){
-        chunkListNode* temp = first;
+        if(first == nullptr || count == 0){printf("Nullptr Error: Poped Empty Queue\n", stderr);; return glm :: ivec2(-1);}
+        chunkListNode* temp = &*first;
         glm :: ivec2 returnValue = glm :: ivec2(first->x, first->y);
         first = first->next;
+        if(first==nullptr){last=nullptr;}
         count--;
         delete temp;
         return returnValue;
     }
+
+    int getCount(){return count;}
 
     glm :: ivec2 getFirst(){return glm :: ivec2(first->x, first->y);}
     glm :: ivec2 getLast(){return glm :: ivec2(last->x, last->y);}

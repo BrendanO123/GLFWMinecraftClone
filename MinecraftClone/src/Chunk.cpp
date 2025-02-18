@@ -31,6 +31,7 @@ Chunk :: ~Chunk(){
 }
 
 void Chunk :: genChunkMesh(){
+    if(data == nullptr || left == nullptr || front == nullptr || back == nullptr || right == nullptr){std :: cout << "Generating Mesh with Incomplete Data" << std :: endl;}
     if(!(flagByte & ChunkFlags :: HAS_STRUCTURES)){return;}
     GLuint vOffset=0, transLVOff = 0, BoardVOff = 0, y;
     Block block, adjacentBlock;

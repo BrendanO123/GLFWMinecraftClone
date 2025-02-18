@@ -42,9 +42,6 @@ void Player :: mouseClickCallback(GLFWwindow* window, int button, int action, in
             MClick();
         }
         else if(button == GLFW_MOUSE_BUTTON_RIGHT){
-            lookDirection = cam.CameraFront;
-            fPos = cam.CameraFPos;
-            intPos = cam.CameraIPos;
             RClick();
         }
     }
@@ -59,6 +56,7 @@ void Player :: scroll_callback(GLFWwindow* window, double xOff, double yOff){
 
 bool Player :: RClick(){
     raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
+    std :: cout << int(raycast.blockType) << std :: endl;
     if(raycast.blockType != Blocks :: AIR){
         return World :: world -> breakBlock(raycast.pos);
         return true;
@@ -67,13 +65,18 @@ bool Player :: RClick(){
 }
 bool Player :: LClick(){
     raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
+    std :: cout << int(raycast.blockType) << std :: endl;
     if(raycast.blockType != Blocks :: AIR){
        return World :: world -> placeBlock(raycast.pos + glm :: ivec3(raycast.normal), raycast.blockType);
     }
     return false;
 }
 bool Player :: MClick(){
+    lookDirection = cam.CameraFront;
+    fPos = cam.CameraFPos;
+    intPos = cam.CameraIPos;
     raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
+    std :: cout << int(raycast.blockType) << std :: endl;
     if(raycast.blockType != Blocks :: AIR){heldBlock = raycast.blockType; return true;}
     return false;
 }

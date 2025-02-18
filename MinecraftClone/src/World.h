@@ -35,8 +35,6 @@ class World{
          */
         void update(glm :: ivec3 camPos, bool menu);
 
-        static inline int Floor(float a){return (a<0 ? (int(a)-1) : int(a));}
-
         static World* world;
         std :: mutex mute;
 

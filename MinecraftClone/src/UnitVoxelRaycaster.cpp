@@ -62,7 +62,7 @@ raycastReturnStruct Raycaster :: unitVoxelRaycast(glm :: ivec3 originInt, glm ::
                 dt.x = timeInc1.x;
 
                 blockType = checkVoxel(lookPositionInt.x, lookPositionInt.y, lookPositionInt.z);
-                if(blockType){
+                if(blockType != Blocks :: AIR){
                     return raycastReturnStruct(lookPositionInt, blockType, glm :: i8vec3(-step.x, 0, 0));
                 }
                 if(abs(lookPositionInt.x-originInt.x) >= reachDist){
@@ -75,7 +75,7 @@ raycastReturnStruct Raycaster :: unitVoxelRaycast(glm :: ivec3 originInt, glm ::
                 dt.z = timeInc1.z;
 
                 blockType = checkVoxel(lookPositionInt.x, lookPositionInt.y, lookPositionInt.z);
-                if(blockType){
+                if(blockType != Blocks :: AIR){
                     return raycastReturnStruct(lookPositionInt, blockType, glm :: i8vec3(0, 0, -step.z));
                 }
                 if(abs(lookPositionInt.z-originInt.z) >= reachDist){
@@ -90,7 +90,7 @@ raycastReturnStruct Raycaster :: unitVoxelRaycast(glm :: ivec3 originInt, glm ::
                 dt.y = timeInc1.y;
 
                 blockType = checkVoxel(lookPositionInt.x, lookPositionInt.y, lookPositionInt.z);
-                if(blockType){
+                if(blockType != Blocks :: AIR){
                     return raycastReturnStruct(lookPositionInt, blockType, glm :: i8vec3(0, -step.y, 0));
                 }
                 if(abs(lookPositionInt.y-originInt.y) >= reachDist){
@@ -103,7 +103,7 @@ raycastReturnStruct Raycaster :: unitVoxelRaycast(glm :: ivec3 originInt, glm ::
                 dt.z = timeInc1.z;
 
                 blockType = checkVoxel(lookPositionInt.x, lookPositionInt.y, lookPositionInt.z);
-                if(blockType){
+                if(blockType != Blocks :: AIR){
                     return raycastReturnStruct(lookPositionInt, blockType, glm :: i8vec3(0, 0, -step.z));
                 }
                 if(abs(lookPositionInt.z-originInt.z) >= reachDist){

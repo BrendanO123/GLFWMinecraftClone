@@ -26,12 +26,12 @@ class Player{
 
         bool RClick();
         bool LClick();
-        bool MClick();
     
         public:
             Player() : renderDist(307.f){}
             Player(Shader newShader, float renderDist);
 
+            bool MClick();
             void updateMatrixUniforms(float ratio);
             void processInput(GLFWwindow* window, float dt);
             void mouseClickCallback(GLFWwindow* window, int button, int action, int mods);

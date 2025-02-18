@@ -53,6 +53,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         if(menu){glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);}
         else{glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); player->setFirstMouse(true);}
     }
+    else if(key == GLFW_KEY_M && action == GLFW_PRESS){player->MClick();}
 }
 static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods){
     if(!menu){player->mouseClickCallback(window, button, action, mods);}
