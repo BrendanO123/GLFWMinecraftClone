@@ -48,7 +48,6 @@ class World{
         unordered_map<tuple<int, int>, ChunkData*> chunkData;
 
         chunkList chunkQueue = chunkList();
-        queue<tuple<int, int>> deletedChunks;
 
         std :: thread updateThread;
 

@@ -107,11 +107,8 @@ void World :: update(glm :: ivec3 camPos, bool menu){
                 if((abs(chunkX - camX_chunk) > renderDistance || abs(chunkZ - camZ_chunk) > renderDistance)){
 
                     //remove from chunk map
-                    std :: cout << "Deleting Chunk: (" << chunkX << ", " << chunkZ << ") | " << std :: endl;
                     delete iterate->second;
                     iterate = chunks.erase(iterate);
-                    deletedChunks.push(tuple<int, int>(chunkX, chunkZ));
-                    std :: cout << "\tDeleted" << std :: endl;
                 }
                 //if it still needs to be rendered
                 else{
@@ -164,9 +161,7 @@ void World :: threadUpdate(){
 
                         //if we don't have chunk, add to rendering queue
                         if(chunks.find({x, z}) == chunks.end()){
-                            std :: cout << "Pushing Chunk to Queue (" << x << ", " << z << ") | " << std :: endl;
                             chunkQueue.pushBack(x, z);
-                            std :: cout << "\tPushed" << std :: endl;
                         }
                     }
                 }
@@ -179,9 +174,7 @@ void World :: threadUpdate(){
         if(chunksLoading == 0 && !chunkQueue.empty()){
 
             //remove next chunk and add get its location
-            std :: cout << "Getting Chunk From Queue, Count: " << chunkQueue.getCount() << " | " << std :: endl;
             glm :: ivec2 next = chunkQueue.popFront();
-            std :: cout << "\tGot Chunk" << std :: endl;
             mute.unlock();
 
             //turn chunk location into tuple for lookup
@@ -192,7 +185,6 @@ void World :: threadUpdate(){
             //if it is not in the chunks map
             if(chunks.find(chunkTuple) == chunks.end()){
 
-                std :: cout << "Making Chunk : (" << next.x << ", " << next.y << ") | " << std :: endl;
                 //add to map, therefore init, therefore gen
                 mute.unlock();
                 Chunk* chunk = new Chunk(0, next);
@@ -214,7 +206,6 @@ void World :: threadUpdate(){
 
                 }
                 else{chunk->data=chunkData.at(chunkTuple); mute.unlock();}
-                std :: cout <<"\tGot Main Data" << std :: endl;
 
                 mute.lock();
                 //EAST
@@ -283,7 +274,6 @@ void World :: threadUpdate(){
 
                 }
                 else{chunk->back=chunkData.at(tuple<int,int>(next.x, next.y-1)); mute.unlock();}
-                std :: cout <<"\tGot Side Data" << std :: endl;
 
                 mute.lock();
                 chunk->flagByte |= ChunkFlags :: HAS_BASICS;
@@ -294,7 +284,6 @@ void World :: threadUpdate(){
 
                     mute.lock();
                     chunks[chunkTuple] = chunk;
-                    std :: cout << "\tFinished Chunk" << std :: endl;
                     mute.unlock();
                 }
                 else{
@@ -360,29 +349,16 @@ void World :: threadUpdate(){
 
                     }
                     else{SE=chunkData.at(tuple<int,int>(next.x+1, next.y-1)); mute.unlock();}
-                    std :: cout << "\tGot Corner Data" << std :: endl;
 
                     mute.lock();
-                    std :: cout << (chunk->data == nullptr ? "\tCenter Data Does Not Exist" : "\tCenter Data Exists") << std :: endl;
-                    std :: cout << (chunk->back == nullptr ? "\tBack Data Does Not Exist" : "\tBack Data Exists") << std :: endl;
-                    std :: cout << (chunk->front == nullptr ? "\tFront Data Does Not Exist" : "\tFront Data Exists") << std :: endl;
-                    std :: cout << (chunk->left == nullptr ? "\tLeft Data Does Not Exist" : "\tLeft Data Exists") << std :: endl;
-                    std :: cout << (chunk->right == nullptr ? "\tRight Data Does Not Exist" : "\tRight Data Exists") << std :: endl;
-                    std :: cout << (NW == nullptr ? "\tNW Data Does Not Exist" : "\tNW Data Exists") << std :: endl;
-                    std :: cout << (SW == nullptr ? "\tSW Data Does Not Exist" : "\tSW Data Exists") << std :: endl;
-                    std :: cout << (NE == nullptr ? "\tNE Data Does Not Exist" : "\tNE Data Exists") << std :: endl;
-                    std :: cout << (SE == nullptr ? "\tSE Data Does Not Exist" : "\tSE Data Exists") << std :: endl;
                     WorldGen :: resolveStructures(chunk->data, NW, chunk->back, NE, chunk->left, chunk->right, SW, chunk->front, SE);
                     chunk->flagByte |= ChunkFlags :: HAS_STRUCTURES;
-                    std :: cout << "\tPlaced Strcutures" << std :: endl;
                     mute.unlock();
 
                     chunk->genChunkMesh();
 
                     mute.lock();
-                    std :: cout << "\tGenerated Mesh" << std :: endl;
                     chunks[chunkTuple] = chunk;
-                    std :: cout << "\tFinished Chunk" << std :: endl;
                     mute.unlock();
                 }
             }
@@ -399,57 +375,45 @@ void World :: threadUpdate(){
         
         if(!isMenu){//if stuff is happening
             mute.lock();
-            if(!deletedChunks.empty()){
-                tuple<int, int> location = deletedChunks.front();
-                deletedChunks.pop();
+            for (auto iterate = chunkData.begin(); iterate != chunkData.end();)
+            {
+                glm :: ivec2 chunkPos = iterate->second->pos;
 
-                std :: cout << "Got Deleted Chunk From Queue, Count: " << deletedChunks.size() << std :: endl;
+                if (
+                    (chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y)) == chunks.end()) &&
 
-                if(chunkData.find(location) != chunkData.end()){
-                    glm :: ivec2 chunkPos = chunkData.at(location)->pos;
-                    std :: cout << "Deleting ChunkData: (" << chunkPos.x << ", " << chunkPos.y << ") | " << std :: endl;
-                    if(chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y)) == chunks.end()){
-                        if (
-                            abs(chunkPos.x - camX_chunk) > renderDistance+1 || abs(chunkPos.y - camZ_chunk) > renderDistance+1
-                            || (
-                            (abs(chunkPos.x - camX_chunk) > renderDistance+1 || abs(chunkPos.y - camZ_chunk) > renderDistance) && 
-                                (
 
-                                ((chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y+1)) == chunks.end()) || 
-                                    ((chunks.at(tuple<int, int>(chunkPos.x+1, chunkPos.y+1))->flagByte & ChunkFlags :: HAS_STRUCTURES) != 0)) &&
-                                    
-                                ((chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y)) == chunks.end()) || 
-                                    ((chunks.at(tuple<int, int>(chunkPos.x+1, chunkPos.y))->flagByte & ChunkFlags :: HAS_MESH) != 0)) &&
-            
-                                ((chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y-1)) == chunks.end()) || 
-                                    ((chunks.at(tuple<int, int>(chunkPos.x+1, chunkPos.y-1))->flagByte & ChunkFlags :: HAS_STRUCTURES) != 0)) &&
-            
-            
-                                ((chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y+1)) == chunks.end()) || 
-                                    ((chunks.at(tuple<int, int>(chunkPos.x, chunkPos.y+1))->flagByte & ChunkFlags :: HAS_MESH) != 0)) &&
-            
-                                ((chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y-1)) == chunks.end()) || 
-                                    ((chunks.at(tuple<int, int>(chunkPos.x, chunkPos.y-1))->flagByte & ChunkFlags :: HAS_MESH) != 0)) &&
-            
-            
-                                ((chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y+1)) == chunks.end()) || 
-                                    ((chunks.at(tuple<int, int>(chunkPos.x-1, chunkPos.y+1))->flagByte & ChunkFlags :: HAS_STRUCTURES) != 0)) &&
-                                    
-                                ((chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y)) == chunks.end()) || 
-                                    ((chunks.at(tuple<int, int>(chunkPos.x-1, chunkPos.y))->flagByte & ChunkFlags :: HAS_MESH) != 0)) &&
-                                
-                                ((chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y-1)) == chunks.end()) || 
-                                    ((chunks.at(tuple<int, int>(chunkPos.x-1, chunkPos.y-1))->flagByte & ChunkFlags :: HAS_STRUCTURES) != 0))
-                                )
-                            )
-                        )
-                        {
-                            delete chunkData.at(location);
-                            std :: cout << "\tDeleted ChunkData" << std :: endl;
-                        }
-                        else{deletedChunks.push(location); std :: cout << "\tRepushed ChunkData (Not Deleted)" << std :: endl;}
-                    }
+                    ((chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y+1)) == chunks.end()) || 
+                        ((chunks.at(tuple<int, int>(chunkPos.x+1, chunkPos.y+1))->flagByte & ChunkFlags :: HAS_STRUCTURES) != 0)) &&
+                        
+                    ((chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y)) == chunks.end()) || 
+                        ((chunks.at(tuple<int, int>(chunkPos.x+1, chunkPos.y))->flagByte & ChunkFlags :: HAS_MESH) != 0)) &&
+
+                    ((chunks.find(tuple<int, int>(chunkPos.x+1, chunkPos.y-1)) == chunks.end()) || 
+                        ((chunks.at(tuple<int, int>(chunkPos.x+1, chunkPos.y-1))->flagByte & ChunkFlags :: HAS_STRUCTURES) != 0)) &&
+
+
+                    ((chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y+1)) == chunks.end()) || 
+                        ((chunks.at(tuple<int, int>(chunkPos.x, chunkPos.y+1))->flagByte & ChunkFlags :: HAS_MESH) != 0)) &&
+
+                    ((chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y-1)) == chunks.end()) || 
+                        ((chunks.at(tuple<int, int>(chunkPos.x, chunkPos.y-1))->flagByte & ChunkFlags :: HAS_MESH) != 0)) &&
+
+
+                    ((chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y+1)) == chunks.end()) || 
+                        ((chunks.at(tuple<int, int>(chunkPos.x-1, chunkPos.y+1))->flagByte & ChunkFlags :: HAS_STRUCTURES) != 0)) &&
+                        
+                    ((chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y)) == chunks.end()) || 
+                        ((chunks.at(tuple<int, int>(chunkPos.x-1, chunkPos.y))->flagByte & ChunkFlags :: HAS_MESH) != 0)) &&
+                    
+                    ((chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y-1)) == chunks.end()) || 
+                        ((chunks.at(tuple<int, int>(chunkPos.x-1, chunkPos.y-1))->flagByte & ChunkFlags :: HAS_STRUCTURES) != 0))
+                )
+                {
+                    delete chunkData.at(iterate->first);
+                    iterate = chunkData.erase(iterate);
                 }
+                else{iterate++;}
             }
             mute.unlock();
         }
