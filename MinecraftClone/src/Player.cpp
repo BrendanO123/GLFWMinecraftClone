@@ -16,6 +16,7 @@ Player :: Player(Shader newShader, float RenderDist) : shader(newShader), render
     fPos = cam.CameraFPos;
     lookDirection = cam.CameraFront;
     finalTransformationMatrix = glm :: identity<glm :: mat4>();
+    highlighter = new BlockHighlighter(shader);
 }
 
 void Player :: updateMatrixUniforms(float ratio){
@@ -36,15 +37,23 @@ void Player :: mouseClickCallback(GLFWwindow* window, int button, int action, in
             LClick();
         }
         else if(button == GLFW_MOUSE_BUTTON_MIDDLE){
-            lookDirection = cam.CameraFront;
-            fPos = cam.CameraFPos;
-            intPos = cam.CameraIPos;
             MClick();
         }
         else if(button == GLFW_MOUSE_BUTTON_RIGHT){
+            lookDirection = cam.CameraFront;
+            fPos = cam.CameraFPos;
+            intPos = cam.CameraIPos;
             RClick();
         }
     }
+}
+void Player :: highlightSelected(){
+    lookDirection = cam.CameraFront;
+    fPos = cam.CameraFPos;
+    intPos = cam.CameraIPos;
+    raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
+
+    highlighter->highlight(raycast.pos);
 }
 
 void Player :: mouse_callback(GLFWwindow* window, double xpos, double ypos){
@@ -75,7 +84,9 @@ bool Player :: MClick(){
     lookDirection = cam.CameraFront;
     fPos = cam.CameraFPos;
     intPos = cam.CameraIPos;
+    printf("(%d, %d, %d)\n", intPos.x, intPos.y, intPos.z);
     raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
+    printf("(%d, %d, %d)\n", raycast.pos.x, raycast.pos.y, raycast.pos.z);
     std :: cout << int(raycast.blockType) << std :: endl;
     if(raycast.blockType != Blocks :: AIR){heldBlock = raycast.blockType; return true;}
     return false;

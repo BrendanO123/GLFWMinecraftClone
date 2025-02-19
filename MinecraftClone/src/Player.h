@@ -6,12 +6,14 @@
 #include "World.h"
 #include "Shaders.h"
 #include "UnitVoxelRaycaster.h"
+#include "BlockHighlighter.h"
 
 class Player{
     private:
         Camera cam = Camera(); //makes
         GLubyte heldBlock = 0U; //sets
         Shader shader; //needs
+        BlockHighlighter* highlighter;
         const int reachDist = 24;
         Raycaster raycaster = Raycaster(reachDist, &getVoxel); //makes
 
@@ -29,10 +31,12 @@ class Player{
     
         public:
             Player() : renderDist(307.f){}
+            ~Player(){delete(highlighter);}
             Player(Shader newShader, float renderDist);
 
             bool MClick();
             void updateMatrixUniforms(float ratio);
+            void highlightSelected();
             void processInput(GLFWwindow* window, float dt);
             void mouseClickCallback(GLFWwindow* window, int button, int action, int mods);
             void mouse_callback(GLFWwindow* window, double xpos, double ypos);

@@ -422,16 +422,28 @@ void World :: threadUpdate(){
 
 GLubyte World :: getBlock(int x, int y, int z){
     //TODO LOD SYSTEM
+    if(x>=16 || x<0 || z>=16 || z<0){return Blocks::AIR;}
 
-    ChunkData* data = getChunkData(floor(x / float(chunkSize)), floor(z / float(chunkSize)));
-    if(data == nullptr){return Blocks :: AIR;}
+    //mute.lock();
+    /*ChunkData* data = getChunkData(floor(x / float(chunkSize)), floor(z / float(chunkSize)));
+    if(data == nullptr){return Blocks :: AIR;}*/
+    ChunkData* data;
+    if(chunks.find(tuple<int, int>(0,0)) == chunks.end()){return Blocks :: AIR;}
+    else{data = chunks.at(tuple<int, int>(0, 0))->data;}
 
     //does not work if chunk size changes
+    //mute.unlock();
     return data->findBlock((z & 15) + ((x & 15) << 4), y);
 }
 bool World :: breakBlock(glm :: ivec3 pos){
-    Chunk* chunk = getChunk(floor(pos.x / float(chunkSize)), floor(pos.z / float(chunkSize)));
-    if(chunk == nullptr){return false;}
+    //mute.lock();
+    if(pos.x>=16 || pos.x<0 || pos.z>=16 || pos.z<0){return false;}
+    
+    /*Chunk* chunk = getChunk(floor(pos.x / float(chunkSize)), floor(pos.z / float(chunkSize)));
+    if(chunk == nullptr){return false;}*/
+    Chunk* chunk;
+    if(chunks.find(tuple<int, int>(0,0)) == chunks.end()){return false;}
+    else{chunk = chunks.at(tuple<int, int>(0, 0));}
 
     Layer* layer = chunk->data->getLayer(pos.y);
     if(layer == nullptr){return false;}
@@ -442,12 +454,19 @@ bool World :: breakBlock(glm :: ivec3 pos){
     chunk->flagByte |= ChunkFlags :: MODIFIED;
     chunkQueue.pushFront(pos.x / chunkSize, pos.z / chunkSize);
 
+    //mute.unlock();
     return true;
 }
 
 bool World :: placeBlock(glm :: ivec3 pos, GLubyte blockType){
-    Chunk* chunk = getChunk(floor(pos.x / float(chunkSize)), floor(pos.z / float(chunkSize)));
-    if(chunk == nullptr){return false;}
+    //mute.lock();
+    if(pos.x>=16 || pos.x<0 || pos.z>=16 || pos.z<0){return false;}
+
+    /*Chunk* chunk = getChunk(floor(pos.x / float(chunkSize)), floor(pos.z / float(chunkSize)));
+    if(chunk == nullptr){return false;}*/
+    Chunk* chunk;
+    if(chunks.find(tuple<int, int>(0,0)) == chunks.end()){return false;}
+    else{chunk = chunks.at(tuple<int, int>(0, 0));}
 
     Layer layer = chunk->data->data.at(chunk->data->safeLayerFetch(pos.y));
     if(layer.data[(pos.z & 15) + ((pos.x & 15) << 4)]){return false;} //return false unless placing in air
@@ -458,6 +477,7 @@ bool World :: placeBlock(glm :: ivec3 pos, GLubyte blockType){
     chunk->flagByte |= ChunkFlags :: MODIFIED;
     chunkQueue.pushFront(pos.x / chunkSize, pos.z / chunkSize);
 
+    //mute.unlock();
     return true;
 }
 

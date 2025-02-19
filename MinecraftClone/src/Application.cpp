@@ -62,7 +62,6 @@ static void mouse_button_callback(GLFWwindow* window, int button, int action, in
 void processInput(GLFWwindow* window, float deltaTime=1.f){if(!menu){player->processInput(window, deltaTime);}}
 
 
-
 const string title = "Minecraft Clone";
 
 int main(){
@@ -215,6 +214,7 @@ int main(){
         processInput(window, deltaTime);
 
         player->updateMatrixUniforms(ratio);
+        player->highlightSelected();
         World :: world->update(player->getPosition(), menu);
 
         glfwSwapBuffers(window);
@@ -223,7 +223,7 @@ int main(){
     }
 
     delete(World :: world);
-    delete player;
+    delete (player);
     glfwDestroyWindow(window);
     glfwTerminate();
     exit(EXIT_SUCCESS);

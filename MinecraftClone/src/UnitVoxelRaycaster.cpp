@@ -34,7 +34,10 @@ raycastReturnStruct Raycaster :: unitVoxelRaycast(glm :: ivec3 originInt, glm ::
     if(maxReach > 0){reachDist = maxReach;}
     if(voxelHitCheck != nullptr){checkVoxel = voxelHitCheck;}
 
-    
+    bool moveX, moveY, moveZ;
+    moveX = direction.x != 0;
+    moveY = direction.x != 0;
+    moveZ = direction.x != 0;
     glm :: vec3 timeInc1 = glm :: vec3(
         (direction.x != 0 ? 1/direction.x : std::numeric_limits<float>::infinity()), 
         (direction.y != 0 ? 1/direction.y : std::numeric_limits<float>::infinity()), 
@@ -55,8 +58,8 @@ raycastReturnStruct Raycaster :: unitVoxelRaycast(glm :: ivec3 originInt, glm ::
     unsigned char blockType;
 
     while(true){
-        if(dt.x <= dt.y){
-            if(dt.x <= dt.z){
+        if(dt.x <= dt.y && moveX){
+            if(dt.x <= dt.z || !moveZ){
                 lookPositionInt.x+=step.x;
                 dt.y -= dt.x; dt.z -= dt.x;
                 dt.x = timeInc1.x;
@@ -84,7 +87,7 @@ raycastReturnStruct Raycaster :: unitVoxelRaycast(glm :: ivec3 originInt, glm ::
             }
         }
         else{
-            if(dt.y <= dt.z){
+            if(dt.y <= dt.z && moveY){
                 lookPositionInt.y+=step.y;
                 dt.x -= dt.y; dt.z -= dt.y;
                 dt.y = timeInc1.y;
