@@ -39,9 +39,9 @@ raycastReturnStruct Raycaster :: unitVoxelRaycast(glm :: ivec3 originInt, glm ::
     moveY = direction.x != 0;
     moveZ = direction.x != 0;
     glm :: vec3 timeInc1 = glm :: vec3(
-        (direction.x != 0 ? 1/direction.x : std::numeric_limits<float>::infinity()), 
-        (direction.y != 0 ? 1/direction.y : std::numeric_limits<float>::infinity()), 
-        (direction.z != 0 ? 1/direction.z : std::numeric_limits<float>::infinity())
+        (direction.x != 0 ? abs(1/direction.x) : std::numeric_limits<float>::infinity()), 
+        (direction.y != 0 ? abs(1/direction.y) : std::numeric_limits<float>::infinity()), 
+        (direction.z != 0 ? abs(1/direction.z) : std::numeric_limits<float>::infinity())
     );
     glm :: i8vec3 step = glm :: i8vec3(
         (direction.x > 0 ? 1 : (direction.x < 0 ? -1 : 0)), 
@@ -49,9 +49,9 @@ raycastReturnStruct Raycaster :: unitVoxelRaycast(glm :: ivec3 originInt, glm ::
         (direction.z > 0 ? 1 : (direction.z < 0 ? -1 : 0))
     );
     glm :: vec3 dt = glm :: vec3(
-        timeInc1.x * (step.x == 1 ? 1-originFloat.x : (step.x == 0 ? std::numeric_limits<float>::infinity() : originFloat.x)), 
-        timeInc1.y * (step.y == 1 ? 1-originFloat.y : (step.y == 0 ? std::numeric_limits<float>::infinity() : originFloat.y)), 
-        timeInc1.z * (step.z == 1 ? 1-originFloat.z : (step.z == 0 ? std::numeric_limits<float>::infinity() : originFloat.z))
+        timeInc1.x * (step.x == 1 ? 1-originFloat.x : (step.x == -1 ? originFloat.x : std::numeric_limits<float>::infinity())), 
+        timeInc1.y * (step.y == 1 ? 1-originFloat.y : (step.y == -1 ? originFloat.y : std::numeric_limits<float>::infinity())), 
+        timeInc1.z * (step.z == 1 ? 1-originFloat.z : (step.z == -1 ? originFloat.z : std::numeric_limits<float>::infinity()))
     );
     glm :: ivec3 lookPositionInt = originInt;
 

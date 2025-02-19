@@ -54,6 +54,14 @@ void Player :: highlightSelected(){
     raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
 
     highlighter->highlight(raycast.pos);
+    /*for(int x=-8; x < 8; x++){
+        for(int z=-8; z < 8; z++){
+            for(int y=-8; y<8; y++){
+                if(World::world->getBlock(x + intPos.x, y + intPos.y, z + intPos.z) != Blocks::AIR){highlighter->highlight(glm :: ivec3(x + intPos.x, y + intPos.y, z + intPos.z));}
+            }
+        }
+    }
+    highlighter->highlight(intPos + glm :: ivec3(2, -10, 4));*/
 }
 
 void Player :: mouse_callback(GLFWwindow* window, double xpos, double ypos){

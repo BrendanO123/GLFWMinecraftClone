@@ -422,18 +422,17 @@ void World :: threadUpdate(){
 
 GLubyte World :: getBlock(int x, int y, int z){
     //TODO LOD SYSTEM
-    if(x>=16 || x<0 || z>=16 || z<0){return Blocks::AIR;}
 
     //mute.lock();
-    /*ChunkData* data = getChunkData(floor(x / float(chunkSize)), floor(z / float(chunkSize)));
-    if(data == nullptr){return Blocks :: AIR;}*/
-    ChunkData* data;
-    if(chunks.find(tuple<int, int>(0,0)) == chunks.end()){return Blocks :: AIR;}
-    else{data = chunks.at(tuple<int, int>(0, 0))->data;}
+    //unique_lock<mutex> mute2 = unique_lock<mutex>(mute);
+    //if(!mute2.try_lock()){return Blocks :: AIR;}
+    ChunkData* data = getChunkData(floor(x / float(chunkSize)), floor((z-1) / float(chunkSize))+1);
+    if(data == nullptr){return Blocks :: AIR;}
 
     //does not work if chunk size changes
-    //mute.unlock();
-    return data->findBlock((z & 15) + ((x & 15) << 4), y);
+    GLubyte block = data->findBlock(((-z & 15) + ((x & 15)<<4) & 255), y);
+    //mute2.unlock();
+    return block;
 }
 bool World :: breakBlock(glm :: ivec3 pos){
     //mute.lock();
@@ -486,14 +485,14 @@ ChunkData* World :: getChunkData(int x, int z){
 
     tuple<int, int> chunkTuple{x, z};
 
-    if(chunks.find(chunkTuple) == chunks.end()){
+    if(chunkData.find(chunkTuple) != chunkData.end()){
 
         //is not in map
-        return nullptr;
+        return chunkData.at(chunkTuple); return nullptr;
     }
 
     //return chunk data
-    return chunkData.at(chunkTuple);
+    return nullptr;
 }
 
 //get chunk object from cords
@@ -503,14 +502,14 @@ Chunk* World :: getChunk(int x, int z){
     tuple<int, int> chunkTuple{x, z};
 
     //check to see if it is in the chunks map
-    if(chunkData.find(chunkTuple) == chunkData.end()){
+    if(chunkData.find(chunkTuple) != chunkData.end()){
 
         //is not in map
-        return nullptr;
+        return chunks.at(chunkTuple);
     }
     else{
 
         //is in map, return chunk
-        return chunks.at(chunkTuple);
+        return nullptr;
     }
 }

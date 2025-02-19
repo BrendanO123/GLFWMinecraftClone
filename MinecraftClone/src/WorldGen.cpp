@@ -95,9 +95,9 @@ void WorldGen :: getChunkBasics(int x, int z, int chunkSize, ChunkData* chunkDat
                 chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-1).data[iterZ + (iterX<<4)] = Blocks :: GRASS;
                 
                 
-                /*if(iterX == 0 || iterX == 15 || iterZ == 0 || iterZ == 15){
+                if(iterX == 0 || iterX == 15 || iterZ == 0 || iterZ == 15){
                     chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-1).data[iterZ + (iterX<<4)] = Blocks :: DIRT;
-                }*/
+                }
             }
             else{
                 chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-3).data[iterZ + (iterX<<4)] = noiseValues.surfaceType[iterZ + int(iterX << 4)];
@@ -106,6 +106,7 @@ void WorldGen :: getChunkBasics(int x, int z, int chunkSize, ChunkData* chunkDat
             }
         }
     }
+    chunkData->data.at(noiseValues.TerrainHeight[1 + int(2 << 4)]-1).data[1 + (2<<4)] = Blocks :: STONE;
     
 
     for(int iterX = 0; iterX < chunkSize; iterX++){
