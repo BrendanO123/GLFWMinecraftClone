@@ -5,11 +5,11 @@ uniform ivec3 cameraPosI;
 
 uniform mat4 viewAndProjectionMatrix;
 
-uniform float blockMapW_blocks;
-uniform float blockMapH_blocks;
+uniform float invBlockMapW_blocks;
+uniform float invBlockMapH_blocks;
 
 in vec2 vPos;
-in int height;
+in float height;
 in vec2 vtexPos;
 
 in int normal;
@@ -29,7 +29,7 @@ const vec3 normals[] = vec3[](
 
 void main(){
 	gl_Position = viewAndProjectionMatrix * vec4(vPos.x + modelPos.x - cameraPosI.x, height + modelPos.y - cameraPosI.y, vPos.y + modelPos.z - cameraPosI.z, 1.0);
-	TexCoord = vec2(vtexPos.x / blockMapW_blocks, vtexPos.y / blockMapH_blocks);
+	TexCoord = vec2(vtexPos.x * invBlockMapW_blocks, vtexPos.y * invBlockMapH_blocks);
     
     Normal = normals[normal];
 }

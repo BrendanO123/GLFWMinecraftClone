@@ -105,8 +105,8 @@ int main(){
     player = new Player(shader, renderDist);
 
     float alphaErrorRange=0.2f; //MUST BE >0!!
-    glUniform1f(glGetUniformLocation(shader.program, "blockMapW_blocks"), Blocks :: blockMapW_blocks);
-    glUniform1f(glGetUniformLocation(shader.program, "blockMapH_blocks"), Blocks :: blockMapH_blocks);
+    glUniform1f(glGetUniformLocation(shader.program, "invBlockMapW_blocks"), 1.f / Blocks :: blockMapW_blocks);
+    glUniform1f(glGetUniformLocation(shader.program, "invBlockMapH_blocks"), 1.f / Blocks :: blockMapH_blocks);
     glUniform1f(glGetUniformLocation(shader.program, "alphaH"), alphaErrorRange);
 
 

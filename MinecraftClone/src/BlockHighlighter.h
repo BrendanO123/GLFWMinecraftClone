@@ -43,7 +43,7 @@ class BlockHighlighter{
     GLuint VAO, VBO, EBO, modelMatLoc;
     vector<FVertex> verticies;
     vector<int> indicies;
-    constexpr static const float scale = 1.1f;
+    constexpr static const float overfill = 0.05f;
     constexpr static const int ColorPositionX = 8 - 1;
     constexpr static const int ColorPositionY = 1 - 1;
 

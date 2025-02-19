@@ -4,7 +4,7 @@
 #include <limits>
 
 Raycaster :: Raycaster(int maxReach, unsigned char (*voxelHitCheck)(int, int, int)){checkVoxel = voxelHitCheck; reachDist = maxReach;}
-Raycaster :: Raycaster(unsigned char (*voxelHitCheck)(int, int, int)){checkVoxel = voxelHitCheck; reachDist = 12;}
+Raycaster :: Raycaster(unsigned char (*voxelHitCheck)(int, int, int)){checkVoxel = voxelHitCheck; reachDist = defaultMaxReach;}
 bool Raycaster :: setLookupCallback(unsigned char (*voxelHitCheck)(int, int, int)){
     if(voxelHitCheck == nullptr){return false;}
     else{checkVoxel = voxelHitCheck; return true;}

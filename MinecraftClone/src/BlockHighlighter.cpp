@@ -10,58 +10,58 @@ BlockHighlighter :: ~BlockHighlighter(){
 BlockHighlighter :: BlockHighlighter(Shader shader){
 
     int vOffset = 0;
-    verticies.emplace_back(                   0, 0,   0, ColorPositionX, ColorPositionY, 4);
-    verticies.emplace_back((scale), 0,   0, ColorPositionX+1, ColorPositionY, 4);
-    verticies.emplace_back(                   0, scale, 0, ColorPositionX, ColorPositionY+1, 4);
-    verticies.emplace_back((scale), scale, 0, ColorPositionX+1, ColorPositionY+1, 4);
+    verticies.emplace_back(                   -overfill, -overfill,   overfill, ColorPositionX, ColorPositionY, 4);
+    verticies.emplace_back((1+overfill), -overfill,   overfill, ColorPositionX+1, ColorPositionY, 4);
+    verticies.emplace_back(                   -overfill, 1+overfill, overfill, ColorPositionX, ColorPositionY+1, 4);
+    verticies.emplace_back((1+overfill), 1+overfill, overfill, ColorPositionX+1, ColorPositionY+1, 4);
 
     indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
     indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
     vOffset+=4;
 
 
-    verticies.emplace_back((scale), 0,   0,                    ColorPositionX, ColorPositionY, 4);
-    verticies.emplace_back((scale), 0,   (-scale), ColorPositionX+1, ColorPositionY, 4);
-    verticies.emplace_back((scale), scale, 0,                    ColorPositionX, ColorPositionY+1, 4);
-    verticies.emplace_back((scale), scale, (-scale), ColorPositionX+1, ColorPositionY+1, 4);
+    verticies.emplace_back((1+overfill), -overfill,   overfill,                    ColorPositionX, ColorPositionY, 4);
+    verticies.emplace_back((1+overfill), -overfill,   (-1-overfill), ColorPositionX+1, ColorPositionY, 4);
+    verticies.emplace_back((1+overfill), 1+overfill, overfill,                    ColorPositionX, ColorPositionY+1, 4);
+    verticies.emplace_back((1+overfill), 1+overfill, (-1-overfill), ColorPositionX+1, ColorPositionY+1, 4);
 
     indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
     indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
     vOffset+=4;
 
 
-    verticies.emplace_back((scale), 0,   (-scale), ColorPositionX, ColorPositionY, 4);
-    verticies.emplace_back(                   0, 0,   (-scale), ColorPositionX+1, ColorPositionY, 4);
-    verticies.emplace_back((scale), scale, (-scale), ColorPositionX, ColorPositionY+1, 4);
-    verticies.emplace_back(                   0, scale, (-scale), ColorPositionX+1, ColorPositionY+1, 4);
+    verticies.emplace_back((1+overfill), -overfill,   (-1-overfill), ColorPositionX, ColorPositionY, 4);
+    verticies.emplace_back(                   -overfill, -overfill,   (-1-overfill), ColorPositionX+1, ColorPositionY, 4);
+    verticies.emplace_back((1+overfill), 1+overfill, (-1-overfill), ColorPositionX, ColorPositionY+1, 4);
+    verticies.emplace_back(                   -overfill, 1+overfill, (-1-overfill), ColorPositionX+1, ColorPositionY+1, 4);
 
     indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
     indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
     vOffset+=4;
 
-    verticies.emplace_back(                   0, 0,   (-scale), ColorPositionX, ColorPositionY, 4);
-    verticies.emplace_back(                   0, 0,   0,                    ColorPositionX+1, ColorPositionY, 4);
-    verticies.emplace_back(                   0, scale, (-scale), ColorPositionX, ColorPositionY+1, 4);
-    verticies.emplace_back(                   0, scale, 0,                    ColorPositionX+1, ColorPositionY+1, 4);
+    verticies.emplace_back(                   -overfill, -overfill,   (-1-overfill), ColorPositionX, ColorPositionY, 4);
+    verticies.emplace_back(                   -overfill, -overfill,   overfill,                    ColorPositionX+1, ColorPositionY, 4);
+    verticies.emplace_back(                   -overfill, 1+overfill, (-1-overfill), ColorPositionX, ColorPositionY+1, 4);
+    verticies.emplace_back(                   -overfill, 1+overfill, overfill,                    ColorPositionX+1, ColorPositionY+1, 4);
 
     indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
     indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
     vOffset+=4;
 
-    verticies.emplace_back(                   0, scale, 0,                   ColorPositionX,ColorPositionY, 4);
-    verticies.emplace_back((scale), scale, 0,                   ColorPositionX+1,ColorPositionY, 4);
-    verticies.emplace_back(                   0, scale, (-scale),ColorPositionX,ColorPositionY+1, 4);
-    verticies.emplace_back((scale), scale, (-scale),ColorPositionX+1,ColorPositionY+1, 4);
+    verticies.emplace_back(                   -overfill, 1+overfill, overfill,                   ColorPositionX,ColorPositionY, 4);
+    verticies.emplace_back((1+overfill), 1+overfill, overfill,                   ColorPositionX+1,ColorPositionY, 4);
+    verticies.emplace_back(                   -overfill, 1+overfill, (-1-overfill),ColorPositionX,ColorPositionY+1, 4);
+    verticies.emplace_back((1+overfill), 1+overfill, (-1-overfill),ColorPositionX+1,ColorPositionY+1, 4);
 
     indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
     indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
     vOffset+=4;
 
 
-    verticies.emplace_back(                   0, 0,   (-scale), ColorPositionX, ColorPositionY, 4);
-    verticies.emplace_back((scale), 0,   (-scale), ColorPositionX+1, ColorPositionY, 4);
-    verticies.emplace_back(                   0, 0,   0,                      ColorPositionX, ColorPositionY+1, 4);
-    verticies.emplace_back((scale), 0,   0,                      ColorPositionX+1, ColorPositionY+1, 4);
+    verticies.emplace_back(                   -overfill, -overfill,   (-1-overfill), ColorPositionX, ColorPositionY, 4);
+    verticies.emplace_back((1+overfill), -overfill,   (-1-overfill), ColorPositionX+1, ColorPositionY, 4);
+    verticies.emplace_back(                   -overfill, -overfill,   overfill,                      ColorPositionX, ColorPositionY+1, 4);
+    verticies.emplace_back((1+overfill), -overfill,   overfill,                      ColorPositionX+1, ColorPositionY+1, 4);
 
     indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
     indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
