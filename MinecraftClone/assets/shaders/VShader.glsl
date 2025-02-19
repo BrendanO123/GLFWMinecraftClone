@@ -16,6 +16,7 @@ in int normal;
 
 out vec2 TexCoord;
 out vec3 Normal;
+out float invert;
 
 const vec3 normals[] = vec3[](
 	vec3( 0,  0,  1), // Forward
@@ -31,5 +32,6 @@ void main(){
 	gl_Position = viewAndProjectionMatrix * vec4(vPos.x + modelPos.x - cameraPosI.x, height + modelPos.y - cameraPosI.y, vPos.y + modelPos.z - cameraPosI.z, 1.0);
 	TexCoord = vec2(vtexPos.x * invBlockMapW_blocks, vtexPos.y * invBlockMapH_blocks);
     
-    Normal = normals[normal];
+	if(normal == 6){Normal = normals[4]; invert = 1.f;}
+    else{Normal = normals[(normal % 6)]; invert = -1.f;}
 }
