@@ -11,9 +11,9 @@ BlockHighlighter :: ~BlockHighlighter(){
 BlockHighlighter :: BlockHighlighter(Shader shader){
 
     int vOffset = 0;
-    verticies.emplace_back(                   -overfill, -overfill,   overfill, ColorPositionX, ColorPositionY, 6);
-    verticies.emplace_back((1+overfill), -overfill,   overfill, ColorPositionX+1, ColorPositionY, 6);
-    verticies.emplace_back(                   -overfill, 1+overfill, overfill, ColorPositionX, ColorPositionY+1, 6);
+    verticies.emplace_back(   -overfill, -overfill,  overfill, ColorPositionX,   ColorPositionY,   6);
+    verticies.emplace_back((1+overfill), -overfill,  overfill, ColorPositionX+1, ColorPositionY,   6);
+    verticies.emplace_back(   -overfill, 1+overfill, overfill, ColorPositionX,   ColorPositionY+1, 6);
     verticies.emplace_back((1+overfill), 1+overfill, overfill, ColorPositionX+1, ColorPositionY+1, 6);
 
     indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
@@ -21,9 +21,9 @@ BlockHighlighter :: BlockHighlighter(Shader shader){
     vOffset+=4;
 
 
-    verticies.emplace_back((1+overfill), -overfill,   overfill,                    ColorPositionX, ColorPositionY, 6);
-    verticies.emplace_back((1+overfill), -overfill,   (-1-overfill), ColorPositionX+1, ColorPositionY, 6);
-    verticies.emplace_back((1+overfill), 1+overfill, overfill,                    ColorPositionX, ColorPositionY+1, 6);
+    verticies.emplace_back((1+overfill), -overfill,  overfill,      ColorPositionX,   ColorPositionY,   6);
+    verticies.emplace_back((1+overfill), -overfill,  (-1-overfill), ColorPositionX+1, ColorPositionY,   6);
+    verticies.emplace_back((1+overfill), 1+overfill, overfill,      ColorPositionX,   ColorPositionY+1, 6);
     verticies.emplace_back((1+overfill), 1+overfill, (-1-overfill), ColorPositionX+1, ColorPositionY+1, 6);
 
     indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
@@ -31,38 +31,38 @@ BlockHighlighter :: BlockHighlighter(Shader shader){
     vOffset+=4;
 
 
-    verticies.emplace_back((1+overfill), -overfill,   (-1-overfill), ColorPositionX, ColorPositionY, 6);
-    verticies.emplace_back(                   -overfill, -overfill,   (-1-overfill), ColorPositionX+1, ColorPositionY, 6);
-    verticies.emplace_back((1+overfill), 1+overfill, (-1-overfill), ColorPositionX, ColorPositionY+1, 6);
-    verticies.emplace_back(                   -overfill, 1+overfill, (-1-overfill), ColorPositionX+1, ColorPositionY+1, 6);
+    verticies.emplace_back((1+overfill), -overfill,  (-1-overfill), ColorPositionX,   ColorPositionY,   6);
+    verticies.emplace_back(   -overfill, -overfill,  (-1-overfill), ColorPositionX+1, ColorPositionY,   6);
+    verticies.emplace_back((1+overfill), 1+overfill, (-1-overfill), ColorPositionX,   ColorPositionY+1, 6);
+    verticies.emplace_back(   -overfill, 1+overfill, (-1-overfill), ColorPositionX+1, ColorPositionY+1, 6);
 
     indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
     indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
     vOffset+=4;
 
-    verticies.emplace_back(                   -overfill, -overfill,   (-1-overfill), ColorPositionX, ColorPositionY, 6);
-    verticies.emplace_back(                   -overfill, -overfill,   overfill,                    ColorPositionX+1, ColorPositionY, 6);
-    verticies.emplace_back(                   -overfill, 1+overfill, (-1-overfill), ColorPositionX, ColorPositionY+1, 6);
-    verticies.emplace_back(                   -overfill, 1+overfill, overfill,                    ColorPositionX+1, ColorPositionY+1, 6);
+    verticies.emplace_back(-overfill, -overfill,  (-1-overfill), ColorPositionX,  ColorPositionY,    6);
+    verticies.emplace_back(-overfill, -overfill,  overfill,      ColorPositionX+1, ColorPositionY,   6);
+    verticies.emplace_back(-overfill, 1+overfill, (-1-overfill), ColorPositionX,   ColorPositionY+1, 6);
+    verticies.emplace_back(-overfill, 1+overfill, overfill,      ColorPositionX+1, ColorPositionY+1, 6);
 
     indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
     indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
     vOffset+=4;
 
-    verticies.emplace_back(                   -overfill, 1+overfill, overfill,                   ColorPositionX,ColorPositionY, 6);
-    verticies.emplace_back((1+overfill), 1+overfill, overfill,                   ColorPositionX+1,ColorPositionY, 6);
-    verticies.emplace_back(                   -overfill, 1+overfill, (-1-overfill),ColorPositionX,ColorPositionY+1, 6);
-    verticies.emplace_back((1+overfill), 1+overfill, (-1-overfill),ColorPositionX+1,ColorPositionY+1, 6);
+    verticies.emplace_back(   -overfill, 1+overfill, overfill,      ColorPositionX,   ColorPositionY,   6);
+    verticies.emplace_back((1+overfill), 1+overfill, overfill,      ColorPositionX+1, ColorPositionY,   6);
+    verticies.emplace_back(   -overfill, 1+overfill, (-1-overfill), ColorPositionX,   ColorPositionY+1, 6);
+    verticies.emplace_back((1+overfill), 1+overfill, (-1-overfill), ColorPositionX+1, ColorPositionY+1, 6);
 
     indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
     indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
     vOffset+=4;
 
 
-    verticies.emplace_back(                   -overfill, -overfill,   (-1-overfill), ColorPositionX, ColorPositionY, 6);
-    verticies.emplace_back((1+overfill), -overfill,   (-1-overfill), ColorPositionX+1, ColorPositionY, 6);
-    verticies.emplace_back(                   -overfill, -overfill,   overfill,                      ColorPositionX, ColorPositionY+1, 6);
-    verticies.emplace_back((1+overfill), -overfill,   overfill,                      ColorPositionX+1, ColorPositionY+1, 6);
+    verticies.emplace_back(   -overfill, -overfill,   (-1-overfill), ColorPositionX,   ColorPositionY,   6);
+    verticies.emplace_back((1+overfill), -overfill,   (-1-overfill), ColorPositionX+1, ColorPositionY,   6);
+    verticies.emplace_back(   -overfill, -overfill,   overfill,      ColorPositionX,   ColorPositionY+1, 6);
+    verticies.emplace_back((1+overfill), -overfill,   overfill,      ColorPositionX+1, ColorPositionY+1, 6);
 
     indicies.push_back(vOffset); indicies.push_back(vOffset+2); indicies.push_back(vOffset+1);
     indicies.push_back(vOffset+3); indicies.push_back(vOffset+1); indicies.push_back(vOffset+2);
@@ -103,10 +103,12 @@ void BlockHighlighter :: highlight(glm :: ivec3 position, GLubyte blockType){
     glUniform3iv(modelMatLoc, 1, glm::value_ptr(position));
 
     Block block = Blocks :: blocks[blockType];
+
     int sideLowX, sideHighX, sideLowY, sideHighY;
     int topLowX, topHighX, topLowY, topHighY;
     int bottomLowX, bottomHighX, bottomLowY, bottomHighY;
-    if((blockType != Blocks :: AIR )&& ((block.flagByte & Blocks :: BILLBOARD_BIT) == 0)){
+
+    if((blockType != Blocks :: AIR ) && ((block.flagByte & Blocks :: BILLBOARD_BIT) == 0)){
         sideLowX = block.sideLowX;
         sideHighX = block.sideHighX;
         sideLowY = block.sideLowY;
@@ -122,9 +124,20 @@ void BlockHighlighter :: highlight(glm :: ivec3 position, GLubyte blockType){
         bottomLowY = block.bottomLowY;
         bottomHighY = block.bottomHighY;
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glDisable(GL_BLEND);
+        glEnable(GL_CULL_FACE);
     }
     else{
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        if(block.flagByte & Blocks :: BILLBOARD_BIT){
+            glEnable(GL_BLEND);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            glEnable(GL_CULL_FACE);
+        }
+        else{
+            glDisable(GL_BLEND);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            glDisable(GL_CULL_FACE);
+        }
         sideLowX = ColorPositionX;
         sideHighX = ColorPositionX+1;
         sideLowY = ColorPositionY;
@@ -163,10 +176,9 @@ void BlockHighlighter :: highlight(glm :: ivec3 position, GLubyte blockType){
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, verticies.size() * sizeof(FVertex), verticies.data(), GL_DYNAMIC_DRAW);
 
-    glDisable(GL_CULL_FACE);
-    glDisable(GL_BLEND);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indicies.size(), GL_UNSIGNED_INT, 0);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glEnable(GL_CULL_FACE);
+    glDisable(GL_BLEND);
 }

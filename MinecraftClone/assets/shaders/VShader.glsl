@@ -33,5 +33,6 @@ void main(){
 	TexCoord = vec2(vtexPos.x * invBlockMapW_blocks, vtexPos.y * invBlockMapH_blocks);
     
 	if(normal == 6){Normal = normals[4]; invert = 1.f;}
+	else if(normal == 7){Normal = normals[4]; invert = 1.f;}
     else{Normal = normals[(normal % 6)]; invert = -1.f;}
 }
