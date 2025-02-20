@@ -3,6 +3,7 @@
 #define GL_SILENCE_DEPRECATION
 
 #include <string>
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 #include <GLFW/linmath.h>
 
