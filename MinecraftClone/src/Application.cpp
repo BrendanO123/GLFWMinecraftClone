@@ -214,8 +214,8 @@ int main(){
         processInput(window, deltaTime);
 
         player->updateMatrixUniforms(ratio);
-        player->highlightSelected();
         World :: world->update(player->getPosition(), menu);
+        player->highlightSelected();
 
         glfwSwapBuffers(window);
         if(!menu){glfwPollEvents();}

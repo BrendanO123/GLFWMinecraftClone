@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 
 #include "Shaders.h"
+#include "Blocks.h"
 
 struct FVertex
 {
@@ -50,5 +51,5 @@ class BlockHighlighter{
     public:
         BlockHighlighter(Shader shader);
         ~BlockHighlighter();
-        void highlight(glm :: ivec3 position);
+        void highlight(glm :: ivec3 position, GLubyte blockType);
 };

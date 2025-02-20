@@ -53,7 +53,7 @@ void Player :: highlightSelected(){
     intPos = cam.CameraIPos;
     raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
 
-    highlighter->highlight(raycast.pos);
+    highlighter->highlight(raycast.pos, raycast.blockType);
     /*for(int x=-8; x < 8; x++){
         for(int z=-8; z < 8; z++){
             for(int y=-8; y<8; y++){
