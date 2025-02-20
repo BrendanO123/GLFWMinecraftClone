@@ -7,7 +7,7 @@ An attempt to make a Minecraft clone in C++ with GLFW. Inspired by: https://gith
 The project comes with a makefile in the root directory for make compatibility. After downloading and unzipping the project (if you have make for C++ installed), simply run ```cd <path_to_root_directory>``` in the terminal and you will be able to use the makfile and its custom commands. 
 
 ### Building the Project
-To compile the project with makefile run ```make``` in the root directory of the project. Additionally, ```make run``` and ```make build``` can be used to compile without .o files, and compile and run, respectively.
+To compile the project with makefile run ```make``` in the root directory of the project. Additionally, ```make build``` and ```make ruun``` can be used to compile without .o files, and compile and run, respectively.
 
 ### Running the Project
 After building the project, the project can be run from the build.out file. In the root directory, run ```make run``` to run the project or ```./build.out``` if you do not want to recompile any changes to the project.
