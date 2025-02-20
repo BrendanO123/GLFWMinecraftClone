@@ -1,13 +1,20 @@
 #pragma once
 
-
+#include <queue>
 
 #include "Camera.h"
-#include "World.h"
 #include "Shaders.h"
 #include "UnitVoxelRaycaster.h"
 #include "BlockHighlighter.h"
 
+struct clickAction{
+    raycastReturnStruct raycast;
+    bool LClicked = false;
+
+    clickAction(raycastReturnStruct rayCastResult, bool clickType = false) : raycast(rayCastResult), LClicked(clickType){}
+    clickAction(){}
+};
+enum CLICK_TYPES : bool {L_CLICKED = false, R_CLICKED = true};
 class Player{
     private:
         Camera cam = Camera(); //makes
@@ -25,6 +32,7 @@ class Player{
 
         GLuint ViewAndPrespectiveMatLoc, cameraIntVecLoc; //gets from shader
         const float renderDist;
+        queue<clickAction> clicks = queue<clickAction>();
 
         bool RClick();
         bool LClick();
@@ -35,6 +43,7 @@ class Player{
             Player(Shader newShader, float renderDist);
 
             bool MClick();
+            vector<bool> resolveClicks();
             void updateMatrixUniforms(float ratio);
             void highlightSelected();
             void processInput(GLFWwindow* window, float dt);
@@ -44,5 +53,5 @@ class Player{
             void setFirstMouse(bool state){cam.setFirstMouse(state);}
             glm :: ivec3 getPosition();
 
-            static GLubyte getVoxel(int x, int y, int z){return World :: world->getBlock(x, y, z);}
+            static GLubyte getVoxel(int x, int y, int z);
 };

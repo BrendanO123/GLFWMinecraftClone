@@ -12,6 +12,7 @@
 #include "Blocks.h"
 #include "Fractal.h"
 #include "ChunkList.h"
+#include "Player.h"
 
 #include <ScuffedMinecraft/TupleHash.h>
 
@@ -33,7 +34,7 @@ class World{
         /**
          * @brief The update thread for the main loop to call which renders the chunks and updates the player position.
          */
-        void update(glm :: ivec3 camPos, bool menu);
+        void update(glm :: ivec3 camPos, bool menu, Player* player);
 
         static World* world;
         std :: mutex mute;

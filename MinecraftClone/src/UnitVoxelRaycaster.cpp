@@ -15,22 +15,6 @@ bool Raycaster :: setMaxReach(int maxReach){
 }
 
 raycastReturnStruct Raycaster :: unitVoxelRaycast(glm :: ivec3 originInt, glm :: vec3 originFloat, glm :: vec3 direction, int maxReach, unsigned char (*voxelHitCheck)(int, int, int)){
-    /*#ifndef NDEBUG
-        if(direction.length() == 0){
-            printf("CANNOT RAYCAST ALONG VECTOR OF LENGTH ZERO\n", stderr);
-            exit(EXIT_FAILURE);
-        }
-        else if(direction.length() > 1.0001f || direction.length() < 0.9999f){
-            printf("RAYCAST LOOK VECTOR SHOULD BE NORMALIZED\n", stdout);
-        }
-        if(originFloat.x > 1.0f || originFloat.x < 0.f || originFloat.y > 1.0f || originFloat.y < 0.f || originFloat.z > 1.0f || originFloat.z < 0.f){
-            printf("FLOATING POINT COMPONENT OF CAMERA POSITION SHOULD BE IN [0, 1) FOR RAYCAST\n", stderr);
-        }
-        if(voxelHitCheck == nullptr && checkVoxel == nullptr){
-            printf("RAYCAST FUNCTION NEEDS A VOXEL LOOKUP FUNCTION\n", stderr);
-            exit(EXIT_FAILURE);
-        }
-    #endif*/
     if(maxReach > 0){reachDist = maxReach;}
     if(voxelHitCheck != nullptr){checkVoxel = voxelHitCheck;}
 

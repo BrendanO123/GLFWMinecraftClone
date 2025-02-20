@@ -4,7 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
+#include "World.h"
 
 using namespace std;
 
@@ -54,14 +54,6 @@ void Player :: highlightSelected(){
     raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
 
     highlighter->highlight(raycast.pos, raycast.blockType);
-    /*for(int x=-8; x < 8; x++){
-        for(int z=-8; z < 8; z++){
-            for(int y=-8; y<8; y++){
-                if(World::world->getBlock(x + intPos.x, y + intPos.y, z + intPos.z) != Blocks::AIR){highlighter->highlight(glm :: ivec3(x + intPos.x, y + intPos.y, z + intPos.z));}
-            }
-        }
-    }
-    highlighter->highlight(intPos + glm :: ivec3(2, -10, 4));*/
 }
 
 void Player :: mouse_callback(GLFWwindow* window, double xpos, double ypos){
@@ -73,29 +65,42 @@ void Player :: scroll_callback(GLFWwindow* window, double xOff, double yOff){
 
 bool Player :: RClick(){
     raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
-    std :: cout << int(raycast.blockType) << std :: endl;
     if(raycast.blockType != Blocks :: AIR){
-        return World :: world -> breakBlock(raycast.pos);
+        clicks.push(clickAction(raycast, R_CLICKED));
         return true;
     }
     return false;
 }
 bool Player :: LClick(){
     raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
-    std :: cout << int(raycast.blockType) << std :: endl;
     if(raycast.blockType != Blocks :: AIR){
-       return World :: world -> placeBlock(raycast.pos + glm :: ivec3(raycast.normal), raycast.blockType);
+        clicks.push(clickAction(raycast, L_CLICKED));
+        return true;
     }
     return false;
+}
+vector<bool> Player :: resolveClicks(){
+    vector<bool> returnBools = vector<bool>();
+    clickAction i;
+    while(!clicks.empty()){
+        i = clicks.front();
+        clicks.pop();
+        if(i.LClicked){
+            returnBools.push_back(World :: world -> placeBlock(i.raycast.pos + glm :: ivec3(i.raycast.normal), heldBlock));
+        }
+        else{
+            returnBools.push_back(World :: world -> breakBlock(i.raycast.pos));
+        }
+    }
+    return returnBools;
 }
 bool Player :: MClick(){
     lookDirection = cam.CameraFront;
     fPos = cam.CameraFPos;
     intPos = cam.CameraIPos;
-    printf("(%d, %d, %d)\n", intPos.x, intPos.y, intPos.z);
     raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
-    printf("(%d, %d, %d)\n", raycast.pos.x, raycast.pos.y, raycast.pos.z);
     std :: cout << int(raycast.blockType) << std :: endl;
     if(raycast.blockType != Blocks :: AIR){heldBlock = raycast.blockType; return true;}
     return false;
 }
+GLubyte Player :: getVoxel(int x, int y, int z){return World :: world->getBlock(x, y, z);}

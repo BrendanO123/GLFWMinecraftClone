@@ -14,6 +14,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Player.h"
+#include "World.h"
 
 #include <stdlib.h>
 #include <stddef.h>
@@ -214,7 +215,7 @@ int main(){
         processInput(window, deltaTime);
 
         player->updateMatrixUniforms(ratio);
-        World :: world->update(player->getPosition(), menu);
+        World :: world->update(player->getPosition(), menu, player);
         player->highlightSelected();
 
         glfwSwapBuffers(window);

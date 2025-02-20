@@ -33,6 +33,13 @@ Chunk :: ~Chunk(){
 void Chunk :: genChunkMesh(){
     if(data == nullptr || left == nullptr || front == nullptr || back == nullptr || right == nullptr){std :: cout << "Generating Mesh with Incomplete Data" << std :: endl;}
     if(!(flagByte & ChunkFlags :: HAS_STRUCTURES)){return;}
+
+    verticies = vector<Vertex>();
+    translucentVerticies = vector<Vertex>();
+    billboardVerticies = vector<BillboardVertex>();
+    indicies = vector<GLuint>(); translucentIndicies = vector<GLuint>(); billboardIndicies = vector<GLuint>();
+
+
     GLuint vOffset=0, transLVOff = 0, BoardVOff = 0, y;
     Block block, adjacentBlock;
     GLubyte type, adjacentType;
@@ -423,8 +430,6 @@ void Chunk :: genChunkMesh(){
             }
         }
     }
-
-    flagByte |= ChunkFlags :: HAS_MESH;
 }
 
 void Chunk :: render(Shader shader){

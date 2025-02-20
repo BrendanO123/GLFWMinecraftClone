@@ -113,6 +113,7 @@ namespace ChunkFlags{
         LAND_RENDERABLE = 8,
         WATER_RENDERABLE = 16,
         MODIFIED = 32,
-        FILE_STORED = 64
+        CONTAINS_BUILDS = 64,
+        FILE_STORED = 128
     };
 };
