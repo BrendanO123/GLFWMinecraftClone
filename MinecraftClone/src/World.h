@@ -60,6 +60,9 @@ class World{
         bool isMenu=false;
         bool playerPositionSet = false;
 
+        constexpr static const std::chrono::duration normSleepMillis = std::chrono::milliseconds(100);
+        constexpr static const std::chrono::duration menuSleepMillis = std::chrono::milliseconds(1000);
+
         unsigned int numChunks = 0, numChunksRendered = 0, chunksLoading = 0;
         int lastCamX = -100, lastCamZ = -100;
         int camX_chunk = -101, camZ_chunk = -101;

@@ -380,9 +380,26 @@ void World :: threadUpdate(){
             }
         }
         else{
+            /*using namespace std :: chrono;
+            {
             mute.unlock();
-            if(!isMenu){std::this_thread::sleep_for(std::chrono::milliseconds(1000));}
-            else{std::this_thread::sleep_for(std::chrono::milliseconds(2000));}
+            if(!isMenu){
+                bool urgent = false;
+                std :: chrono :: time_point start = chrono::steady_clock::now();
+                while(chrono::steady_clock::now() - start < chunkLoadSleepMillis){
+                    std::this_thread::sleep_for(std::chrono::milliseconds(clickSleepMillis));
+                    mute.lock();
+                    urgent = chunkQueue.hasUrgent();
+                    mute.unlock(); 
+                    if(urgent){break;}
+                }
+            }
+            else{std::this_thread::sleep_for(std::chrono::milliseconds(2000));} //effects the cpu time taken up as a background task 
+                //TODO: (change to a real function of time since last input eventually)
+            };*/
+            mute.unlock();
+            if(!isMenu){std::this_thread::sleep_for(std::chrono::milliseconds(normSleepMillis));}
+            else{std::this_thread::sleep_for(std::chrono::milliseconds(menuSleepMillis));}
         }
 
         
