@@ -1,9 +1,7 @@
 #pragma once
 
-#include <glad/gl.h>
-
-
 #include "Block.h"
+#include <GLFW/glfw3.h>
 
 namespace Blocks{
 

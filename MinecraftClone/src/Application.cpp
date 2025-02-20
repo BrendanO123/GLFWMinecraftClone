@@ -13,8 +13,10 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Player.h"
+#include "Shaders.h"
 #include "World.h"
+#include "Blocks.h"
+#include "Camera.h"
 
 #include <stdlib.h>
 #include <stddef.h>
@@ -24,11 +26,7 @@ using namespace std;
 
 #define VSYNC 1 //0 = off, 1 = on
 
-int chunkRenderDist = 12;
-float renderDist = int(chunkRenderDist*16*1.6 + 0.5f);
-
-Player* player;
-
+Camera cam = Camera();
 bool menu = false;
 
 static void error_callback(int error, const char* description){
@@ -36,11 +34,11 @@ static void error_callback(int error, const char* description){
 }
 
 static void mouse_callback(GLFWwindow* window, double xpos, double ypos){
-    if(!menu){player->mouse_callback(window, xpos, ypos);}
+    if(!menu){cam.mouse_callback(window, xpos, ypos);}
 }
 
 static void scroll_callback(GLFWwindow* window, double xOff, double yOff){
-    if(!menu){player->scroll_callback(window, xOff, yOff);}
+    if(!menu){cam.scroll_callback(window, xOff, yOff);}
 }
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -52,15 +50,12 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     else if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
         menu = !menu;
         if(menu){glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);}
-        else{glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); player->setFirstMouse(true);}
+        else{glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); cam.setFirstMouse(true);}
     }
-    else if(key == GLFW_KEY_M && action == GLFW_PRESS){player->MClick();}
-}
-static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods){
-    if(!menu){player->mouseClickCallback(window, button, action, mods);}
 }
 
-void processInput(GLFWwindow* window, float deltaTime=1.f){if(!menu){player->processInput(window, deltaTime);}}
+void processInput(GLFWwindow* window, float deltaTime=1.f){if(!menu){cam.processInput(window, deltaTime);}}
+
 
 
 const string title = "Minecraft Clone";
@@ -90,7 +85,6 @@ int main(){
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
     glfwSetKeyCallback(window, key_callback);
-    glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     if(!gladLoadGL(glfwGetProcAddress)){ // Glad initialization fails
@@ -101,13 +95,17 @@ int main(){
     }
     glfwSwapInterval(VSYNC);
 
+
     Shader shader = Shader("MinecraftClone/assets/shaders/VShader.glsl", "MinecraftClone/assets/shaders/FShader.glsl");
+
+    const GLuint viewMatLoc = glGetUniformLocation(shader.program, "view");
+    const GLuint projectionMatLoc = glGetUniformLocation(shader.program, "projection");
+
     shader.use();
-    player = new Player(shader, renderDist);
 
     float alphaErrorRange=0.2f; //MUST BE >0!!
-    glUniform1f(glGetUniformLocation(shader.program, "invBlockMapW_blocks"), 1.f / Blocks :: blockMapW_blocks);
-    glUniform1f(glGetUniformLocation(shader.program, "invBlockMapH_blocks"), 1.f / Blocks :: blockMapH_blocks);
+    glUniform1f(glGetUniformLocation(shader.program, "blockMapW_blocks"), Blocks :: blockMapW_blocks);
+    glUniform1f(glGetUniformLocation(shader.program, "blockMapH_blocks"), Blocks :: blockMapH_blocks);
     glUniform1f(glGetUniformLocation(shader.program, "alphaH"), alphaErrorRange);
 
 
@@ -184,6 +182,9 @@ int main(){
     glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    int chunkRenderDist = 12;
+    float renderDist = int(chunkRenderDist*16*1.6 + 0.5f);
+
 
 #ifdef SETSEED
     int seed = 1342;
@@ -195,8 +196,11 @@ int main(){
     int i = (rand() & 15) + 1;
     for(int j = 0; j<i; j++){rand();}
 
-
     World :: world = new World(&shader, chunkRenderDist, rand());
+
+
+    glm ::mat4 view = glm :: identity<glm :: mat4>();
+    glm ::mat4 projection = glm :: identity<glm :: mat4>();
 
     glClearColor(135/255.0f, 206/255.0f, 235/255.0f, 1.0f);
     float deltaTime, currentFrame, lastFrame = 0.0f;
@@ -214,9 +218,14 @@ int main(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         processInput(window, deltaTime);
 
-        player->updateMatrixUniforms(ratio);
-        World :: world->update(player->getPosition(), menu, player);
-        player->highlightSelected();
+
+        projection = glm::perspective(glm::radians(cam.fov), ratio, 0.1f, renderDist);
+        glUniformMatrix4fv(projectionMatLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+        view = cam.getView();
+        glUniformMatrix4fv(viewMatLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+        World :: world->update(cam.CameraPos, menu);
 
         glfwSwapBuffers(window);
         if(!menu){glfwPollEvents();}
@@ -224,7 +233,6 @@ int main(){
     }
 
     delete(World :: world);
-    delete (player);
     glfwDestroyWindow(window);
     glfwTerminate();
     exit(EXIT_SUCCESS);

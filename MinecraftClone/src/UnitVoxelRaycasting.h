@@ -18,10 +18,9 @@ class Raycaster{
     private:
         unsigned char (*checkVoxel)(int, int, int);
         int reachDist;
-        constexpr static const int defaultMaxReach = 10;
 
     public:
-        Raycaster(int maxReach = defaultMaxReach, unsigned char (*voxelHitCheck)(int, int, int) = nullptr);
+        Raycaster(int maxReach = 12, unsigned char (*voxelHitCheck)(int, int, int) = nullptr);
         Raycaster(unsigned char (*voxelHitCheck)(int, int, int));
         bool setLookupCallback(unsigned char (*voxelHitCheck)(int, int, int));
         bool setMaxReach(int maxReach);

@@ -1,30 +1,22 @@
 #include "Camera.h"
 
-#include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 
 Camera :: Camera() : maxFov(110.f), minFov(15.0f), defaultFov(70.f){
+    CameraFront = glm :: vec3(0.f, 0.f, -1.f);
     rotation = glm :: vec2(0.f, -89.9f);
-    CameraFront.x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
-    CameraFront.y = sin(glm::radians(rotation.x));
-    CameraFront.z = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
-    CameraFront = glm :: normalize(CameraFront);
-
     firstMouseCall = true;
     lastX = 400;
     lastY = 300;
 
-    CameraFPos = glm :: vec3(0.f, 0.f, 0.f);
-    CameraIPos = glm :: vec3(8, 135, 8);
+    CameraPos = glm :: vec3(8.f, 135.f, 8.f);
 
     fov = defaultFov;
     mouseSensitivity = 0.1f;
 }
 
 Camera :: Camera(float FOV, float maxFOV, float minFOV, float defaultFOV, glm :: vec3 pos, glm :: vec2 Rotation, float sensitivity) : maxFov(maxFOV), minFov(minFOV), defaultFov(defaultFOV) {
-    fov = FOV; rotation = Rotation; mouseSensitivity = sensitivity;
-    CameraIPos = glm :: ivec3((int)pos.x, (int)pos.y, (int)pos.z);
-    CameraFPos = glm :: ivec3(pos.x - CameraIPos.x, pos.y - CameraIPos.y, pos.z - CameraIPos.z);
+    fov = FOV; CameraPos = pos; rotation = Rotation; mouseSensitivity = sensitivity;
 
     CameraFront.x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
     CameraFront.y = sin(glm::radians(rotation.x));
@@ -35,8 +27,7 @@ Camera :: Camera(float FOV, float maxFOV, float minFOV, float defaultFOV, glm ::
     lastX = 400;
     lastY = 300;
 }
-glm :: ivec3 Camera :: getIntPos(){return CameraIPos;}
-glm :: vec3 Camera :: getFloatPos(){return CameraFPos;}
+glm :: vec3 Camera :: getPos(){return CameraPos;}
 
 void Camera :: mouse_callback(GLFWwindow* window, double xpos, double ypos){
     if(firstMouseCall){lastX=xpos; lastY=ypos; firstMouseCall=false; return;}
@@ -63,7 +54,7 @@ void Camera :: scroll_callback(GLFWwindow* window, double xOff, double yOff){
     if(fov>maxFov){fov=maxFov;}
 }
 
-void Camera :: processInput(GLFWwindow* window, glm :: vec3 &FPos, glm :: ivec3 &IPos, float deltaTime){
+void Camera :: processInput(GLFWwindow* window, float deltaTime=1.f){
 
     //TODO: create pause menu and f3 screen
 
@@ -87,12 +78,12 @@ void Camera :: processInput(GLFWwindow* window, glm :: vec3 &FPos, glm :: ivec3 
     }
 
     if(shouldMove && normalizedMoveSpeed){move = glm :: normalize(move);}
-    CameraFPos += move * moveSpeed * ((glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) ? 4.5f : 1.0f);
-    CameraIPos += glm :: ivec3(CameraFPos);
-    CameraFPos -= glm :: ivec3(CameraFPos);
-    IPos = CameraIPos; FPos = CameraFPos;
+    CameraPos += move * moveSpeed * ((glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) ? 4.0f : 1.0f);
 }
 
-glm :: mat4 Camera :: getViewAndProjection(glm :: vec3 &LookDirection, float ratio, float renderDist){
-    return glm::perspective(glm::radians(fov), ratio, 0.1f, renderDist) * glm :: lookAt(CameraFPos, CameraFront + CameraFPos, CameraUp);
+glm :: mat4 Camera :: getView(){
+    glm :: mat4 view = glm :: identity<glm :: mat4>();
+    view = glm :: lookAt(CameraPos, CameraFront + CameraPos, CameraUp);
+
+    return view;
 }

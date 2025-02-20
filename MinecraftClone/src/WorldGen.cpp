@@ -1,5 +1,7 @@
 #include "WorldGen.h"
 
+#include <glad/gl.h>
+#include <GLFW/glfw3.h>
 #include <iostream>
 
 #include "Blocks.h"
@@ -106,7 +108,6 @@ void WorldGen :: getChunkBasics(int x, int z, int chunkSize, ChunkData* chunkDat
             }
         }
     }
-    //chunkData->data.at(noiseValues.TerrainHeight[1 + int(2 << 4)]-1).data[1 + (2<<4)] = Blocks :: STONE;
     
 
     for(int iterX = 0; iterX < chunkSize; iterX++){

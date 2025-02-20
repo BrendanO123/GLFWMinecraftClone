@@ -11,8 +11,6 @@
 #include "Camera.h"
 #include "Blocks.h"
 #include "Fractal.h"
-#include "ChunkList.h"
-#include "Player.h"
 
 #include <ScuffedMinecraft/TupleHash.h>
 
@@ -27,14 +25,12 @@ class World{
         Chunk* getChunk(int x, int z);
         ChunkData* getChunkData(int x, int z);
 
-        GLubyte getBlock(int x, int y, int z);
-        bool breakBlock(glm :: ivec3 pos);
-        bool placeBlock(glm :: ivec3 pos, GLubyte blockType);
-
         /**
          * @brief The update thread for the main loop to call which renders the chunks and updates the player position.
          */
-        void update(glm :: ivec3 camPos, bool menu, Player* player);
+        void update(glm :: vec3 camPos, bool menu);
+
+        static inline int Floor(float a){return (a<0 ? (int(a)-1) : int(a));}
 
         static World* world;
         std :: mutex mute;
@@ -48,7 +44,7 @@ class World{
         unordered_map<tuple<int, int>, Chunk*> chunks;
         unordered_map<tuple<int, int>, ChunkData*> chunkData;
 
-        chunkList chunkQueue = chunkList();
+        queue<glm::ivec2> chunkQueue;
 
         std :: thread updateThread;
 
@@ -58,10 +54,6 @@ class World{
 
         bool shouldEnd=false;
         bool isMenu=false;
-        bool playerPositionSet = false;
-
-        constexpr static const std::chrono::duration normSleepMillis = std::chrono::milliseconds(100);
-        constexpr static const std::chrono::duration menuSleepMillis = std::chrono::milliseconds(1000);
 
         unsigned int numChunks = 0, numChunksRendered = 0, chunksLoading = 0;
         int lastCamX = -100, lastCamZ = -100;
