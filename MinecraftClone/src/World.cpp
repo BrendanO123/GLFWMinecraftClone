@@ -219,7 +219,7 @@ void World :: threadUpdate(){
                     mute.unlock();
 
                 }
-                else{chunk->data=chunkData.at(chunkTuple); mute.unlock();}
+                else{chunk->data=chunkData.at(chunkTuple); if(chunk->data->hasBuilds){chunk->flagByte |= ChunkFlags :: CONTAINS_BUILDS;} mute.unlock();}
 
                 mute.lock();
                 //EAST
@@ -410,6 +410,7 @@ void World :: threadUpdate(){
                 glm :: ivec2 chunkPos = iterate->second->pos;
 
                 if (
+                    (!iterate->second->hasBuilds) && 
                     (chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y)) == chunks.end()) &&
 
 
@@ -470,10 +471,12 @@ bool World :: breakBlock(glm :: ivec3 pos){
     if(layer == nullptr){return false;}
 
     layer->data[((-pos.z & 15) + ((pos.x & 15)<<4) & 255)] = Blocks :: AIR;
+    chunk->data->hasBuilds = true;
 
     if(chunk != nullptr){
         chunk->flagByte |= ChunkFlags :: MODIFIED;
         chunks[tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1)] = chunk;
+        chunkData[tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1)] = chunk->data;
         chunkQueue.pushFront(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1);
         return true;
     }
@@ -490,10 +493,12 @@ bool World :: placeBlock(glm :: ivec3 pos, GLubyte blockType){
     if(layer->data[((-pos.z & 15) + ((pos.x & 15)<<4) & 255)]){return false;} //return false unless placing in air
 
     layer->data[((-pos.z & 15) + ((pos.x & 15)<<4) & 255)] = blockType;
+    chunk->data->hasBuilds = true;
 
     if(chunk != nullptr){
         chunk->flagByte |= ChunkFlags :: MODIFIED;
         chunks[tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1)] = chunk;
+        chunkData[tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1)] = chunk->data;
         chunkQueue.pushFront(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1);
         return true;
     }
