@@ -31,18 +31,12 @@ void Player :: processInput(GLFWwindow* window, float dt){cam.processInput(windo
 void Player :: mouseClickCallback(GLFWwindow* window, int button, int action, int mods){
     if(action == GLFW_PRESS){
         if(button == GLFW_MOUSE_BUTTON_LEFT){
-            lookDirection = cam.CameraFront;
-            fPos = cam.CameraFPos;
-            intPos = cam.CameraIPos;
             LClick();
         }
         else if(button == GLFW_MOUSE_BUTTON_MIDDLE){
             MClick();
         }
         else if(button == GLFW_MOUSE_BUTTON_RIGHT){
-            lookDirection = cam.CameraFront;
-            fPos = cam.CameraFPos;
-            intPos = cam.CameraIPos;
             RClick();
         }
     }
@@ -64,6 +58,9 @@ void Player :: scroll_callback(GLFWwindow* window, double xOff, double yOff){
 }
 
 bool Player :: RClick(){
+    lookDirection = cam.CameraFront;
+    fPos = cam.CameraFPos;
+    intPos = cam.CameraIPos;
     raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
     if(raycast.blockType != Blocks :: AIR){
         clicks.push(clickAction(raycast, R_CLICKED));
@@ -72,6 +69,9 @@ bool Player :: RClick(){
     return false;
 }
 bool Player :: LClick(){
+    lookDirection = cam.CameraFront;
+    fPos = cam.CameraFPos;
+    intPos = cam.CameraIPos;
     raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
     if(raycast.blockType != Blocks :: AIR){
         clicks.push(clickAction(raycast, L_CLICKED));

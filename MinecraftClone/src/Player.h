@@ -33,25 +33,28 @@ class Player{
         GLuint ViewAndPrespectiveMatLoc, cameraIntVecLoc; //gets from shader
         const float renderDist;
         queue<clickAction> clicks = queue<clickAction>();
+    
+    public:
+        Player() : renderDist(307.f){}
+        ~Player(){delete(highlighter);}
+        Player(Shader newShader, float renderDist);
 
+        bool MClick();
         bool RClick();
         bool LClick();
-    
-        public:
-            Player() : renderDist(307.f){}
-            ~Player(){delete(highlighter);}
-            Player(Shader newShader, float renderDist);
+        vector<bool> resolveClicks();
 
-            bool MClick();
-            vector<bool> resolveClicks();
-            void updateMatrixUniforms(float ratio);
-            void highlightSelected();
-            void processInput(GLFWwindow* window, float dt);
-            void mouseClickCallback(GLFWwindow* window, int button, int action, int mods);
-            void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-            void scroll_callback(GLFWwindow* window, double xOff, double yOff);
-            void setFirstMouse(bool state){cam.setFirstMouse(state);}
-            glm :: ivec3 getPosition();
+        void updateMatrixUniforms(float ratio);
+        void processInput(GLFWwindow* window, float dt);
+        void highlightSelected();
 
-            static GLubyte getVoxel(int x, int y, int z);
+        void mouseClickCallback(GLFWwindow* window, int button, int action, int mods);
+        void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+        void scroll_callback(GLFWwindow* window, double xOff, double yOff);
+
+        void setFirstMouse(bool state){cam.setFirstMouse(state);}
+        bool setHeldBlock(GLubyte blockType){if(blockType){heldBlock = blockType; return true;} return false;}
+        glm :: ivec3 getPosition();
+
+        static GLubyte getVoxel(int x, int y, int z);
 };

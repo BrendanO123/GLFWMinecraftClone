@@ -53,6 +53,6 @@ namespace Blocks{
         TRANSPARENT_BIT =(unsigned char)(1<<7)
     };
 
-    static const float blockMapW_blocks = 8.f;
+    static const float blockMapW_blocks = 16.f;
     static const float blockMapH_blocks = 4.f;
 }

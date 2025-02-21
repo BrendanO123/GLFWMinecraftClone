@@ -7,7 +7,7 @@
 
 namespace Blocks{
 
-    const GLubyte blockCount = 26;
+    const GLubyte blockCount = 36;
 
 
     /**
@@ -58,7 +58,26 @@ namespace Blocks{
             6, 7, 0, 1, //bottom: tex = (2,1)
             false, false, false, false, true), 
         Block(4, 5, 0, 1), //sand
-        Block(5, 6, 0, 1) //gravel
+        Block(5, 6, 0, 1), //gravel
+        Block(7, 8, 1, 2, true), //glass
+        Block(7, 8, 2, 3), //cobble
+        Block(8, 9, 3, 4), //brick
+        Block(8, 9, 2, 3), //oak planks
+        Block(8, 9, 1, 2), //polished andesite
+        Block(8, 9, 0, 1), //coarse dirt
+
+        Block(9, 10, 0, 1), //dark oak planks
+        Block( //spruce log (unique faces)
+            9, 10, 2, 3, //top: tex = (2,1)
+            9, 10, 1, 2, //side: tex = (2,0)
+            9, 10, 2, 3 //bottom = top: tex = (2,1)
+        ),
+        Block( //podzol block (unique faces)
+            10, 11, 1, 2, //top: tex = (0,2)
+            10, 11, 0, 1, //side: tex = (0,1)
+            0, 1, 0, 1 //bottom = dirt: tex = (0,0)
+        ),
+        Block(10, 11, 2, 3) //rooted dirt
     };
 
 
@@ -94,6 +113,16 @@ namespace Blocks{
         
         WATER = 23,
         SAND = 24,
-        GRAVEL = 25
+        GRAVEL = 25,
+        GLASS = 26,
+        COBBLE_STONE = 27,
+        BRICK = 28, 
+        OAK_PLANKS = 29,
+        SMOOTH_ANDESITE = 30,
+        COARSE_DIRT = 31,
+        DARK_PLANKS = 32,
+        DARK_LOG = 33,
+        PODZOL = 34,
+        ROOTED_DIRT = 35
     };
 }

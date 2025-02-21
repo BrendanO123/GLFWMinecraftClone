@@ -55,6 +55,18 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         else{glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); player->setFirstMouse(true);}
     }
     else if(key == GLFW_KEY_M && action == GLFW_PRESS){player->MClick();}
+    else if(key == GLFW_KEY_TAB && action == GLFW_PRESS){player->RClick();}
+
+    else if(key == GLFW_KEY_1 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: OAK_PLANKS);}
+    else if(key == GLFW_KEY_2 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: GLASS);}
+    else if(key == GLFW_KEY_3 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: COBBLE_STONE);}
+    else if(key == GLFW_KEY_4 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: SMOOTH_ANDESITE);}
+    else if(key == GLFW_KEY_5 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: BRICK);}
+    else if(key == GLFW_KEY_6 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: DARK_PLANKS);}
+    else if(key == GLFW_KEY_7 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: DARK_LOG);}
+    else if(key == GLFW_KEY_8 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: COARSE_DIRT);}
+    else if(key == GLFW_KEY_9 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: PODZOL);}
+    else if(key == GLFW_KEY_0 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: ROOTED_DIRT);}
 }
 static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods){
     if(!menu){player->mouseClickCallback(window, button, action, mods);}
