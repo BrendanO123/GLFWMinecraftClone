@@ -99,7 +99,6 @@ bool Player :: MClick(){
     fPos = cam.CameraFPos;
     intPos = cam.CameraIPos;
     raycastReturnStruct raycast = raycaster.unitVoxelRaycast(intPos, fPos, lookDirection);
-    std :: cout << int(raycast.blockType) << std :: endl;
     if(raycast.blockType != Blocks :: AIR){heldBlock = raycast.blockType; return true;}
     return false;
 }

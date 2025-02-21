@@ -87,7 +87,7 @@ void Camera :: processInput(GLFWwindow* window, glm :: vec3 &FPos, glm :: ivec3 
     }
 
     if(shouldMove && normalizedMoveSpeed){move = glm :: normalize(move);}
-    CameraFPos += move * moveSpeed * ((glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) ? 4.5f : 1.0f);
+    CameraFPos += deltaTime * move * moveSpeed * ((glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) ? 4.5f : 1.0f);
     CameraIPos += glm :: ivec3(CameraFPos);
     CameraFPos -= glm :: ivec3(CameraFPos);
     IPos = CameraIPos; FPos = CameraFPos;

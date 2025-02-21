@@ -6,7 +6,7 @@
 #include <glm/glm.hpp>
 
 const bool normalizedMoveSpeed = true;
-const float moveSpeed = 0.08f;
+const float moveSpeed = 0.05f * 200;
 
 class Camera{
     private:

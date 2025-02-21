@@ -211,7 +211,8 @@ int main(){
     World :: world = new World(&shader, chunkRenderDist, rand());
 
     glClearColor(135/255.0f, 206/255.0f, 235/255.0f, 1.0f);
-    float deltaTime, currentFrame, lastFrame = 0.0f;
+    float deltaTime, currentFrame; 
+    float lastFrame = glfwGetTime();
     while(!glfwWindowShouldClose(window)){ //while window wants to stay open
 
         currentFrame = glfwGetTime();

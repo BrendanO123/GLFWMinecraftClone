@@ -45,7 +45,7 @@ class BlockHighlighter{
     vector<FVertex> verticies;
     vector<int> indicies;
     constexpr static const float overfill = 0.05f;
-    constexpr static const int ColorPositionX = 8 - 1;
+    constexpr static const int ColorPositionX = 16 - 1;
     constexpr static const int ColorPositionY = 1 - 1;
 
     public:
