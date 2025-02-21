@@ -102,7 +102,7 @@ void World :: update(glm :: ivec3 camPos, bool menu, Player* player){
             int chunkX, chunkZ; iterate->second->getPos(chunkX, chunkZ);
 
             //if it is ready to render
-            if(((iterate->second->flagByte & ChunkFlags :: LAND_RENDERABLE) != 0) && ((iterate->second->flagByte & ChunkFlags :: WATER_RENDERABLE) != 0)){
+            if(iterate->second->flagByte & ChunkFlags :: RENDERABLE){
                 //if it has moved out of render
                 if((abs(chunkX - camX_chunk) > renderDistance || abs(chunkZ - camZ_chunk) > renderDistance)){
 
@@ -191,8 +191,8 @@ void World :: threadUpdate(){
                 if(chunk->flagByte & ChunkFlags :: MODIFIED){
                     chunk->genChunkMesh();
 
-                    chunk->flagByte |= ChunkFlags :: HAS_MESH | ChunkFlags :: CONTAINS_BUILDS;
-                    chunk->flagByte = chunk->flagByte & ~(ChunkFlags :: MODIFIED | ChunkFlags :: LAND_RENDERABLE | ChunkFlags :: WATER_RENDERABLE);
+                    chunk->flagByte |= ChunkFlags :: HAS_MESH;
+                    chunk->flagByte = chunk->flagByte & ~(ChunkFlags :: MODIFIED | ChunkFlags :: RENDERABLE);
                     chunks[chunkTuple] = chunk;
                     mute.unlock();
                 }
@@ -467,14 +467,53 @@ bool World :: breakBlock(glm :: ivec3 pos){
     if(((chunk->flagByte & ChunkFlags :: HAS_STRUCTURES)==0)){return false;}
 
     //does not work if chunk size changes
+    //TODO update adjacent chunk if on border
     Layer* layer = chunk->data->getLayer(pos.y);
     if(layer == nullptr){return false;}
 
     layer->data[((-pos.z & 15) + ((pos.x & 15)<<4) & 255)] = Blocks :: AIR;
     chunk->data->hasBuilds = true;
 
+    if((pos.x & 15) == 15){
+        Chunk* chunkXUp = getChunk(floor(pos.x / float(chunkSize))+1, floor((pos.z-1) / float(chunkSize))+1);
+        if(chunkXUp != nullptr){
+            if(chunkXUp->flagByte & ChunkFlags :: HAS_MESH){
+                chunkXUp->flagByte |= ChunkFlags :: MODIFIED;
+                chunkQueue.pushFront(floor(pos.x / float(chunkSize))+1, floor((pos.z-1) / float(chunkSize))+1);
+            }
+        }
+    }
+    else if ((pos.x & 15) == 0){
+        Chunk* chunkXDown = getChunk(floor(pos.x / float(chunkSize))-1, floor((pos.z-1) / float(chunkSize))+1);
+        if(chunkXDown != nullptr){
+            if(chunkXDown->flagByte & ChunkFlags :: HAS_MESH){
+                chunkXDown->flagByte |= ChunkFlags :: MODIFIED;
+                chunkQueue.pushFront(floor(pos.x / float(chunkSize))-1, floor((pos.z-1) / float(chunkSize))+1);
+            }
+        }
+    }
+    if((-pos.z & 15) == 15){
+        Chunk* chunkZUp = getChunk(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize)));
+        if(chunkZUp != nullptr){
+            if(chunkZUp->flagByte & ChunkFlags :: HAS_MESH){
+                chunkZUp->flagByte |= ChunkFlags :: MODIFIED;
+                chunkQueue.pushFront(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize)));
+            }
+        }
+    }
+    else if((-pos.z & 15) == 0){
+        Chunk* chunkZDown = getChunk(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+2);
+        if(chunkZDown != nullptr){
+            if(chunkZDown->flagByte & ChunkFlags :: HAS_MESH){
+                chunkZDown->flagByte |= ChunkFlags :: MODIFIED;
+                chunkQueue.pushFront(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+2);
+            }
+        }
+    }
+    
+
     if(chunk != nullptr){
-        chunk->flagByte |= ChunkFlags :: MODIFIED;
+        chunk->flagByte |= (ChunkFlags :: MODIFIED | ChunkFlags :: CONTAINS_BUILDS);
         chunks[tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1)] = chunk;
         chunkData[tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1)] = chunk->data;
         chunkQueue.pushFront(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1);
@@ -496,7 +535,7 @@ bool World :: placeBlock(glm :: ivec3 pos, GLubyte blockType){
     chunk->data->hasBuilds = true;
 
     if(chunk != nullptr){
-        chunk->flagByte |= ChunkFlags :: MODIFIED;
+        chunk->flagByte |= (ChunkFlags :: MODIFIED | ChunkFlags :: CONTAINS_BUILDS);
         chunks[tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1)] = chunk;
         chunkData[tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1)] = chunk->data;
         chunkQueue.pushFront(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1);

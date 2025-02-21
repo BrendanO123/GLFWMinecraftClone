@@ -110,10 +110,9 @@ namespace ChunkFlags{
         HAS_BASICS = 1,
         HAS_STRUCTURES = 2,
         HAS_MESH = 4,
-        LAND_RENDERABLE = 8,
-        WATER_RENDERABLE = 16,
-        MODIFIED = 32,
-        CONTAINS_BUILDS = 64,
-        FILE_STORED = 128
+        RENDERABLE = 8,
+        MODIFIED = 16,
+        CONTAINS_BUILDS = 32,
+        FILE_STORED = 64
     };
 };

@@ -434,7 +434,7 @@ void Chunk :: genChunkMesh(){
 
 void Chunk :: render(Shader shader){
     
-    if(!(flagByte & ChunkFlags :: LAND_RENDERABLE)){
+    if(!(flagByte & ChunkFlags :: RENDERABLE)){
         if(!(flagByte & ChunkFlags :: HAS_MESH)){return;}
         glGenVertexArrays(1, &VAONorm);
         glBindVertexArray(VAONorm);
@@ -492,8 +492,33 @@ void Chunk :: render(Shader shader){
         glVertexAttribPointer(vNormalLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(BillboardVertex), (void*) (offsetof(BillboardVertex, NormalSelector)));
 
 
+
+        glGenVertexArrays(1, &VAOTranslucent);
+        glBindVertexArray(VAOTranslucent);
+
+        glGenBuffers(1, &VBOTranslucent);
+        glBindBuffer(GL_ARRAY_BUFFER, VBOTranslucent);
+        glBufferData(GL_ARRAY_BUFFER, translucentVerticies.size() * sizeof(Vertex), translucentVerticies.data(), GL_STATIC_DRAW);
+
+        glGenBuffers(1, &VBOTranslucent);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOTranslucent);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, translucentIndicies.size() * sizeof(GLuint), translucentIndicies.data(), GL_STATIC_DRAW);
+
+
+        glEnableVertexAttribArray(vtexPos_location);
+        glVertexAttribPointer(vtexPos_location, 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, texPosX)));
+
+        glEnableVertexAttribArray(posLoc);
+        glVertexAttribPointer(posLoc, 2, GL_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, posX)));
+
+        glEnableVertexAttribArray(heightLoc);
+        glVertexAttribPointer(heightLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, posY)));
+
+        glEnableVertexAttribArray(vNormalLoc);
+        glVertexAttribPointer(vNormalLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, NormalSelector)));
+
         modelMatLoc = glGetUniformLocation(shader.program, "modelPos");
-        flagByte |= ChunkFlags :: LAND_RENDERABLE;
+        flagByte |= ChunkFlags :: RENDERABLE;
     }
 
     glUniform3iv(modelMatLoc, 1, glm::value_ptr(pos_world));
@@ -509,19 +534,19 @@ void Chunk :: render(Shader shader){
 
 void Chunk :: renderWater(Shader shader){
     
-    if(!(flagByte & ChunkFlags :: WATER_RENDERABLE)){
+    if(!(flagByte & ChunkFlags :: RENDERABLE)){
         if(!(flagByte & ChunkFlags :: HAS_MESH)){return;}
-        glGenVertexArrays(1, &VAOTranslucent);
-        glBindVertexArray(VAOTranslucent);
+        glGenVertexArrays(1, &VAONorm);
+        glBindVertexArray(VAONorm);
 
-        glGenBuffers(1, &VBOTranslucent);
-        glBindBuffer(GL_ARRAY_BUFFER, VBOTranslucent);
-        glBufferData(GL_ARRAY_BUFFER, translucentVerticies.size() * sizeof(Vertex), translucentVerticies.data(), GL_STATIC_DRAW);
+        glGenBuffers(1, &VBONorm);
+        glBindBuffer(GL_ARRAY_BUFFER, VBONorm);
+        glBufferData(GL_ARRAY_BUFFER, verticies.size() * sizeof(Vertex), verticies.data(), GL_STATIC_DRAW);
 
-        glGenBuffers(1, &VBOTranslucent);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOTranslucent);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, translucentIndicies.size() * sizeof(GLuint), translucentIndicies.data(), GL_STATIC_DRAW);
-        
+        glGenBuffers(1, &EBONorm);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBONorm);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicies.size() * sizeof(GLuint), indicies.data(), GL_STATIC_DRAW);
+
 
         GLuint posLoc = glGetAttribLocation(shader.program, "vPos");
         GLuint heightLoc = glGetAttribLocation(shader.program, "height");
@@ -541,8 +566,59 @@ void Chunk :: renderWater(Shader shader){
         glEnableVertexAttribArray(vNormalLoc);
         glVertexAttribPointer(vNormalLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, NormalSelector)));
 
+    
+
+        glGenVertexArrays(1, &VAOBoard);
+        glBindVertexArray(VAOBoard);
+
+        glGenBuffers(1, &VBOBoard);
+        glBindBuffer(GL_ARRAY_BUFFER, VBOBoard);
+        glBufferData(GL_ARRAY_BUFFER, billboardVerticies.size() * sizeof(BillboardVertex), billboardVerticies.data(), GL_STATIC_DRAW);
+
+        glGenBuffers(1, &EBOBoard);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOBoard);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, billboardIndicies.size() * sizeof(GLuint), billboardIndicies.data(), GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(posLoc);
+        glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, sizeof(BillboardVertex), (void*)(offsetof(BillboardVertex, pos)));
+
+        glEnableVertexAttribArray(heightLoc);
+        glVertexAttribPointer(heightLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(BillboardVertex), (void*) (offsetof(BillboardVertex, height)));
+
+        glEnableVertexAttribArray(vtexPos_location);
+        glVertexAttribPointer(vtexPos_location, 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(BillboardVertex), (void*)(offsetof(BillboardVertex, texPosX)));
+
+        glEnableVertexAttribArray(vNormalLoc);
+        glVertexAttribPointer(vNormalLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(BillboardVertex), (void*) (offsetof(BillboardVertex, NormalSelector)));
+
+
+        
+        glGenVertexArrays(1, &VAOTranslucent);
+        glBindVertexArray(VAOTranslucent);
+
+        glGenBuffers(1, &VBOTranslucent);
+        glBindBuffer(GL_ARRAY_BUFFER, VBOTranslucent);
+        glBufferData(GL_ARRAY_BUFFER, translucentVerticies.size() * sizeof(Vertex), translucentVerticies.data(), GL_STATIC_DRAW);
+
+        glGenBuffers(1, &VBOTranslucent);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOTranslucent);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, translucentIndicies.size() * sizeof(GLuint), translucentIndicies.data(), GL_STATIC_DRAW);
+
+
+        glEnableVertexAttribArray(vtexPos_location);
+        glVertexAttribPointer(vtexPos_location, 2, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, texPosX)));
+
+        glEnableVertexAttribArray(posLoc);
+        glVertexAttribPointer(posLoc, 2, GL_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, posX)));
+
+        glEnableVertexAttribArray(heightLoc);
+        glVertexAttribPointer(heightLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, posY)));
+
+        glEnableVertexAttribArray(vNormalLoc);
+        glVertexAttribPointer(vNormalLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, NormalSelector)));
+
         modelMatLoc = glGetUniformLocation(shader.program, "modelPos");
-        flagByte |= ChunkFlags :: WATER_RENDERABLE;
+        flagByte |= ChunkFlags :: RENDERABLE;
     }
 
     glUniform3iv(modelMatLoc, 1, glm::value_ptr(pos_world));
