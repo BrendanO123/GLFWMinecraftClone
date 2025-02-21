@@ -6,7 +6,7 @@ CPPVERSION = -std=c++17
 
 #.out file name
 TARGET = build.out
-VERSION = .0.1
+VERSION = .0.1.2
 
 #Framworks for .out file
 F = -framework

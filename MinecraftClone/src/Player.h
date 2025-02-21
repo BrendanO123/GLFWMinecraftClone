@@ -18,7 +18,7 @@ enum CLICK_TYPES : bool {L_CLICKED = false, R_CLICKED = true};
 class Player{
     private:
         Camera cam = Camera(); //makes
-        GLubyte heldBlock = 0U; //sets
+        GLubyte heldBlock = Blocks :: OAK_PLANKS; //sets
         Shader shader; //needs
         BlockHighlighter* highlighter;
         const int reachDist = 24;
