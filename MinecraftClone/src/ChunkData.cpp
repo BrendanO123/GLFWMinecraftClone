@@ -1,6 +1,5 @@
 #include <vector>
 #include <glm/glm.hpp>
-#include <GLFW/glfw3.h>
 
 #include "ChunkData.h"
 #include "Structures.h"

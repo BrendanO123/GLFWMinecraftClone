@@ -10,14 +10,16 @@ const float moveSpeed = 0.08f;
 
 class Camera{
     private:
-        glm :: vec3 CameraFront;
         glm :: vec2 rotation;
         bool firstMouseCall;
 
         float lastX;
         float lastY;
+    
     public:
-        glm :: vec3 CameraPos;
+        glm :: vec3 CameraFPos;
+        glm :: ivec3 CameraIPos;
+        glm :: vec3 CameraFront;
         const glm :: vec3 CameraUp = glm :: vec3(0.f, 1.f, 0.f);
 
         float fov;
@@ -30,8 +32,9 @@ class Camera{
         Camera(float FOV, float maxFOV, float minFOV, float defualtFOV, glm :: vec3 pos, glm :: vec2 Rotation, float sensitivity=0.1f);
         void mouse_callback(GLFWwindow* window, double xpos, double ypos);
         void scroll_callback(GLFWwindow* window, double xOff, double yOff);
-        void processInput(GLFWwindow* window, float deltaTime);
-        glm :: mat4 getView();
-        glm :: vec3 getPos();
+        void processInput(GLFWwindow* window, glm :: vec3 &FPos, glm :: ivec3 &IPos, float deltaTime=1.f);
+        glm :: mat4 getViewAndProjection(glm :: vec3 &LookDirection, float ratio, float renderDist);
+        glm :: ivec3 getIntPos();
+        glm :: vec3 getFloatPos();
         void setFirstMouse(bool state){firstMouseCall = state;}
 };

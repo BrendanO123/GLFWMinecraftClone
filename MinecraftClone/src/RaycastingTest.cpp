@@ -1,7 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "UnitVoxelRaycasting.h"
+#include "UnitVoxelRaycaster.h"
 
 unsigned char blockLookUpRight(int x, int y, int z){
     if(x > 6){return Blocks :: STONE;}

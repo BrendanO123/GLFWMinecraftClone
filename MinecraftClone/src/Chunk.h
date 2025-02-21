@@ -2,13 +2,12 @@
 
 #define GL_SILENCE_DEPRECATION
 #include <glad/gl.h>
+#include <vector>
+#include <thread>
 
 #include "Blocks.h"
 #include "ChunkData.h"
 #include "Layer.h"
-#include <vector>
-#include <thread>
-
 #include "Shaders.h"
 
 using namespace std;
@@ -93,13 +92,13 @@ class Chunk{
         void genChunkMesh();
         void render(Shader shader);
         void renderWater(Shader shader);
-        void getPos(int &x, int &z){x = int(pos_world.x/(1<<(4+LOD))); z = int(pos_world.z/(1<<(4+LOD)));}
+        void getPos(int &x, int &z){x = pos_world.x>>(4+LOD); z = pos_world.z>>(4+LOD);}
 
         ChunkData* data, *left, *right, *front, *back;
         
     private:
         GLuint VAONorm, VBONorm, EBONorm, VAOTranslucent, VBOTranslucent, EBOTranslucent, VAOBoard, VBOBoard, EBOBoard, modelMatLoc;
-        glm :: vec3 pos_world;
+        glm :: ivec3 pos_world;
         vector<Vertex> verticies, translucentVerticies;
         vector<BillboardVertex> billboardVerticies;
         vector<unsigned int> indicies, translucentIndicies, billboardIndicies;
@@ -114,6 +113,7 @@ namespace ChunkFlags{
         LAND_RENDERABLE = 8,
         WATER_RENDERABLE = 16,
         MODIFIED = 32,
-        FILE_STORED = 64
+        CONTAINS_BUILDS = 64,
+        FILE_STORED = 128
     };
 };

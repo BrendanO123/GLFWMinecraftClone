@@ -1,7 +1,4 @@
 #include "Chunk.h"
-#include "Blocks.h"
-#include "Block.h"
-#include "WorldGen.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -9,12 +6,16 @@
 #include <iostream>
 #include <string.h>
 
+#include "Blocks.h"
+#include "Block.h"
+#include "WorldGen.h"
+
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
 
 Chunk :: Chunk(GLuint lod, glm :: ivec2 chunkPos) : LOD(lod){
-    pos_world = glm ::vec3(((int)chunkPos.x) << (4+LOD), 0, ((int)chunkPos.y) << (4+LOD)); //will not actually work if LOD is changed
+    pos_world = glm :: ivec3(chunkPos.x << (4+LOD), 0, chunkPos.y << (4+LOD)); //will not actually work if LOD is changed
 }
 Chunk :: ~Chunk(){
     
@@ -30,7 +31,15 @@ Chunk :: ~Chunk(){
 }
 
 void Chunk :: genChunkMesh(){
+    if(data == nullptr || left == nullptr || front == nullptr || back == nullptr || right == nullptr){std :: cout << "Generating Mesh with Incomplete Data" << std :: endl;}
     if(!(flagByte & ChunkFlags :: HAS_STRUCTURES)){return;}
+
+    verticies = vector<Vertex>();
+    translucentVerticies = vector<Vertex>();
+    billboardVerticies = vector<BillboardVertex>();
+    indicies = vector<GLuint>(); translucentIndicies = vector<GLuint>(); billboardIndicies = vector<GLuint>();
+
+
     GLuint vOffset=0, transLVOff = 0, BoardVOff = 0, y;
     Block block, adjacentBlock;
     GLubyte type, adjacentType;
@@ -421,8 +430,6 @@ void Chunk :: genChunkMesh(){
             }
         }
     }
-
-    flagByte |= ChunkFlags :: HAS_MESH;
 }
 
 void Chunk :: render(Shader shader){
@@ -485,13 +492,11 @@ void Chunk :: render(Shader shader){
         glVertexAttribPointer(vNormalLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(BillboardVertex), (void*) (offsetof(BillboardVertex, NormalSelector)));
 
 
-        modelMatLoc = glGetUniformLocation(shader.program, "model");
+        modelMatLoc = glGetUniformLocation(shader.program, "modelPos");
         flagByte |= ChunkFlags :: LAND_RENDERABLE;
     }
 
-    glm :: mat4 model = glm ::mat4(1.0f);
-    model = glm :: translate(model, pos_world);
-    glUniformMatrix4fv(modelMatLoc, 1, GL_FALSE, glm :: value_ptr(model));
+    glUniform3iv(modelMatLoc, 1, glm::value_ptr(pos_world));
 
     glEnable(GL_CULL_FACE);
     glBindVertexArray(VAONorm);
@@ -536,13 +541,11 @@ void Chunk :: renderWater(Shader shader){
         glEnableVertexAttribArray(vNormalLoc);
         glVertexAttribPointer(vNormalLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, NormalSelector)));
 
-
+        modelMatLoc = glGetUniformLocation(shader.program, "modelPos");
         flagByte |= ChunkFlags :: WATER_RENDERABLE;
     }
 
-    glm :: mat4 model = glm ::mat4(1.0f);
-    model = glm :: translate(model, pos_world);
-    glUniformMatrix4fv(modelMatLoc, 1, GL_FALSE, glm :: value_ptr(model));
+    glUniform3iv(modelMatLoc, 1, glm::value_ptr(pos_world));
 
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);

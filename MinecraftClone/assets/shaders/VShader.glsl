@@ -1,20 +1,22 @@
 #version 330
 
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+uniform ivec3 modelPos;
+uniform ivec3 cameraPosI;
 
-uniform float blockMapW_blocks;
-uniform float blockMapH_blocks;
+uniform mat4 viewAndProjectionMatrix;
+
+uniform float invBlockMapW_blocks;
+uniform float invBlockMapH_blocks;
 
 in vec2 vPos;
-in int height;
+in float height;
 in vec2 vtexPos;
 
 in int normal;
 
 out vec2 TexCoord;
 out vec3 Normal;
+out float invert;
 
 const vec3 normals[] = vec3[](
 	vec3( 0,  0,  1), // Forward
@@ -22,13 +24,15 @@ const vec3 normals[] = vec3[](
 	vec3( 1,  0,  0), // Right
 	vec3(-1,  0,  0), // Left
 	vec3( 0,  1,  0), // Up
-	vec3( 0, -1,  0) // Down
+	vec3( 0, -1,  0)  // Down
 );
 
 
 void main(){
-    gl_Position = projection * view * model * vec4(vPos.x, height, vPos.y, 1.0);
-    TexCoord = vec2(vtexPos.x / blockMapW_blocks, vtexPos.y / blockMapH_blocks);
+	gl_Position = viewAndProjectionMatrix * vec4(vPos.x + modelPos.x - cameraPosI.x, height + modelPos.y - cameraPosI.y, vPos.y + modelPos.z - cameraPosI.z, 1.0);
+	TexCoord = vec2(vtexPos.x * invBlockMapW_blocks, vtexPos.y * invBlockMapH_blocks);
     
-    Normal = normals[normal];
+	if(normal == 6){Normal = normals[4]; invert = 1.f;}
+	else if(normal == 7){Normal = normals[4]; invert = 1.f;}
+    else{Normal = normals[(normal % 6)]; invert = -1.f;}
 }
