@@ -52,6 +52,7 @@ class World{
         unordered_map<tuple<int, int>, ChunkData*> chunkData;
 
         chunkList chunkQueue = chunkList();
+        queue<tuple<int, int>> modifiedChunks;
 
         std :: thread updateThread;
 
@@ -72,6 +73,7 @@ class World{
         int camX_chunk = -101, camZ_chunk = -101;
 
         int renderDistance = 8;
+        constexpr static const int modifiedChunkStoreDistance = 10;
         unsigned int chunkSize = 16;
         int seed;
 };

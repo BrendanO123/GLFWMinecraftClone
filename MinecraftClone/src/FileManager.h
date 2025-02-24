@@ -27,4 +27,5 @@ class FileManager{
         bool save(ChunkData* data);
         bool save(int seed, glm :: ivec3 playerPositionI, glm :: vec3 playerPositionF, glm :: vec2 playerRoation);
         ChunkData* load(int x, int z);
+        bool hasFile(int x, int z);
 };

@@ -17,11 +17,11 @@ World :: World(Shader* shader, int render, int Seed, string name, Player* player
     player->setRotation(playerRotation);
 
     seed = Seed;
-    /*srand(seed); 
+    srand(seed); 
     int i = (rand() & 15) + 1;
-    for(int j = 0; j<i; j++){rand();}*/
+    for(int j = 0; j<i; j++){rand();}
 
-    fractal = new noise :: Fractal(seed);
+    fractal = new noise :: Fractal(rand());
 
     fractal->settings.settings[noise :: TREE_MAP].frequency = 32 / 1.09617844793f;
     fractal->settings.settings[noise :: TREE_MAP].octaves = 2;
@@ -164,6 +164,18 @@ void World :: update(glm :: ivec3 camPos, bool menu, Player* player){
 }
 
 bool World :: save(Player* player){
+    while(!modifiedChunks.empty()){
+        tuple<int, int> i = modifiedChunks.front();
+        modifiedChunks.pop();
+        if(chunkData.find(i) != chunkData.end()){
+            ChunkData* data = chunkData.at(i);
+            if(!data->fileStored){
+                data->fileStored = true;
+                if(chunks.find(i) != chunks.end()){chunks.at(i)->flagByte |= ChunkFlags :: FILE_STORED;}
+                file->save(chunkData.at(i));
+            }
+        }
+    }
     return file->save(seed, player->getPosition(), player->getFPosition(), player->getRotation());
 }
 
@@ -243,14 +255,22 @@ void World :: threadUpdate(){
                 mute.lock();
                 //center
                 if(chunkData.find(chunkTuple)==chunkData.end()){
-                    mute.unlock();
-                    
+                    ChunkData* newChunkData;
+                    if(file->hasFile(next.x, next.y)){
+                        newChunkData = file->load(next.x, next.y);
+                        chunk->data=newChunkData;
+                        chunk->flagByte |= (ChunkFlags :: FILE_STORED | ChunkFlags :: CONTAINS_BUILDS);
+                        mute.unlock();
+                    }
+                    else{
+                        mute.unlock();
+                        
 
-                    ChunkData* newChunkData = new ChunkData();
-                    WorldGen :: getChunkBasics(next.x, next.y, 16, newChunkData, fractal);
+                        newChunkData = new ChunkData();
+                        WorldGen :: getChunkBasics(next.x, next.y, 16, newChunkData, fractal);
 
-                    chunk->data=newChunkData;
-
+                        chunk->data=newChunkData;
+                    }
                     mute.lock();
                     chunkData[chunkTuple] = newChunkData;
                     mute.unlock();
@@ -261,12 +281,21 @@ void World :: threadUpdate(){
                 mute.lock();
                 //EAST
                 if(chunkData.find(tuple<int,int>(next.x+1, next.y))==chunkData.end()){
-                    mute.unlock();
+                    ChunkData* newChunkData;
+                    if(file->hasFile(next.x+1, next.y)){
+                        newChunkData = file->load(next.x+1, next.y);
+                        chunk->right=newChunkData;
+                        mute.unlock();
+                    }
+                    else{
+                        mute.unlock();
+                        
 
-                    ChunkData* newChunkData = new ChunkData();
-                    WorldGen :: getChunkBasics(next.x+1, next.y, 16, newChunkData, fractal);
+                        newChunkData = new ChunkData();
+                        WorldGen :: getChunkBasics(next.x+1, next.y, 16, newChunkData, fractal);
 
-                    chunk->right=newChunkData;
+                        chunk->right=newChunkData;
+                    }
 
                     mute.lock();
                     chunkData[tuple<int,int>(next.x+1, next.y)] = newChunkData;
@@ -278,12 +307,21 @@ void World :: threadUpdate(){
                 mute.lock();
                 //WEST
                 if(chunkData.find(tuple<int,int>(next.x-1, next.y))==chunkData.end()){
-                    mute.unlock();
+                    ChunkData* newChunkData;
+                    if(file->hasFile(next.x-1, next.y)){
+                        newChunkData = file->load(next.x-1, next.y);
+                        chunk->left=newChunkData;
+                        mute.unlock();
+                    }
+                    else{
+                        mute.unlock();
+                        
 
-                    ChunkData* newChunkData = new ChunkData();
-                    WorldGen :: getChunkBasics(next.x-1, next.y, 16, newChunkData, fractal);
+                        newChunkData = new ChunkData();
+                        WorldGen :: getChunkBasics(next.x-1, next.y, 16, newChunkData, fractal);
 
-                    chunk->left=newChunkData;
+                        chunk->left=newChunkData;
+                    }
 
                     mute.lock();
                     chunkData[tuple<int,int>(next.x-1, next.y)] = newChunkData;
@@ -295,12 +333,21 @@ void World :: threadUpdate(){
                 mute.lock();
                 //NORTH
                 if(chunkData.find(tuple<int,int>(next.x, next.y+1))==chunkData.end()){
-                    mute.unlock();
+                    ChunkData* newChunkData;
+                    if(file->hasFile(next.x, next.y+1)){
+                        newChunkData = file->load(next.x, next.y+1);
+                        chunk->front=newChunkData;
+                        mute.unlock();
+                    }
+                    else{
+                        mute.unlock();
+                        
 
-                    ChunkData* newChunkData = new ChunkData();
-                    WorldGen :: getChunkBasics(next.x, next.y+1, 16, newChunkData, fractal);
+                        newChunkData = new ChunkData();
+                        WorldGen :: getChunkBasics(next.x, next.y+1, 16, newChunkData, fractal);
 
-                    chunk->front=newChunkData;
+                        chunk->front=newChunkData;
+                    }
 
                     mute.lock();
                     chunkData[tuple<int,int>(next.x, next.y+1)] = newChunkData;
@@ -312,12 +359,21 @@ void World :: threadUpdate(){
                 mute.lock();
                 //SOUTH
                 if(chunkData.find(tuple<int,int>(next.x, next.y-1))==chunkData.end()){
-                    mute.unlock();
+                    ChunkData* newChunkData;
+                    if(file->hasFile(next.x, next.y-1)){
+                        newChunkData = file->load(next.x, next.y-1);
+                        chunk->back=newChunkData;
+                        mute.unlock();
+                    }
+                    else{
+                        mute.unlock();
+                        
 
-                    ChunkData* newChunkData = new ChunkData();
-                    WorldGen :: getChunkBasics(next.x, next.y-1, 16, newChunkData, fractal);
+                        newChunkData = new ChunkData();
+                        WorldGen :: getChunkBasics(next.x, next.y-1, 16, newChunkData, fractal);
 
-                    chunk->back=newChunkData;
+                        chunk->back=newChunkData;
+                    }
 
                     mute.lock();
                     chunkData[tuple<int,int>(next.x, next.y-1)] = newChunkData;
@@ -342,10 +398,17 @@ void World :: threadUpdate(){
                     ChunkData* NW;
                     //NW
                     if(chunkData.find(tuple<int,int>(next.x-1, next.y+1))==chunkData.end()){
-                        mute.unlock();
+                        if(file->hasFile(next.x-1, next.y+1)){
+                            NW = file->load(next.x-1, next.y+1);
+                            mute.unlock();
+                        }
+                        else{
+                            mute.unlock();
+                            
 
-                        NW = new ChunkData();
-                        WorldGen :: getChunkBasics(next.x-1, next.y+1, 16, NW, fractal);
+                            NW = new ChunkData();
+                            WorldGen :: getChunkBasics(next.x-1, next.y+1, 16, NW, fractal);
+                        }
 
                         mute.lock();
                         chunkData[tuple<int,int>(next.x-1, next.y+1)] = NW;
@@ -358,10 +421,17 @@ void World :: threadUpdate(){
                     ChunkData* NE;
                     //NE
                     if(chunkData.find(tuple<int,int>(next.x+1, next.y+1))==chunkData.end()){
-                        mute.unlock();
+                        if(file->hasFile(next.x+1, next.y+1)){
+                            NE = file->load(next.x+1, next.y+1);
+                            mute.unlock();
+                        }
+                        else{
+                            mute.unlock();
+                            
 
-                        NE = new ChunkData();
-                        WorldGen :: getChunkBasics(next.x+1, next.y+1, 16, NE, fractal);
+                            NE = new ChunkData();
+                            WorldGen :: getChunkBasics(next.x+1, next.y+1, 16, NE, fractal);
+                        }
 
                         mute.lock();
                         chunkData[tuple<int,int>(next.x+1, next.y+1)] = NE;
@@ -374,10 +444,17 @@ void World :: threadUpdate(){
                     ChunkData* SW;
                     //SW
                     if(chunkData.find(tuple<int,int>(next.x-1, next.y-1))==chunkData.end()){
-                        mute.unlock();
+                        if(file->hasFile(next.x-1, next.y-1)){
+                            SW = file->load(next.x-1, next.y-1);
+                            mute.unlock();
+                        }
+                        else{
+                            mute.unlock();
+                            
 
-                        SW = new ChunkData();
-                        WorldGen :: getChunkBasics(next.x-1, next.y-1, 16, SW, fractal);
+                            SW = new ChunkData();
+                            WorldGen :: getChunkBasics(next.x-1, next.y-1, 16, SW, fractal);
+                        }
 
                         mute.lock();
                         chunkData[tuple<int,int>(next.x-1, next.y-1)] = SW;
@@ -390,10 +467,17 @@ void World :: threadUpdate(){
                     ChunkData* SE;
                     //SE
                     if(chunkData.find(tuple<int,int>(next.x+1, next.y-1))==chunkData.end()){
-                        mute.unlock();
+                        if(file->hasFile(next.x+1, next.y-1)){
+                            SE = file->load(next.x+1, next.y-1);
+                            mute.unlock();
+                        }
+                        else{
+                            mute.unlock();
+                            
 
-                        SE = new ChunkData();
-                        WorldGen :: getChunkBasics(next.x+1, next.y-1, 16, SE, fractal);
+                            SE = new ChunkData();
+                            WorldGen :: getChunkBasics(next.x+1, next.y-1, 16, SE, fractal);
+                        }
 
                         mute.lock();
                         chunkData[tuple<int,int>(next.x+1, next.y-1)] = SE;
@@ -445,9 +529,8 @@ void World :: threadUpdate(){
             for (auto iterate = chunkData.begin(); iterate != chunkData.end();)
             {
                 glm :: ivec2 chunkPos = iterate->second->pos;
-
+                
                 if (
-                    (!iterate->second->hasBuilds) && 
                     (chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y)) == chunks.end()) &&
 
 
@@ -477,9 +560,19 @@ void World :: threadUpdate(){
                     ((chunks.find(tuple<int, int>(chunkPos.x-1, chunkPos.y-1)) == chunks.end()) || 
                         ((chunks.at(tuple<int, int>(chunkPos.x-1, chunkPos.y-1))->flagByte & ChunkFlags :: HAS_STRUCTURES) != 0))
                 )
-                {
-                    delete chunkData.at(iterate->first);
-                    iterate = chunkData.erase(iterate);
+                {   
+                    if(iterate->second->hasBuilds){
+                        if(abs(iterate->second->pos.x - camX_chunk) > modifiedChunkStoreDistance || abs(iterate->second->pos.y - camZ_chunk) > modifiedChunkStoreDistance){
+
+                            if(!iterate->second->fileStored){file->save(iterate->second);}
+                            delete chunkData.at(iterate->first);
+                            iterate = chunkData.erase(iterate);
+                        }
+                    }
+                    else{
+                        delete chunkData.at(iterate->first);
+                        iterate = chunkData.erase(iterate);
+                    }
                 }
                 else{iterate++;}
             }
@@ -581,6 +674,9 @@ bool World :: breakBlock(glm :: ivec3 pos){
         }
 
         chunk->flagByte |= (ChunkFlags :: MODIFIED | ChunkFlags :: CONTAINS_BUILDS);
+        chunk->flagByte &= ~(ChunkFlags :: FILE_STORED);
+        chunk->data->fileStored = false;
+        modifiedChunks.push(tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1));
         chunks[tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1)] = chunk;
         chunkData[tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1)] = chunk->data;
         chunkQueue.pushFront(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1);
@@ -604,6 +700,9 @@ bool World :: placeBlock(glm :: ivec3 pos, GLubyte blockType){
 
     if(chunk != nullptr){
         chunk->flagByte |= (ChunkFlags :: MODIFIED | ChunkFlags :: CONTAINS_BUILDS);
+        chunk->flagByte &= ~(ChunkFlags :: FILE_STORED);
+        chunk->data->fileStored = false;
+        modifiedChunks.push(tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1));
         chunks[tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1)] = chunk;
         chunkData[tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1)] = chunk->data;
         chunkQueue.pushFront(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1);

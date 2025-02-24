@@ -35,6 +35,7 @@ struct ChunkData{
     glm :: ivec2 pos;
     StructureList Structs = StructureList();
     bool hasBuilds = false;
+    bool fileStored = false;
 
     //constructors
     ChunkData() : data(vector<Layer>()), pos(glm :: ivec2()){}

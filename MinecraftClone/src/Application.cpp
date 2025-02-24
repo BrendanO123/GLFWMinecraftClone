@@ -220,10 +220,7 @@ int main(){
         }
     }
     else{file1.close();}
-    srand(seed);
-    int i = (rand() & 15) + 1;
-    for(int j = 0; j<i; j++){rand();}
-    World :: world = new World(&shader, chunkRenderDist, rand(), saveFileName, player);
+    World :: world = new World(&shader, chunkRenderDist, seed, saveFileName, player);
 
     glClearColor(135/255.0f, 206/255.0f, 235/255.0f, 1.0f);
     float deltaTime, currentFrame; 

@@ -66,7 +66,7 @@ FileManager :: FileManager(string name, int &seed, glm :: ivec3 &playerPositionI
         //reading from save, get values and store into parameters, then return
         ifstream file  = ifstream (mainPath.c_str(), ios::in|ios::binary); 
         if(file.is_open() && file.good()){
-            char * contents = new char [mainFileSize];
+            char* contents = new char [mainFileSize];
             file.read(contents, mainFileSize); 
             file.close();
 
@@ -93,14 +93,14 @@ FileManager :: FileManager(string name, int &seed, glm :: ivec3 &playerPositionI
             delete[] contents;
             return;
         }
-        else{fprintf(stderr, "FAILED TO OPEN SAVE FILE");}
+        else{file.close(); fprintf(stderr, "FAILED TO OPEN SAVE FILE");}
     }
     else{
         file1.close();
         //writing new save file, create files, store values and return
         if(!std::filesystem::create_directories(saveFileName)){
-            fprintf(stderr, "FAILED TO MAKE SAVE FILE FOLDER");
-            return;
+            /*fprintf(stderr, "FAILED TO MAKE SAVE FILE FOLDER");
+            return;*/
         }
         save(seed, playerPositionI, playerPositionF, playerRoation);
     }
@@ -138,6 +138,116 @@ bool FileManager :: save(int seed, glm :: ivec3 playerPositionI, glm :: vec3 pla
             delete[] contents;
             return true;
         }
-        else{fprintf(stderr, "FAILED TO OPEN SAVE FILE");}
+        else{file.close(); fprintf(stderr, "FAILED TO OPEN SAVE FILE");}
         return false;
+}
+
+bool FileManager :: save(ChunkData* data){
+    glm :: ivec2 pos = data->pos;
+    stringstream folderStream;
+    folderStream << saveFileName << "/region" << (pos.x>>4) << "_" << (pos.y>>4);
+    string name = folderStream.str();
+    if(!std::filesystem::create_directories(name.c_str())){
+        /*fprintf(stderr, "FAILED TO MAKE SAVE FILE FOLDER");
+        return false;*/
+    }
+    folderStream << "/chunk" << (pos.x & 15) << "_" << (pos.y & 15);
+    name = folderStream.str();
+    ofstream file; file.open(name.c_str(), ios::out|ios::binary|ios::trunc); 
+
+    if(file.is_open()){
+        int layerCount = data->data.size();
+
+        int structCount = 0;
+        vector<char> structData = vector<char>();
+        structData.reserve(data->Structs.count * 4);
+
+        StructNode* next = data->Structs.first;
+        while(next !=nullptr){
+            structCount++;
+            structData.push_back(next->id);
+            structData.push_back(next->pos.x);
+            structData.push_back(next->pos.y);
+            structData.push_back(next->pos.z);
+            next = next->next;
+        }
+
+        int byteCount = 2 + layerCount * (256+1) + structCount * 4;
+        char* contents = new char[byteCount];
+
+        contents[0] = (unsigned char)layerCount;
+        contents[1] = (unsigned char)structCount;
+        int offset = 2;
+        for(int i=0; i<layerCount; i++){
+            Layer layer = data->data.at(i);
+            contents[offset++] = layer.y; 
+            copy((char*)layer.data.data(), (char*)layer.data.data()+256, contents + offset); offset+=256;
+            //for(int j = 0; j<256; j++){contents[offset++] = layer.data[j];}
+        }
+
+        copy(structData.data(), structData.data()+structCount, contents+offset);
+
+        file.write(contents, byteCount);
+        file.close();
+        delete[] contents;
+        return true;
+    }
+    else{file.close(); fprintf(stderr, "FAILED TO OPEN SAVE FILE");}
+    return false;
+}
+
+
+bool FileManager :: hasFile(int x, int z){
+    stringstream folderStream; folderStream << saveFileName << "/region" << (x>>4) << "_" << (z>>4) << "/chunk" << (x & 15) << "_" << (z & 15);
+    string name = folderStream.str();
+    ifstream file(name.c_str());
+    if(file.is_open()){file.close(); return true;}
+    file.close(); return false;
+}
+ChunkData* FileManager :: load(int x, int z){
+    stringstream folderStream;
+    folderStream << saveFileName << "/region" << (x>>4) << "_" << (z>>4) << "/chunk" << (x & 15) << "_" << (z & 15);
+    string name = folderStream.str();
+
+    ifstream file; file.open(name.c_str(), ios::in|ios::binary); 
+
+    if(file.is_open() && file.good()){
+        char * sizes = new char[2];
+        file.read(sizes, 2);
+        int layerCount = (unsigned char)(sizes[0]), structCount = (unsigned char)(sizes[1]);
+        int length = layerCount * 257 + structCount * 4;
+        delete[] sizes;
+        char * contents = new char[length];
+        file.read(contents, length);
+        file.close();
+
+        //push bask layers so that order does not reverse
+        ChunkData* data = new ChunkData();
+        data->data.reserve(layerCount);
+        GLubyte arr[256] = {0};
+        GLubyte y;
+        int offset = 0;
+        for(int i = 0; i <layerCount; i++){
+            y=contents[offset++];
+            data->data.emplace_back(y);
+            data->data.at(i).data.reserve(256);
+            copy(contents + offset, contents + offset + 256, /*data->data.data()*/arr); offset+=256;
+            for(int j=0; j<256; j++){data->data.at(i).data.at(j) = arr[j];}
+        }
+
+        data->Structs.count = structCount;
+        if(structCount !=0){
+            data->Structs.first = data->Structs.last = new StructNode((GLubyte)contents[offset], (GLubyte)contents[offset+1], (GLubyte)contents[offset+2], (GLubyte)contents[offset+3]); offset+=4; 
+            for(int i = 1; i<structCount; i++){
+                data->Structs.last->next = new StructNode((GLubyte)contents[offset], (GLubyte)contents[offset+1], (GLubyte)contents[offset+2], (GLubyte)contents[offset+3]); offset+=4; 
+                data->Structs.last = data->Structs.last->next;
+            }
+        }
+
+        delete[] contents;
+        data->hasBuilds = true; data->fileStored = true;
+        return data;
+    }
+    else{file.close(); fprintf(stderr, "FAILED TO OPEN SAVE FILE");}
+    return nullptr;
 }
