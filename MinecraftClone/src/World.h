@@ -13,6 +13,7 @@
 #include "Fractal.h"
 #include "ChunkList.h"
 #include "Player.h"
+#include "FileManager.h"
 
 #include <ScuffedMinecraft/TupleHash.h>
 
@@ -21,9 +22,10 @@ using namespace std;
 
 class World{
     public:
-        World(Shader* shader, int render, int seed);
+        World(Shader* shader, int render, int seed, string saveFileName, Player* player);
         ~World();
         
+        void setShouldSave(bool shouldSave = true){saveNeeded = shouldSave;}
         Chunk* getChunk(int x, int z);
         ChunkData* getChunkData(int x, int z);
 
@@ -44,6 +46,7 @@ class World{
          * @brief The looping update function that runs on a backround thread and handles chunks and chunk data.
          */
         void threadUpdate();
+        bool save(Player* player);
 
         unordered_map<tuple<int, int>, Chunk*> chunks;
         unordered_map<tuple<int, int>, ChunkData*> chunkData;
@@ -53,12 +56,13 @@ class World{
         std :: thread updateThread;
 
         Shader* shader;
-
-        noise :: Fractal fractal;
+        noise :: Fractal* fractal;
+        FileManager* file;
 
         bool shouldEnd=false;
         bool isMenu=false;
         bool playerPositionSet = false;
+        bool saveNeeded;
 
         constexpr static const std::chrono::duration normSleepMillis = std::chrono::milliseconds(100);
         constexpr static const std::chrono::duration menuSleepMillis = std::chrono::milliseconds(1000);
@@ -69,4 +73,5 @@ class World{
 
         int renderDistance = 8;
         unsigned int chunkSize = 16;
+        int seed;
 };

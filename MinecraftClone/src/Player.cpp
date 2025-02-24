@@ -103,3 +103,17 @@ bool Player :: MClick(){
     return false;
 }
 GLubyte Player :: getVoxel(int x, int y, int z){return World :: world->getBlock(x, y, z);}
+
+void Player :: setRotation(glm :: vec2 r){
+    cam.setRotation(r);
+    lookDirection = cam.CameraFront;
+}
+void Player :: setPosition(glm :: ivec3 i, glm :: vec3 f){
+    intPos = i; fPos = f;
+    intPos += floor(fPos);
+    fPos -= floor(fPos);
+    cam.CameraFPos = fPos;
+    cam.CameraIPos = intPos;
+}
+glm :: vec3 Player :: getFPosition(){return fPos;}
+glm :: vec2 Player :: getRotation(){return cam.getRotation();}

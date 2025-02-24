@@ -36,5 +36,7 @@ class Camera{
         glm :: mat4 getViewAndProjection(glm :: vec3 &LookDirection, float ratio, float renderDist);
         glm :: ivec3 getIntPos();
         glm :: vec3 getFloatPos();
+        void setRotation(glm ::vec2 r);
+        glm :: vec2 getRotation(){return rotation;}
         void setFirstMouse(bool state){firstMouseCall = state;}
 };

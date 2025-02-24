@@ -88,11 +88,25 @@ void Camera :: processInput(GLFWwindow* window, glm :: vec3 &FPos, glm :: ivec3 
 
     if(shouldMove && normalizedMoveSpeed){move = glm :: normalize(move);}
     CameraFPos += deltaTime * move * moveSpeed * ((glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) ? 4.5f : 1.0f);
-    CameraIPos += glm :: ivec3(CameraFPos);
-    CameraFPos -= glm :: ivec3(CameraFPos);
+    CameraIPos += floor(CameraFPos);
+    CameraFPos -= floor(CameraFPos);
     IPos = CameraIPos; FPos = CameraFPos;
 }
 
 glm :: mat4 Camera :: getViewAndProjection(glm :: vec3 &LookDirection, float ratio, float renderDist){
     return glm::perspective(glm::radians(fov), ratio, 0.1f, renderDist) * glm :: lookAt(CameraFPos, CameraFront + CameraFPos, CameraUp);
+}
+
+void Camera :: setRotation(glm :: vec2 r){
+    rotation = r;
+    float lookRange = 89.5f;
+    if(rotation.x > lookRange){rotation.x = lookRange;}
+    else if(rotation.x < -lookRange){rotation.x = -lookRange;}
+    if(rotation.y<0){rotation.y+=360.f;}
+    while(rotation.y>360){rotation.y-=360.f;}
+
+    CameraFront.x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
+    CameraFront.y = sin(glm::radians(rotation.x));
+    CameraFront.z = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
+    CameraFront = glm :: normalize(CameraFront);
 }

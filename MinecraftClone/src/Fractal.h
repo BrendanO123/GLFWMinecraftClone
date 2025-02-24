@@ -7,7 +7,7 @@
 namespace noise{
     class Fractal{
         public:
-            NoiseTotalSettings settings;
+            NoiseTotalSettings settings = NoiseTotalSettings(0);
             Noise noise = Noise();
 
             static const unsigned char waterLevel = 95;
@@ -15,7 +15,12 @@ namespace noise{
             static const unsigned char gravelLevel = waterLevel-5;
 
             Fractal(NoiseTotalSettings set) : settings(set){calcBoundings();};
-            Fractal(int seed) : settings(NoiseTotalSettings(seed)){calcBoundings(); };
+            Fractal(int seed){
+                int i = (rand() & 15) + 1;
+                for(int j = 0; j<i; j++){rand();}
+                settings = NoiseTotalSettings(rand());
+                calcBoundings();
+            };
 
             NoiseReturnStruct getNoise(glm :: ivec2 pos) const;
             glm :: vec3 FBM(glm :: ivec2 pos, const NoiseMapSettings setting) const;

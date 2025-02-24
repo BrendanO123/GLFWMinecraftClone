@@ -6,52 +6,68 @@
 
 World* World :: world = nullptr;
 //costructor: store shader
-World :: World(Shader* shader, int render, int seed) : shader(shader), fractal(noise :: Fractal(seed)), renderDistance(render){
+World :: World(Shader* shader, int render, int Seed, string name, Player* player) : shader(shader), renderDistance(render){
+
+    glm :: ivec3 playerPositionI = glm :: ivec3(8, 135, 8); glm :: vec3 playerPositionF = glm :: vec3(0);
+    glm :: vec2 playerRotation = glm :: vec2(0.f, -89.9f);
+
+    file = new FileManager(name, Seed, playerPositionI, playerPositionF, playerRotation);
+
+    player->setPosition(playerPositionI, playerPositionF);
+    player->setRotation(playerRotation);
+
+    seed = Seed;
+    srand(seed); 
+    int i = (rand() & 15) + 1;
+    for(int j = 0; j<i; j++){rand();}
+
+    fractal = new noise :: Fractal(rand());
+
+    fractal->settings.settings[noise :: TREE_MAP].frequency = 32 / 1.09617844793f;
+    fractal->settings.settings[noise :: TREE_MAP].octaves = 2;
+    fractal->settings.settings[noise :: TREE_MAP].fractalType = noise :: FBM;
+    fractal->noise.calcFracBounding(fractal->settings.settings[noise :: TREE_MAP]);
+
+    fractal->settings.settings[noise :: GRASS_MAP].frequency = 22/1.09617844793f;
+    fractal->settings.settings[noise :: FLOWER_NOISE].frequency = 1.09617844793f / 32.f;
+    fractal->settings.settings[noise :: FLOWER_NOISE].fractalType = noise :: NONE;
+
+    fractal->settings.settings[noise :: CONTINENTAL_MAP].includePartials = true;
+    fractal->settings.settings[noise :: CONTINENTAL_MAP].fractalType = noise :: NONE;
+    fractal->settings.settings[noise :: CONTINENTAL_MAP].frequency = 2.5f/1000;
+
+    fractal->settings.settings[noise :: EROSION_MAP].frequency = 4.f/1000;
+    fractal->settings.settings[noise :: EROSION_MAP].includePartials = true;
+    /*fractal->settings.settings[noise :: EROSION_MAP].octaves = 3;
+    fractal->settings.settings[noise :: EROSION_MAP].gain = 0.5f;
+    //fractal->noise.calcFracBounding(fractal->settings.settings[noise :: EROSION_MAP]);*/
+
+    fractal->settings.settings[noise :: HIGH_NOISE].octaves = 5;
+    fractal->settings.settings[noise :: HIGH_NOISE].frequency = fractal->settings.settings[noise :: CONTINENTAL_MAP].frequency * fractal->settings.settings[noise :: HIGH_NOISE].lacunarity;
+    fractal->noise.calcFracBounding_HL_Noise(fractal->settings.settings[noise :: HIGH_NOISE]);
+
+    fractal->settings.settings[noise :: LOW_NOISE].octaves = 2;
+    fractal->settings.settings[noise :: LOW_NOISE].gain = 0.25f;
+    fractal->settings.settings[noise :: LOW_NOISE].lacunarity = 1.5f;
+    fractal->settings.settings[noise :: LOW_NOISE].frequency = fractal->settings.settings[noise :: CONTINENTAL_MAP].frequency * fractal->settings.settings[noise :: LOW_NOISE].lacunarity;
+    fractal->noise.calcFracBounding_HL_Noise(fractal->settings.settings[noise :: LOW_NOISE]);
+    fractal->settings.settings[noise :: LOW_NOISE].fractalBounding *= 1.f / 8;
+
     updateThread = std :: thread(&World :: threadUpdate, this);
-
-    fractal.settings.settings[noise :: TREE_MAP].frequency = 32 / 1.09617844793f;
-    fractal.settings.settings[noise :: TREE_MAP].octaves = 2;
-    fractal.settings.settings[noise :: TREE_MAP].fractalType = noise :: FBM;
-    fractal.noise.calcFracBounding(fractal.settings.settings[noise :: TREE_MAP]);
-
-    fractal.settings.settings[noise :: GRASS_MAP].frequency = 22/1.09617844793f;
-    fractal.settings.settings[noise :: FLOWER_NOISE].frequency = 1.09617844793f / 32.f;
-    fractal.settings.settings[noise :: FLOWER_NOISE].fractalType = noise :: NONE;
-
-    fractal.settings.settings[noise :: CONTINENTAL_MAP].includePartials = true;
-    fractal.settings.settings[noise :: CONTINENTAL_MAP].fractalType = noise :: NONE;
-    fractal.settings.settings[noise :: CONTINENTAL_MAP].frequency = 2.5f/1000;
-
-    fractal.settings.settings[noise :: EROSION_MAP].frequency = 4.f/1000;
-    fractal.settings.settings[noise :: EROSION_MAP].includePartials = true;
-    /*fractal.settings.settings[noise :: EROSION_MAP].octaves = 3;
-    fractal.settings.settings[noise :: EROSION_MAP].gain = 0.5f;
-    //fractal.noise.calcFracBounding(fractal.settings.settings[noise :: EROSION_MAP]);*/
-
-    fractal.settings.settings[noise :: HIGH_NOISE].octaves = 5;
-    fractal.settings.settings[noise :: HIGH_NOISE].frequency = fractal.settings.settings[noise :: CONTINENTAL_MAP].frequency * fractal.settings.settings[noise :: HIGH_NOISE].lacunarity;
-    fractal.noise.calcFracBounding_HL_Noise(fractal.settings.settings[noise :: HIGH_NOISE]);
-
-    fractal.settings.settings[noise :: LOW_NOISE].octaves = 2;
-    fractal.settings.settings[noise :: LOW_NOISE].gain = 0.25f;
-    fractal.settings.settings[noise :: LOW_NOISE].lacunarity = 1.5f;
-    fractal.settings.settings[noise :: LOW_NOISE].frequency = fractal.settings.settings[noise :: CONTINENTAL_MAP].frequency * fractal.settings.settings[noise :: LOW_NOISE].lacunarity;
-    fractal.noise.calcFracBounding_HL_Noise(fractal.settings.settings[noise :: LOW_NOISE]);
-    fractal.settings.settings[noise :: LOW_NOISE].fractalBounding *= 1.f / 8;
 
     /*float value;
     float stdev = 0.f, mean = 0.f;
     int scale = 5000;
     for(int x = 0; x<scale; x++){
         for(int y = 0; y<scale; y++){
-            value = fractal.noise.SinglePerlin(seed, 1.09617844793f / 30 * x, 1.09617844793f / 30 * y);
+            value = fractal->noise.SinglePerlin(seed, 1.09617844793f / 30 * x, 1.09617844793f / 30 * y);
             mean += value;
         }
     }
     mean /= (scale * scale);
     for(int x = 0; x<scale; x++){
         for(int y = 0; y<scale; y++){
-            value = fractal.noise.SinglePerlin(seed, 1.09617844793f / 30 * x, 1.09617844793f / 30 * y) - mean;
+            value = fractal->noise.SinglePerlin(seed, 1.09617844793f / 30 * x, 1.09617844793f / 30 * y) - mean;
             stdev += value * value;
         }
     }
@@ -72,6 +88,8 @@ World :: ~World(){
         delete iterate->second;
         iterate = chunkData.erase(iterate);
     }
+    delete file;
+    delete fractal;
 }
 
 //handle player movement and gen new chunks
@@ -141,7 +159,12 @@ void World :: update(glm :: ivec3 camPos, bool menu, Player* player){
     mute.unlock();
     mute.lock();
     player->resolveClicks();
+    if(saveNeeded){save(player); saveNeeded = false;}
     mute.unlock();
+}
+
+bool World :: save(Player* player){
+    return file->save(seed, player->getPosition(), player->getFPosition(), player->getRotation());
 }
 
 //handle player movement and gen new chunks

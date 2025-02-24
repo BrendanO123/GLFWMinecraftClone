@@ -51,14 +51,14 @@ void WorldGen :: resolveStructures(ChunkData* target,
             SE->place(target, glm :: i8vec2(16, 16));
         }
 
-void WorldGen :: getChunkBasics(int x, int z, int chunkSize, ChunkData* chunkData, noise :: Fractal fractal){
+void WorldGen :: getChunkBasics(int x, int z, int chunkSize, ChunkData* chunkData, noise :: Fractal* fractal){
     //TODO: actual world gen
     using namespace noise;
     {
     chunkData->pos=glm :: ivec2(x,z);
 
     chunkData->data.clear();
-    NoiseReturnStruct noiseValues = fractal.getNoise(glm :: ivec2(x, z));
+    NoiseReturnStruct noiseValues = fractal->getNoise(glm :: ivec2(x, z));
     int minHeight = noiseValues.minHeight;
     int maxHeight = noiseValues.maxHeight;
 

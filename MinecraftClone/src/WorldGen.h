@@ -41,5 +41,5 @@ namespace WorldGen{
      * @param chunkZ The z cordinate of the chunk divided by the standard chunk size (16).
      * @param chunkData The target chunk for the generation function.
      */
-    void getChunkBasics(int chunkX, int chunkZ, int chunkSize, ChunkData* chunkData, noise :: Fractal fractal);
+    void getChunkBasics(int chunkX, int chunkZ, int chunkSize, ChunkData* chunkData, noise :: Fractal* fractal);
 }

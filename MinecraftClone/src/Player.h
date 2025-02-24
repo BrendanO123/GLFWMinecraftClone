@@ -52,9 +52,14 @@ class Player{
         void mouse_callback(GLFWwindow* window, double xpos, double ypos);
         void scroll_callback(GLFWwindow* window, double xOff, double yOff);
 
+        glm :: ivec3 getPosition();
+        glm :: vec3 getFPosition();
+        glm :: vec2 getRotation();
+        void setPosition(glm :: ivec3 i, glm :: vec3 f);
+        void setRotation(glm :: vec2 r);
+
         void setFirstMouse(bool state){cam.setFirstMouse(state);}
         bool setHeldBlock(GLubyte blockType){if(blockType){heldBlock = blockType; return true;} return false;}
-        glm :: ivec3 getPosition();
 
         static GLubyte getVoxel(int x, int y, int z);
 };

@@ -1,5 +1,4 @@
 #include <string.h>
-#include <iostream>
 
 #define GL_SILENCE_DEPRECATION
 #define GLFW_INCLUDE_NONE
@@ -19,6 +18,10 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
+
+#include <fstream>
+#include <sstream>
+#include <iostream>
 
 using namespace std;
 
@@ -67,6 +70,8 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     else if(key == GLFW_KEY_8 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: COARSE_DIRT);}
     else if(key == GLFW_KEY_9 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: PODZOL);}
     else if(key == GLFW_KEY_0 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: ROOTED_DIRT);}
+
+    else if(key == GLFW_KEY_L && action == GLFW_PRESS){World :: world -> setShouldSave(true);}
 }
 static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods){
     if(!menu){player->mouseClickCallback(window, button, action, mods);}
@@ -78,6 +83,7 @@ void processInput(GLFWwindow* window, float deltaTime=1.f){if(!menu){player->pro
 const string title = "Minecraft Clone";
 
 int main(){
+    std :: cout << "Initializing Dependencies" << std :: endl;
     glfwSetErrorCallback(error_callback);
 
     if(!glfwInit()){ //GLFW initialization fails
@@ -196,19 +202,29 @@ int main(){
     glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    string saveFileName, seedInput; int seed = -1;
 
-#ifdef SETSEED
-    int seed = 1342;
-#else
-    int seed = (int)time(0);
-#endif
-    srand(seed); 
-
-    int i = (rand() & 15) + 1;
-    for(int j = 0; j<i; j++){rand();}
-
-
-    World :: world = new World(&shader, chunkRenderDist, rand());
+    std :: cout << "Starting Program" << std :: endl;
+    std :: cout << "Enter a Name for the Save File and Press Enter:" << std :: endl;
+    getline(cin, saveFileName);
+    
+    ifstream file1(("MinecraftClone/saves/" + saveFileName + "/main").c_str());
+    if(!file1.is_open()){file1.close();
+        std :: cout << "Enter a Starting Seed (Or Leave Blank) and Press Enter:" << std :: endl;
+        stringstream stream;
+        getline(cin, seedInput);
+        stream << seedInput;
+        stream >> seed;
+        if(stream.fail()){
+            #ifdef SETSEED
+                seed = 1342;
+            #else
+                seed = (int)time(0);
+            #endif
+        }
+    }
+    else{file1.close();}
+    World :: world = new World(&shader, chunkRenderDist, seed, saveFileName, player);
 
     glClearColor(135/255.0f, 206/255.0f, 235/255.0f, 1.0f);
     float deltaTime, currentFrame; 
