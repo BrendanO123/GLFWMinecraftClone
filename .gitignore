@@ -40,3 +40,4 @@
 .vscode
 setSeed.*
 randSeed.*
+MinecraftClone/saves/**

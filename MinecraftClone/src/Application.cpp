@@ -207,7 +207,7 @@ int main(){
     std :: cout << "Starting Program" << std :: endl;
     std :: cout << "Enter a Name for the Save File and Press Enter:" << std :: endl;
     getline(cin, saveFileName);
-    
+
     ifstream file1(("MinecraftClone/saves/" + saveFileName + "/main").c_str());
     if(!file1.is_open()){file1.close();
         std :: cout << "Enter a Starting Seed (Or Leave Blank) and Press Enter:" << std :: endl;
@@ -216,15 +216,14 @@ int main(){
         stream << seedInput;
         stream >> seed;
         if(stream.fail()){
-            #ifdef SETSEED
-                seed = 1342;
-            #else
-                seed = (int)time(0);
-            #endif
+            seed = (int)time(0);
         }
     }
     else{file1.close();}
-    World :: world = new World(&shader, chunkRenderDist, seed, saveFileName, player);
+    srand(seed);
+    int i = (rand() & 15) + 1;
+    for(int j = 0; j<i; j++){rand();}
+    World :: world = new World(&shader, chunkRenderDist, rand(), saveFileName, player);
 
     glClearColor(135/255.0f, 206/255.0f, 235/255.0f, 1.0f);
     float deltaTime, currentFrame; 

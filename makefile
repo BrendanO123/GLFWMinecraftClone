@@ -6,7 +6,6 @@ CPPVERSION = -std=c++17
 
 #.out file name
 TARGET = build.out
-VERSION = .0.1.2
 
 #Framworks for .out file
 F = -framework
@@ -65,26 +64,6 @@ $(GL_OBJ) : $(GL_SRC)
 build:
 	@make -s
 	@rm -f $(OBJS) $(ENTRY)
-
-setSeed:
-	@rm -f $(OBJ_PATH)Application.o 
-	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -DSETSEED -c -o $(OBJ_PATH)Application.o $(SRC_PATH)Application.cpp -I$(INCLUDE)
-	@make -s
-	@cp $(TARGET) setSeed$(VERSION)
-
-randSeed: 
-	@rm -f $(OBJ_PATH)Application.o 
-	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -c -o $(OBJ_PATH)Application.o $(SRC_PATH)Application.cpp -I$(INCLUDE)
-	@make -s
-	@cp $(TARGET) randSeed$(VERSION)
-
-run_setSeed:
-	@make setSeed -s
-	@./setSeed$(VERSION)
-
-run_randSeed:
-	@make randSeed -s
-	@./randSeed$(VERSION)
 
 
 #recompile .out if neccessary and run
