@@ -70,8 +70,8 @@ FileManager :: FileManager(string name, int &seed, glm :: ivec3 &playerPositionI
             file.read(contents, mainFileSize); 
             file.close();
 
-            for(int i =0; i< mainFileSize; i++){cout << int(contents[i]) << " | ";}
-            cout << endl;
+            /*for(int i =0; i< mainFileSize; i++){cout << int(contents[i]) << " | ";}
+            cout << endl;*/
 
             seed = getInt(contents, 0);
             playerPositionI.x = getInt(contents, sizeof(int32_t) * 1);
@@ -85,10 +85,10 @@ FileManager :: FileManager(string name, int &seed, glm :: ivec3 &playerPositionI
             playerRoation.x = getFloat(contents, sizeof(int32_t) * 4 + sizeof(float)*3);
             playerRoation.y = getFloat(contents, sizeof(int32_t) * 4 + sizeof(float)*4);
 
-            std :: cout << "Seed: " << seed << std :: endl;
+            /*std :: cout << "Seed: " << seed << std :: endl;
             std :: cout << "Position: (" << playerPositionI.x << ", " <<  playerPositionI.y << ", " << playerPositionI.z << ") | " << std :: endl;
             std :: cout << "\t(" << playerPositionF.x << ", " <<  playerPositionF.y << ", " << playerPositionF.z << ")" << std :: endl;
-            std :: cout << "Rotation: (" << playerRoation.x << ", " <<  playerRoation.y << ")" << std :: endl;
+            std :: cout << "Rotation: (" << playerRoation.x << ", " <<  playerRoation.y << ")" << std :: endl;*/
 
             delete[] contents;
             return;
@@ -112,10 +112,10 @@ bool FileManager :: save(int seed, glm :: ivec3 playerPositionI, glm :: vec3 pla
         if(file.is_open()){
             char * contents = new char [mainFileSize];
 
-            std :: cout << "Seed: " << seed << std :: endl;
+            /*std :: cout << "Seed: " << seed << std :: endl;
             std :: cout << "Position: (" << playerPositionI.x << ", " <<  playerPositionI.y << ", " << playerPositionI.z << ") | " << std :: endl;
             std :: cout << "\t(" << playerPositionF.x << ", " <<  playerPositionF.y << ", " << playerPositionF.z << ")" << std :: endl;
-            std :: cout << "Rotation: (" << playerRoation.x << ", " <<  playerRoation.y << ")" << std :: endl;
+            std :: cout << "Rotation: (" << playerRoation.x << ", " <<  playerRoation.y << ")" << std :: endl;*/
 
             setInt(contents, 0, seed);
             setInt(contents, sizeof(int32_t)*1, playerPositionI.x);
@@ -129,8 +129,8 @@ bool FileManager :: save(int seed, glm :: ivec3 playerPositionI, glm :: vec3 pla
             setFloat(contents, sizeof(int32_t) * 4 + sizeof(float)*3, playerRoation.x);
             setFloat(contents, sizeof(int32_t) * 4 + sizeof(float)*4, playerRoation.y);
 
-            for(int i =0; i< mainFileSize; i++){cout << int(contents[i]) << " | ";}
-            cout << endl;
+            /*for(int i =0; i< mainFileSize; i++){cout << int(contents[i]) << " | ";}
+            cout << endl;*/
 
             file.write(contents, mainFileSize);
             //file << seed << playerPositionI.x << playerPositionI.y << playerPositionI.z << playerPositionF.x << playerPositionF.y << playerPositionF.z << playerRoation.x << playerRoation.y << std :: endl;

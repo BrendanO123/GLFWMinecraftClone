@@ -40,6 +40,10 @@ struct chunkList{
             last = first = new chunkListNode(x, y);
             count = 1;
         }
+        else if(last == nullptr){
+            last = new chunkListNode(x, y);
+            count++;
+        }
         else{
             last->next = new chunkListNode(x, y);
             last = last->next;
@@ -57,7 +61,7 @@ struct chunkList{
     glm::ivec2 pop(){return popFront();}
     glm::ivec2 popFront(){
         if(first == nullptr || count == 0){printf("Nullptr Error: Poped Empty Queue\n", stderr);; return glm :: ivec2(-1);}
-        chunkListNode* temp = &*first;
+        chunkListNode* temp = first;
         glm :: ivec2 returnValue = glm :: ivec2(first->x, first->y);
         first = first->next;
         if(first==nullptr){last=nullptr;}
