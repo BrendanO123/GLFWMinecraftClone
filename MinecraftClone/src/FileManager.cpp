@@ -227,13 +227,16 @@ ChunkData* FileManager :: load(int x, int z){
         GLubyte arr[256] = {0};
         GLubyte y;
         int offset = 0;
+        int index;
         for(int i = 0; i <layerCount; i++){
             y=contents[offset++];
-            data->data.emplace_back(y);
-            data->data.at(i).data.reserve(256);
+            //data->data.emplace_back(y);
+            index = data->safeLayerFetch(y);
+            data->data.at(index).data.reserve(256);
             copy(contents + offset, contents + offset + 256, /*data->data.data()*/arr); offset+=256;
-            for(int j=0; j<256; j++){data->data.at(i).data.at(j) = arr[j];}
+            for(int j=0; j<256; j++){data->data.at(index).data.at(j) = arr[j];}
         }
+        //for(int i=0; i< data->data.size(); i++){std :: cout << int(data->data.at(i).y) << std :: endl;}
 
         data->Structs.count = structCount;
         if(structCount !=0){
