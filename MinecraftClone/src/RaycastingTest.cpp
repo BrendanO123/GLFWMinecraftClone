@@ -39,9 +39,3 @@ TEST_CASE("Testing Voxel Raycast") {
     CHECK(FarCast.normal.y == 0);
     CHECK(FarCast.normal.z == 0);
 }
-
-/*TEST_CASE("Testing Voxel Raycast Debug Checks") {
-    RaycasterRight(15, blockLookUpRight);
-    raycastReturnStruct ZeroCast = RaycasterRight.unitVoxelRaycast(glm :: ivec3(0, 0, 0), glm :: vec3(0.f, 0.f, 0.f), glm :: vec3(0.f, 0.f, 0.f));
-    CHECK(FarCast.normal == glm :: i8vec3(0, 0, 0));
-}*/

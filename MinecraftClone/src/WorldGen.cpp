@@ -52,11 +52,9 @@ void WorldGen :: resolveStructures(ChunkData* target,
         }
 
 void WorldGen :: getChunkBasics(int x, int z, int chunkSize, ChunkData* chunkData, noise :: Fractal* fractal){
-    //TODO: actual world gen
     using namespace noise;
     {
     chunkData -> xPos = x; chunkData -> zPos = z;
-    //chunkData->pos=glm :: ivec2(x,z);
 
     chunkData->data.clear();
     NoiseReturnStruct noiseValues = fractal->getNoise(glm :: ivec2(x, z));
@@ -113,7 +111,7 @@ void WorldGen :: getChunkBasics(int x, int z, int chunkSize, ChunkData* chunkDat
                 chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-2 - lowest).data[iterZ + (iterX<<4)] = Blocks :: DIRT;
                 chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-1 - lowest).data[iterZ + (iterX<<4)] = Blocks :: GRASS;
                 
-                
+                //TESTING
                 /*if(iterX == 0 || iterX == 15 || iterZ == 0 || iterZ == 15){
                     chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-1 - lowest).data[iterZ + (iterX<<4)] = Blocks :: DIRT;
                 }*/
@@ -123,12 +121,14 @@ void WorldGen :: getChunkBasics(int x, int z, int chunkSize, ChunkData* chunkDat
                 chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-2 - lowest).data[iterZ + (iterX<<4)] = noiseValues.surfaceType[iterZ + int(iterX << 4)];
                 chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-1 - lowest).data[iterZ + (iterX<<4)] = noiseValues.surfaceType[iterZ + int(iterX << 4)];
 
+                //TESTING
                 /*if(iterX == 0 || iterX == 15 || iterZ == 0 || iterZ == 15){
                     chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-1 - lowest).data[iterZ + (iterX<<4)] = Blocks :: DIRT;
                 }*/
             }
         }
     }
+    //TESTING
     //chunkData->data.at(noiseValues.TerrainHeight[1 + int(2 << 4)]-1).data[1 + (2<<4)] = Blocks :: STONE;
     
 

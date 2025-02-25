@@ -53,7 +53,7 @@ glm :: vec3 Fractal :: genNoiseSingle(glm :: vec2 pos, int seed, bool includePar
             }
             return glm :: vec3(noise.SinglePerlin(seed, pos.x, pos.y), 0.f, 0.f);
         case VALUE_CUBIC:
-            //TODO:
+            //TEMP TODO:
             return noise.analyticalPerlin(seed, pos.x, pos.y);
             break;
         case WHITE:
@@ -64,7 +64,7 @@ glm :: vec3 Fractal :: genNoiseSingle(glm :: vec2 pos, int seed, bool includePar
                 return noise.analyticalPerlin(seed, pos.x, pos.y);
             }
             return glm :: vec3(noise.SinglePerlin(seed, pos.x, pos.y), 0.f, 0.f);
-            //TODO WHITE
+            //TEMP TODO WHITE
             break;
     }
 }
@@ -196,121 +196,6 @@ glm :: u8vec2 Fractal :: getTerrain(glm :: ivec2 pos, float erosionS, glm :: vec
     return glm :: u8vec2(height, Blocks :: SAND);
 }
 
-//TODO
+//TEMP TODO
 float Fractal :: getRain(glm :: ivec2 pos, glm :: vec3 erosion, glm :: vec3 continental) const{return 1.0f;}
 float Fractal :: getTemp(glm :: ivec2 pos, float rainfall) const{return 1.0f;}
-
-
-/*
-//e to midline variables
-const float eMidlineFactorMin = 0.7f;
-const float eMidlineFactorMax = 1.5f;
-const float eMidlineFactorLeftBound = -0.75f;
-const float eMidlineFactorRightBound = 0.75f;
-
-inline float Fractal :: midlineFactorErosion(const float e) const{
-    return 
-        (e >= eMidlineFactorRightBound ? eMidlineFactorMin : 
-            (e <= eMidlineFactorLeftBound ? eMidlineFactorMax : 
-                (
-                (eMidlineFactorMax - eMidlineFactorMin) * 
-                SCurve((eMidlineFactorRightBound - e) / (eMidlineFactorRightBound - eMidlineFactorLeftBound))
-                + eMidlineFactorMin
-                ) / eMidlineFactorMax
-            )
-        );
-}
-
-
-//c to midline variables
-const float cMidlineFactorLeftBound = -0.75f;
-const float cMidlineFactorRightBound = 0.75f;
-
-inline float Fractal :: midlineFactorContinental(const float c) const{
-    return 
-    (c <= cMidlineFactorLeftBound ? -1 : 
-        (c >= cMidlineFactorRightBound ? 1 : 
-            (
-            2 * 
-            SCurve((c + cMidlineFactorRightBound) / (cMidlineFactorRightBound - cMidlineFactorLeftBound)) 
-            - 1
-            )
-        )
-    );
-}
-
-
-//e to amplitude
-const float eToAmpFactorLeftBound = -0.75f;
-const float eToAmpFactorRightBound = 0.75f;
-const float eToAmpFactorMin = 0.1875f;
-
-inline float Fractal :: amplitudeFactorErosion(const float e) const{
-    return 
-        (e <= eToAmpFactorLeftBound ? 1 : 
-            (e >= eToAmpFactorRightBound ? eToAmpFactorMin : 
-                (
-                (1 - eToAmpFactorMin) * 
-                SCurve((eToAmpFactorRightBound - e) / (eToAmpFactorRightBound - eToAmpFactorLeftBound))
-                + eToAmpFactorMin
-                )
-            )
-        );
-}
-
-
-//c to amplitude variables
-const float cToAmpFactorBoundDist = 0.625f;
-
-inline float Fractal :: amplitudeFactorContinental(const float c) const{
-    float C = noise.FastAbs(c);
-    return (C >= cToAmpFactorBoundDist ? 1 : SCurve(C / cToAmpFactorBoundDist));
-}
-
-
-//detail control variables
-const float DetailLeftBound = -0.75f;
-const float DetailRightBound = 0.75f;
-
-//L of fractal
-const float MinL = 1.5f;
-const float MaxL = 2.0f;
-
-inline float Fractal :: detailToLFunc(const float e) const{
-    return 
-        (e >= DetailRightBound ? MinL : 
-            (e <= DetailLeftBound ? MaxL : 
-                (
-                (MaxL - MinL) *
-                SCurve((e + DetailLeftBound) / (DetailLeftBound - DetailRightBound))
-                + MinL
-                )
-            )
-        ); 
-}
-
-//Gain of fractal
-const float MinG = 0.25f;
-const float MaxG = 0.5f;
-
-inline float Fractal :: detailToGFunc(const float e) const{
-    return 
-        (e >= DetailRightBound ? MinG : 
-            (e <= DetailLeftBound ? MaxG : 
-                (
-                (MaxG - MinG) *
-                SCurve((e + DetailLeftBound) / (DetailLeftBound - DetailRightBound))
-                + MinG
-                )
-            )
-        ); 
-}
-
-
-//c to L and G
-const float cToLGBoundDist = 0.35f;
-const float cToLGMinFactor = 0.6f;
-inline float Fractal :: detailFactorContinental(const float c) const{
-    float C = noise.FastAbs(c);
-    return (C >= cToLGBoundDist ? 1 : (1 - cToLGMinFactor) * SCurve(C / cToLGBoundDist) + cToLGMinFactor);
-}*/

@@ -35,17 +35,6 @@ namespace noise{
 
             glm :: u8vec2 getTerrain(glm :: ivec2 pos, float erosionS, glm :: vec3 continental) const;
 
-
-            float midlineFactorErosion(float e) const;
-            float midlineFactorContinental(float c) const;
-            float amplitudeFactorErosion(float e) const;
-            float amplitudeFactorContinental(float c) const;
-
-            float detailToLFunc(float e) const;
-            float detailToGFunc(float e) const;
-            float detailFactorContinental(float c) const;
-
-
             float getRain(glm :: ivec2 pos, glm :: vec3 erosion, glm :: vec3 continental) const;
             float getTemp(glm :: ivec2 pos, float rainfall) const;
 
