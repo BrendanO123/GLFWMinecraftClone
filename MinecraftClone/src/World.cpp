@@ -3,9 +3,10 @@
 #include <iostream>
 
 #include "WorldGen.h"
+#include "WorldGenSettings.h"
 
 World* World :: world = nullptr;
-//costructor: store shader
+
 World :: World(Shader* shader, int render, int Seed, string name, Player* player) : shader(shader), renderDistance(render){
 
     glm :: ivec3 playerPositionI = glm :: ivec3(8, 135, 8); glm :: vec3 playerPositionF = glm :: vec3(0);
@@ -15,43 +16,14 @@ World :: World(Shader* shader, int render, int Seed, string name, Player* player
 
     player->setPosition(playerPositionI, playerPositionF);
     player->setRotation(playerRotation);
-
     seed = Seed;
+
     srand(seed); 
     int i = (rand() & 15) + 1;
     for(int j = 0; j<i; j++){rand();}
 
     fractal = new noise :: Fractal(rand());
-
-    fractal->settings.settings[noise :: TREE_MAP].frequency = 32 / 1.09617844793f;
-    fractal->settings.settings[noise :: TREE_MAP].octaves = 2;
-    fractal->settings.settings[noise :: TREE_MAP].fractalType = noise :: FBM;
-    fractal->noise.calcFracBounding(fractal->settings.settings[noise :: TREE_MAP]);
-
-    fractal->settings.settings[noise :: GRASS_MAP].frequency = 22/1.09617844793f;
-    fractal->settings.settings[noise :: FLOWER_NOISE].frequency = 1.09617844793f / 32.f;
-    fractal->settings.settings[noise :: FLOWER_NOISE].fractalType = noise :: NONE;
-
-    fractal->settings.settings[noise :: CONTINENTAL_MAP].includePartials = true;
-    fractal->settings.settings[noise :: CONTINENTAL_MAP].fractalType = noise :: NONE;
-    fractal->settings.settings[noise :: CONTINENTAL_MAP].frequency = 2.5f/1000;
-
-    fractal->settings.settings[noise :: EROSION_MAP].frequency = 4.f/1000;
-    fractal->settings.settings[noise :: EROSION_MAP].includePartials = true;
-    /*fractal->settings.settings[noise :: EROSION_MAP].octaves = 3;
-    fractal->settings.settings[noise :: EROSION_MAP].gain = 0.5f;
-    //fractal->noise.calcFracBounding(fractal->settings.settings[noise :: EROSION_MAP]);*/
-
-    fractal->settings.settings[noise :: HIGH_NOISE].octaves = 5;
-    fractal->settings.settings[noise :: HIGH_NOISE].frequency = fractal->settings.settings[noise :: CONTINENTAL_MAP].frequency * fractal->settings.settings[noise :: HIGH_NOISE].lacunarity;
-    fractal->noise.calcFracBounding_HL_Noise(fractal->settings.settings[noise :: HIGH_NOISE]);
-
-    fractal->settings.settings[noise :: LOW_NOISE].octaves = 2;
-    fractal->settings.settings[noise :: LOW_NOISE].gain = 0.25f;
-    fractal->settings.settings[noise :: LOW_NOISE].lacunarity = 1.5f;
-    fractal->settings.settings[noise :: LOW_NOISE].frequency = fractal->settings.settings[noise :: CONTINENTAL_MAP].frequency * fractal->settings.settings[noise :: LOW_NOISE].lacunarity;
-    fractal->noise.calcFracBounding_HL_Noise(fractal->settings.settings[noise :: LOW_NOISE]);
-    fractal->settings.settings[noise :: LOW_NOISE].fractalBounding *= 1.f / 8;
+    GenerationSettings :: getSettings(fractal);
 
     updateThread = std :: thread(&World :: threadUpdate, this);
 }
@@ -476,23 +448,6 @@ void World :: threadUpdate(){
             }
         }
         else{
-            /*using namespace std :: chrono;
-            {
-            mute.unlock();
-            if(!isMenu){
-                bool urgent = false;
-                std :: chrono :: time_point start = chrono::steady_clock::now();
-                while(chrono::steady_clock::now() - start < chunkLoadSleepMillis){
-                    std::this_thread::sleep_for(std::chrono::milliseconds(clickSleepMillis));
-                    mute.lock();
-                    urgent = chunkQueue.hasUrgent();
-                    mute.unlock(); 
-                    if(urgent){break;}
-                }
-            }
-            else{std::this_thread::sleep_for(std::chrono::milliseconds(2000));} //effects the cpu time taken up as a background task 
-                //TODO: (change to a real function of time since last input eventually)
-            };*/
             mute.unlock();
             if(!isMenu){std::this_thread::sleep_for(std::chrono::milliseconds(normSleepMillis));}
             else{std::this_thread::sleep_for(std::chrono::milliseconds(menuSleepMillis));}
@@ -502,7 +457,6 @@ void World :: threadUpdate(){
             mute.lock();
             for (auto iterate = chunkData.begin(); iterate != chunkData.end();)
             {
-                //glm :: ivec2 chunkPos = iterate->second->pos;
                 glm :: ivec2 chunkPos = glm :: ivec2(iterate->second->xPos, iterate->second->zPos);
                 
                 if (
@@ -537,18 +491,13 @@ void World :: threadUpdate(){
                 )
                 {   
                     if(iterate->second->hasBuilds){
-                        //if(playerPositionSet && (abs(chunkPos.x - camX_chunk) > modifiedChunkStoreDistance || abs(chunkPos.y - camZ_chunk) > modifiedChunkStoreDistance)){
-
-                            if(!iterate->second->fileStored){file->save(iterate->second);}
-                            delete chunkData.at(iterate->first);
-                            iterate = chunkData.erase(iterate);
-                        //}
+                        if(!iterate->second->fileStored){file->save(iterate->second);}
+                        delete chunkData.at(iterate->first);
+                        iterate = chunkData.erase(iterate);
                     }
                     else{
-                        //if(playerPositionSet && (abs(chunkPos.x - camX_chunk) > renderDistance || abs(chunkPos.y - camZ_chunk) > renderDistance)){
-                            delete chunkData.at(iterate->first);
-                            iterate = chunkData.erase(iterate);
-                        //}
+                        delete chunkData.at(iterate->first);
+                        iterate = chunkData.erase(iterate);
                     }
                 }
                 else{iterate++;}
@@ -559,7 +508,7 @@ void World :: threadUpdate(){
 }
 
 GLubyte World :: getBlock(int x, int y, int z){
-    //TODO LOD SYSTEM
+    //TEMP TODO LOD SYSTEM
 
     ChunkData* data = getChunkData(floor(x / float(chunkSize)), floor((z-1) / float(chunkSize))+1);
     if(data == nullptr){return Blocks :: AIR;}
@@ -575,7 +524,6 @@ bool World :: breakBlock(glm :: ivec3 pos){
     if(((chunk->flagByte & ChunkFlags :: HAS_STRUCTURES)==0)){return false;}
 
     //does not work if chunk size changes
-    //TODO update adjacent chunk if on border
     Layer* layer = chunk->data->getLayer(pos.y);
     if(layer == nullptr){return false;}
 
@@ -659,10 +607,7 @@ bool World :: breakBlock(glm :: ivec3 pos){
 
 bool World :: placeBlock(glm :: ivec3 pos, GLubyte blockType){
     Chunk* chunk = getChunk(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1);
-    if(chunk == nullptr){
-        ChunkData* data = getChunkData(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1);
-        return false;
-    }
+    if(chunk == nullptr){return false;}
     if(((chunk->flagByte & ChunkFlags :: HAS_STRUCTURES)==0)){return false;}
 
     //does not work if chunk size changes
