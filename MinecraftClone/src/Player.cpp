@@ -54,7 +54,7 @@ void Player :: mouse_callback(GLFWwindow* window, double xpos, double ypos){
     cam.mouse_callback(window, xpos, ypos);
 }
 void Player :: scroll_callback(GLFWwindow* window, double xOff, double yOff){
-    cam.mouse_callback(window, xOff, yOff);
+    cam.scroll_callback(window, xOff, yOff);
 }
 
 bool Player :: RClick(){
