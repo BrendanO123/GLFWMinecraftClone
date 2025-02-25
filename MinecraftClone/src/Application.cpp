@@ -207,6 +207,9 @@ int main(){
     std :: cout << "Starting Program" << std :: endl;
     std :: cout << "Enter a Name for the Save File and Press Enter:" << std :: endl;
     getline(cin, saveFileName);
+    char* chars = saveFileName.data();
+    for(int i =0; i<saveFileName.length(); i++){if(chars[i] == ' '){chars[i] = '_';}}
+    saveFileName = string(chars);
 
     ifstream file1(("MinecraftClone/saves/" + saveFileName + "/main").c_str());
     if(!file1.is_open()){file1.close();

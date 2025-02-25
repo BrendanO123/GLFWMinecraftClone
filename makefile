@@ -97,3 +97,8 @@ delete_exc:
 	@rm -rf $(TARGET).dSYM
 	@echo "CLEANED EXECUTABLE"
 
+
+delete_%:
+	@rm -r MinecraftClone/saves/"$(strip $*)"
+	@echo "DELETED SAVE: $(strip $*)"
+
