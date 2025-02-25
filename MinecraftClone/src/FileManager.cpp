@@ -143,15 +143,16 @@ bool FileManager :: save(int seed, glm :: ivec3 playerPositionI, glm :: vec3 pla
 }
 
 bool FileManager :: save(ChunkData* data){
-    glm :: ivec2 pos = data->pos;
+    //glm :: ivec2 pos = data->pos;
+    int x = data->xPos, y = data->zPos;
     stringstream folderStream;
-    folderStream << saveFileName << "/region" << (pos.x>>4) << "_" << (pos.y>>4);
+    folderStream << saveFileName << "/region" << (/*pos.x*/x>>4) << "_" << (/*pos.y*/y>>4);
     string name = folderStream.str();
     if(!std::filesystem::create_directories(name.c_str())){
         /*fprintf(stderr, "FAILED TO MAKE SAVE FILE FOLDER");
         return false;*/
     }
-    folderStream << "/chunk" << (pos.x & 15) << "_" << (pos.y & 15);
+    folderStream << "/chunk" << (/*pos.x*/x & 15) << "_" << (/*pos.y*/y & 15);
     name = folderStream.str();
     ofstream file; file.open(name.c_str(), ios::out|ios::binary|ios::trunc); 
 
@@ -231,6 +232,7 @@ ChunkData* FileManager :: load(int x, int z){
         for(int i = 0; i <layerCount; i++){
             y=contents[offset++];
             //data->data.emplace_back(y);
+            //index = i;
             index = data->safeLayerFetch(y);
             data->data.at(index).data.reserve(256);
             copy(contents + offset, contents + offset + 256, /*data->data.data()*/arr); offset+=256;
@@ -249,6 +251,8 @@ ChunkData* FileManager :: load(int x, int z){
 
         delete[] contents;
         data->hasBuilds = true; data->fileStored = true;
+        //data->pos = glm :: ivec2(x, z);
+        data->xPos = x; data->zPos = z;
         return data;
     }
     else{file.close(); fprintf(stderr, "FAILED TO OPEN SAVE FILE");}

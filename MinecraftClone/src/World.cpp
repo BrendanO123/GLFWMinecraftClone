@@ -118,6 +118,9 @@ void World :: update(glm :: ivec3 camPos, bool menu, Player* player){
 
             //get location of chunk     
             int chunkX, chunkZ; iterate->second->getPos(chunkX, chunkZ);
+            if(chunkData.find(tuple<int, int>(chunkX, chunkZ)) == chunkData.end() && chunks.find(tuple<int, int>(chunkX, chunkZ)) != chunks.end()){
+                std :: cout << "Found Missing ChunkData at: (" << chunkX << ", " << chunkZ << ")" << std :: endl;
+            }
 
             //if it is ready to render
             if(iterate->second->flagByte & ChunkFlags :: RENDERABLE){
@@ -199,9 +202,7 @@ void World :: threadUpdate(){
 
                         //if we don't have chunk, add to rendering queue
                         if(chunks.find({x, z}) == chunks.end()){
-                            //std :: cout << "Pushing Chunk From Thread Loop" << std :: endl;
                             chunkQueue.pushBack(x, z);
-                            //std :: cout << "\tPushed Chunk" << std :: endl;
                         }
                     }
                 }
@@ -214,9 +215,7 @@ void World :: threadUpdate(){
         if(!chunkQueue.empty()){
 
             //remove next chunk and add get its location
-            //std :: cout << "Geting Chunk Queue Front" << std :: endl;
             glm :: ivec2 next = chunkQueue.popFront();
-            //std :: cout << "\tGot Front" << std :: endl;
             mute.unlock();
 
             //turn chunk location into tuple for lookup
@@ -226,10 +225,8 @@ void World :: threadUpdate(){
 
             //if it is not in the chunks map
             if(chunks.find(chunkTuple) != chunks.end()){
-                //std :: cout << "Found Modified Chunk" << std :: endl;
                 Chunk* chunk = chunks.at(chunkTuple);
                 if(chunk->flagByte & ChunkFlags :: MODIFIED){
-                    //std :: cout << "Got Modified Chunk" << std :: endl;
 
                     if(chunkData.find(tuple<int, int>(next.x, next.y))!=chunkData.end()){chunk->data=chunkData.at(tuple<int,int>(next.x, next.y));}
                     if(chunkData.find(tuple<int, int>(next.x+1, next.y))!=chunkData.end()){chunk->right=chunkData.at(tuple<int,int>(next.x+1, next.y));}
@@ -241,9 +238,7 @@ void World :: threadUpdate(){
 
                     chunk->flagByte |= ChunkFlags :: HAS_MESH;
                     chunk->flagByte = chunk->flagByte & ~(ChunkFlags :: MODIFIED | ChunkFlags :: RENDERABLE);
-                    //std :: cout << "Remeshed Modified Chunk" << std :: endl;
                     chunks[chunkTuple] = chunk;
-                    //std :: cout << "Updated Chunk" << std :: endl;
                     mute.unlock();
                 }
                 else{mute.unlock();}
@@ -524,12 +519,12 @@ void World :: threadUpdate(){
             else{std::this_thread::sleep_for(std::chrono::milliseconds(menuSleepMillis));}
         }
 
-        
         if(!isMenu){//if stuff is happening
             mute.lock();
             for (auto iterate = chunkData.begin(); iterate != chunkData.end();)
             {
-                glm :: ivec2 chunkPos = iterate->second->pos;
+                //glm :: ivec2 chunkPos = iterate->second->pos;
+                glm :: ivec2 chunkPos = glm :: ivec2(iterate->second->xPos, iterate->second->zPos);
                 
                 if (
                     (chunks.find(tuple<int, int>(chunkPos.x, chunkPos.y)) == chunks.end()) &&
@@ -563,16 +558,18 @@ void World :: threadUpdate(){
                 )
                 {   
                     if(iterate->second->hasBuilds){
-                        if(abs(iterate->second->pos.x - camX_chunk) > modifiedChunkStoreDistance || abs(iterate->second->pos.y - camZ_chunk) > modifiedChunkStoreDistance){
+                        //if(playerPositionSet && (abs(chunkPos.x - camX_chunk) > modifiedChunkStoreDistance || abs(chunkPos.y - camZ_chunk) > modifiedChunkStoreDistance)){
 
                             if(!iterate->second->fileStored){file->save(iterate->second);}
                             delete chunkData.at(iterate->first);
                             iterate = chunkData.erase(iterate);
-                        }
+                        //}
                     }
                     else{
-                        delete chunkData.at(iterate->first);
-                        iterate = chunkData.erase(iterate);
+                        //if(playerPositionSet && (abs(chunkPos.x - camX_chunk) > renderDistance || abs(chunkPos.y - camZ_chunk) > renderDistance)){
+                            delete chunkData.at(iterate->first);
+                            iterate = chunkData.erase(iterate);
+                        //}
                     }
                 }
                 else{iterate++;}

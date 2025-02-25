@@ -55,7 +55,8 @@ void WorldGen :: getChunkBasics(int x, int z, int chunkSize, ChunkData* chunkDat
     //TODO: actual world gen
     using namespace noise;
     {
-    chunkData->pos=glm :: ivec2(x,z);
+    chunkData -> xPos = x; chunkData -> zPos = z;
+    //chunkData->pos=glm :: ivec2(x,z);
 
     chunkData->data.clear();
     NoiseReturnStruct noiseValues = fractal->getNoise(glm :: ivec2(x, z));

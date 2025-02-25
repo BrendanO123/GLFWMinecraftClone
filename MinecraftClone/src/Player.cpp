@@ -29,7 +29,7 @@ glm :: ivec3 Player :: getPosition(){return intPos;}
 void Player :: processInput(GLFWwindow* window, float dt){cam.processInput(window, fPos, intPos, dt);}
 
 void Player :: mouseClickCallback(GLFWwindow* window, int button, int action, int mods){
-    if(action == GLFW_PRESS){
+    if(!cam.getFirstMouse() && action == GLFW_PRESS){
         if(button == GLFW_MOUSE_BUTTON_LEFT){
             LClick();
         }

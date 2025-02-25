@@ -39,4 +39,5 @@ class Camera{
         void setRotation(glm ::vec2 r);
         glm :: vec2 getRotation(){return rotation;}
         void setFirstMouse(bool state){firstMouseCall = state;}
+        bool getFirstMouse(){return firstMouseCall;}
 };

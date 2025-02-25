@@ -32,14 +32,15 @@ struct ChunkData{
 
     //data
     vector<Layer> data;
-    glm :: ivec2 pos;
+    int xPos, zPos;
+    //glm :: ivec2 pos;
     StructureList Structs = StructureList();
     bool hasBuilds = false;
     bool fileStored = false;
 
     //constructors
-    ChunkData() : data(vector<Layer>()), pos(glm :: ivec2()){}
-    ChunkData(vector<Layer> Data, glm :: ivec2 loc) : data(Data), pos(loc){}
+    ChunkData() : data(vector<Layer>()), /**/xPos(0), zPos(0)/**//*pos(glm :: ivec2())*/{}
+    ChunkData(vector<Layer> Data, glm :: ivec2 loc) : data(Data), /**/xPos(loc.x), zPos(loc.y)/*pos(loc)*/{}
     ~ChunkData(){}
 
     void place(ChunkData* other, glm :: i8vec2 offset);
