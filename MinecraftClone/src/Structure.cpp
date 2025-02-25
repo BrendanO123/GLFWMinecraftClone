@@ -38,8 +38,9 @@ bool Structure :: placeSelf(ChunkData &target, GLbyte pX, GLbyte pY, GLbyte pZ) 
                 else{
                     lookID = layer->data[zChunk+(int(xChunk)<<4)];
                     if((Blocks :: blocks[lookID].flagByte & Blocks :: SOLID_BIT) & (Blocks :: blocks[id].flagByte & Blocks :: SOLID_BIT)){
-                        layer->data[zChunk+(int(xChunk)<<4)]=id;
+                        if(id != Blocks :: LEAVES_OAK || lookID != Blocks :: LOG_OAK){layer->data[zChunk+(int(xChunk)<<4)]=id;}
                     }
+                    else if(lookID == Blocks :: LEAVES_OAK && id == Blocks :: LOG_OAK){layer->data[zChunk+(int(xChunk)<<4)]=id;}
                 }
             }
         }

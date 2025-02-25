@@ -241,7 +241,7 @@ int main(){
 
         player->updateMatrixUniforms(ratio);
         World :: world->update(player->getPosition(), menu, player);
-        player->highlightSelected();
+        if(!menu){player->highlightSelected();}
 
         glfwSwapBuffers(window);
         if(!menu){glfwPollEvents();}

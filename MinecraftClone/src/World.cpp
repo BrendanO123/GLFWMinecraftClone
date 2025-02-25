@@ -483,7 +483,7 @@ void World :: threadUpdate(){
                     else{SE=chunkData.at(tuple<int,int>(next.x+1, next.y-1)); mute.unlock();}
 
                     mute.lock();
-                    WorldGen :: resolveStructures(chunk->data, NW, chunk->back, NE, chunk->left, chunk->right, SW, chunk->front, SE);
+                    if(!chunk->data->fileStored){WorldGen :: resolveStructures(chunk->data, NW, chunk->back, NE, chunk->left, chunk->right, SW, chunk->front, SE);}
                     chunk->flagByte |= ChunkFlags :: HAS_STRUCTURES;
                     mute.unlock();
 
@@ -606,7 +606,7 @@ bool World :: breakBlock(glm :: ivec3 pos){
         if(chunkXUp != nullptr){
             if(chunkXUp->flagByte & ChunkFlags :: HAS_MESH){
                 chunkXUp->flagByte |= ChunkFlags :: MODIFIED;
-                //chunkXUp -> left = chunk -> data;
+                chunkXUp -> left = chunk -> data;
                 chunks[tuple<int, int>(floor(pos.x / float(chunkSize))+1, floor((pos.z-1) / float(chunkSize))+1)] = chunkXUp;
                 chunkQueue.pushFront(floor(pos.x / float(chunkSize))+1, floor((pos.z-1) / float(chunkSize))+1);
                 //std :: cout << "Pushed Secondary Chunk" << std :: endl;
@@ -618,7 +618,7 @@ bool World :: breakBlock(glm :: ivec3 pos){
         if(chunkXDown != nullptr){
             if(chunkXDown->flagByte & ChunkFlags :: HAS_MESH){
                 chunkXDown->flagByte |= ChunkFlags :: MODIFIED;
-                //chunkXDown -> right = chunk -> data;
+                chunkXDown -> right = chunk -> data;
                 chunks[tuple<int, int>(floor(pos.x / float(chunkSize))-1, floor((pos.z-1) / float(chunkSize))+1)] = chunkXDown;
                 chunkQueue.pushFront(floor(pos.x / float(chunkSize))-1, floor((pos.z-1) / float(chunkSize))+1);
                 //std :: cout << "Pushed Secondary Chunk" << std :: endl;
@@ -630,7 +630,7 @@ bool World :: breakBlock(glm :: ivec3 pos){
         if(chunkZUp != nullptr){
             if(chunkZUp->flagByte & ChunkFlags :: HAS_MESH){
                 chunkZUp->flagByte |= ChunkFlags :: MODIFIED;
-                //chunkZUp -> front = chunk -> data;
+                chunkZUp -> front = chunk -> data;
                 chunks[tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize)))] = chunkZUp;
                 chunkQueue.pushFront(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize)));
                 //std :: cout << "Pushed Secondary Chunk" << std :: endl;
@@ -642,7 +642,7 @@ bool World :: breakBlock(glm :: ivec3 pos){
         if(chunkZDown != nullptr){
             if(chunkZDown->flagByte & ChunkFlags :: HAS_MESH){
                 chunkZDown->flagByte |= ChunkFlags :: MODIFIED;
-                //chunkZDown -> back = chunk -> data;
+                chunkZDown -> back = chunk -> data;
                 chunks[tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+2)] = chunkZDown;
                 chunkQueue.pushFront(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+2);
                 //std :: cout << "Pushed Secondary Chunk" << std :: endl;
@@ -653,7 +653,7 @@ bool World :: breakBlock(glm :: ivec3 pos){
 
     if(chunk != nullptr){
 
-        /*if(chunkData.find(tuple<int, int>(floor(pos.x / float(chunkSize))+1, floor((pos.z-1) / float(chunkSize))+1)) != chunkData.end()){
+        if(chunkData.find(tuple<int, int>(floor(pos.x / float(chunkSize))+1, floor((pos.z-1) / float(chunkSize))+1)) != chunkData.end()){
             chunk->right = chunkData.at(tuple<int, int>(floor(pos.x / float(chunkSize))+1, floor((pos.z-1) / float(chunkSize))+1));
             //std :: cout << "Updated Chunk Side: Right" << std :: endl;
         }
@@ -668,13 +668,15 @@ bool World :: breakBlock(glm :: ivec3 pos){
         if(chunkData.find(tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize)))) != chunkData.end()){
             chunk->back = chunkData.at(tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))));
             //std :: cout << "Updated Chunk Side: Back" << std :: endl;
-        }*/
+        }
 
         chunk->flagByte |= (ChunkFlags :: MODIFIED | ChunkFlags :: CONTAINS_BUILDS);
         chunk->flagByte &= ~(ChunkFlags :: FILE_STORED);
         chunk->data->fileStored = false; chunk->data->hasBuilds = true;
+
         chunks[tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1)] = chunk;
         chunkData[tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1)] = chunk->data;
+
         chunkQueue.pushFront(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1);
         modifiedChunks.push(tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1));
         //std :: cout << "Pushed Main Chunk" << std :: endl;
@@ -698,10 +700,13 @@ bool World :: placeBlock(glm :: ivec3 pos, GLubyte blockType){
         chunk->flagByte |= (ChunkFlags :: MODIFIED | ChunkFlags :: CONTAINS_BUILDS);
         chunk->flagByte &= ~(ChunkFlags :: FILE_STORED);
         chunk->data->fileStored = false; chunk->data->hasBuilds = true;
+
         chunks[tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1)] = chunk;
         chunkData[tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1)] = chunk->data;
+
         chunkQueue.pushFront(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1);
         modifiedChunks.push(tuple<int, int>(floor(pos.x / float(chunkSize)), floor((pos.z-1) / float(chunkSize))+1));
+
         return true;
     }
     else{return false;}
