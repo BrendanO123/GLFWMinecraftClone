@@ -179,12 +179,10 @@ ChunkData* FileManager :: load(int x, int z){
         int index;
         for(int i = 0; i <layerCount; i++){
             y=contents[offset++];
-            //TESTING TEMP
-            //data->data.emplace_back(y);
-            //index = i;
             index = data->safeLayerFetch(y);
+
             data->data.at(index).data.reserve(256);
-            copy(contents + offset, contents + offset + 256, /*data->data.data()*/arr); offset+=256;
+            copy(contents + offset, contents + offset + 256, arr); offset+=256;
             for(int j=0; j<256; j++){data->data.at(index).data.at(j) = arr[j];}
         }
 
