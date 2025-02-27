@@ -23,7 +23,6 @@ MAIN = Application
 TESTS_RAW_CPP = LOCRaycastingTest.cpp
 SRCS_RAW_CPP = LOCShaders.cpp LOCBlock.cpp LOCChunk.cpp LOCCamera.cpp LOCWorld.cpp LOCWorldGen.cpp LOCChunkData.cpp LOCStructure.cpp LOCFractal.cpp LOCNoise.cpp LOCUnitVoxelRaycaster.cpp LOCPlayer.cpp LOCBlockHighlighter.cpp LOCFileManager.cpp
 SRCS_CPP = $(SRCS_RAW_CPP:LOC%=$(SRC_PATH)%) #LOC -> path to source files
-TESTS_CPP = $(TESTS_RAW_CPP:LOC%=$(SRC_PATH)%) #LOC -> path to source files
 
 #source .h files (same path)
 SRCS_RAW_H = LOCShaders.h LOCBlocks.h LOCBlock.h LOCChunk.h LOCCamera.h LOCWorld.h LOCWorldGen.h LOCChunkData.h LOCLayer.h LOCStructures.h LOCStructure.h LOCFractal.h LOCNoise.h LOCNoiseStructs.h LOCUnitVoxelRaycaster.h LOCPlayer.h LOCChunkList.h LOCBlockHighlighter.h LOCFileManager.h LOCWorldGenSettings.h
@@ -32,7 +31,7 @@ SRCS_H = $(SRCS_RAW_H:LOC%=$(SRC_PATH)%) #LOC -> path to source files
 #object .o files
 OBJ_PATH = Dependencies/bin/
 OBJS = $(SRCS_RAW_CPP:LOC%.cpp=$(OBJ_PATH)%.o) #.cpp -> .o
-TEST_OBJS = $(TESTS_RAW_CPP:%.cpp=$(OBJ_PATH)tests/%.o) #.cpp -> .o
+TEST_OBJS = $(TESTS_RAW_CPP:LOC%.cpp=$(OBJ_PATH)tests/%.o) #.cpp -> .o
 ENTRY = $(OBJ_PATH)$(MAIN).o
 
 #included .c file for glad
@@ -51,6 +50,10 @@ $(ENTRY) : $(SRC_PATH)$(MAIN).cpp
 
 #rule to generate testing files in spereate folder
 $(OBJ_PATH)tests/%Test.o : $(SRC_PATH)%Test.cpp 
+	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -c -o $@ $< -I$(INCLUDE)
+
+#rule to generate testing files in spereate folder
+$(OBJ_PATH)SaveFileCleaner.o : $(SRC_PATH)SaveFileCleaner.cpp 
 	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -c -o $@ $< -I$(INCLUDE)
 
 #Rule to generate .o files from corresponding .cpp and .h files
@@ -74,6 +77,15 @@ run:
 RaycastTest: $(OBJS) $(OBJ_PATH)tests/RaycastingTest.o $(GL_OBJ) $(SRCS_H)
 	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -o RayCastTest.out $(OBJS) $(OBJ_PATH)tests/RaycastingTest.o $(GL_OBJ) -I$(INCLUDE) -l$(LIB) $(FRAMEWORKS) -L$(LIB_PATH)
 	@echo "COMPILED TEST"
+
+saveFileTrimmer: $(OBJS) $(OBJ_PATH)SaveFileCleaner.o $(GL_OBJ) $(SRCS_H)
+	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -o trimSaves.out $(OBJS) $(OBJ_PATH)SaveFileCleaner.o $(GL_OBJ) -I$(INCLUDE) -l$(LIB) $(FRAMEWORKS) -L$(LIB_PATH)
+	@echo "COMPILED PROGRAM"
+
+trimSaves: 
+	@make saveFileTrimmer -s
+	@./trimSaves.out
+	@echo "DONE"
 
 TestRaycast:
 	@make RaycastTest -s

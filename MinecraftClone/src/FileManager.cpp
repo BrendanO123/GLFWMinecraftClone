@@ -153,6 +153,40 @@ bool FileManager :: hasFile(int x, int z){
     if(file.is_open()){file.close(); return true;}
     file.close(); return false;
 }
+
+
+ChunkData* FileManager :: load(string path){
+    int regionNameIndex = path.find("/region");
+    if(regionNameIndex == -1){return nullptr;}
+    path = path.substr(regionNameIndex);
+    int chunkNameIndex = path.find("/chunk");
+    if(chunkNameIndex == -1){return nullptr;}
+
+
+    string region = path.substr(7, chunkNameIndex-7);
+    string chunk = path = path.substr(chunkNameIndex+6);
+
+    int regionSeperatorIndex = region.find("_"); 
+    int chunkSeperatorIndex = chunk.find("_");
+
+    int RX, RY, CX, CY;
+    stringstream stream;
+    stream << region.substr(0, regionSeperatorIndex);
+    stream >> RX; if(stream.bad()){return nullptr;}
+    stream.clear();
+    stream << region.substr(regionSeperatorIndex+1);
+    stream >> RY; if(stream.bad()){return nullptr;}
+
+    stream.clear();
+    stream << chunk.substr(0, chunkSeperatorIndex);
+    stream >> CX; if(stream.bad()){return nullptr;}
+    stream.clear();
+    stream << chunk.substr(chunkSeperatorIndex+1);
+    stream >> CY; if(stream.bad()){return nullptr;}
+
+    return load(RX * 16 + CX, RY * 16 + CY);
+}
+
 ChunkData* FileManager :: load(int x, int z){
     stringstream folderStream;
     folderStream << saveFileName << "/region" << (x>>4) << "_" << (z>>4) << "/chunk" << (x & 15) << "_" << (z & 15);
@@ -177,14 +211,23 @@ ChunkData* FileManager :: load(int x, int z){
         GLubyte y;
         int offset = 0;
         int index;
-        for(int i = 0; i <layerCount; i++){
+        //bool airOnly = true;
+        //data->fileStored = true;
+        for(int i = 0; i < layerCount; i++){
+            //airOnly = true;
             y=contents[offset++];
             index = data->safeLayerFetch(y);
 
             data->data.at(index).data.reserve(256);
             copy(contents + offset, contents + offset + 256, arr); offset+=256;
-            for(int j=0; j<256; j++){data->data.at(index).data.at(j) = arr[j];}
+            for(int j=0; j<256; j++){data->data.at(index).data.at(j) = arr[j];/*if(arr[j]){airOnly = false;}*/}
+            /*if(airOnly){
+                data->data.erase(data->data.begin() + index);
+                i--;
+                data->fileStored = false;
+            }*/
         }
+        data->data.shrink_to_fit();
 
         data->Structs.count = structCount;
         if(structCount !=0){
@@ -200,6 +243,6 @@ ChunkData* FileManager :: load(int x, int z){
         data->xPos = x; data->zPos = z;
         return data;
     }
-    else{file.close(); fprintf(stderr, "FAILED TO OPEN SAVE FILE");}
+    else{file.close(); std :: cout << "FAILED TO OPEN SAVE FILE: " << name << std :: endl;}
     return nullptr;
 }

@@ -58,8 +58,10 @@ void WorldGen :: getChunkBasics(int x, int z, int chunkSize, ChunkData* chunkDat
 
     chunkData->data.clear();
     NoiseReturnStruct noiseValues = fractal->getNoise(glm :: ivec2(x, z));
-    int minHeight = noiseValues.minHeight;
-    int maxHeight = noiseValues.maxHeight;
+    /*int minHeight = noiseValues.minHeight;
+    int maxHeight = noiseValues.maxHeight;*/
+    int minHeight = 255;
+    int maxHeight = 0;
 
     for(int iterX =0; iterX < chunkSize; iterX++){
         for(int iterZ=0; iterZ<chunkSize; iterZ++){
@@ -89,6 +91,7 @@ void WorldGen :: getChunkBasics(int x, int z, int chunkSize, ChunkData* chunkDat
         }
     }
 
+    constexpr const bool debugDirtChunkBorders = false;
     for(int iterX = 0; iterX < chunkSize; iterX++){
         for(int iterZ = 0; iterZ < chunkSize; iterZ++){
             if(fullStone){
@@ -112,9 +115,9 @@ void WorldGen :: getChunkBasics(int x, int z, int chunkSize, ChunkData* chunkDat
                 chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-1 - lowest).data[iterZ + (iterX<<4)] = Blocks :: GRASS;
                 
                 //TESTING
-                /*if(iterX == 0 || iterX == 15 || iterZ == 0 || iterZ == 15){
+                if(debugDirtChunkBorders && (iterX == 0 || iterX == 15 || iterZ == 0 || iterZ == 15)){
                     chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-1 - lowest).data[iterZ + (iterX<<4)] = Blocks :: DIRT;
-                }*/
+                }
             }
             else{
                 chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-3 - lowest).data[iterZ + (iterX<<4)] = noiseValues.surfaceType[iterZ + int(iterX << 4)];
@@ -122,14 +125,14 @@ void WorldGen :: getChunkBasics(int x, int z, int chunkSize, ChunkData* chunkDat
                 chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-1 - lowest).data[iterZ + (iterX<<4)] = noiseValues.surfaceType[iterZ + int(iterX << 4)];
 
                 //TESTING
-                /*if(iterX == 0 || iterX == 15 || iterZ == 0 || iterZ == 15){
+                if(debugDirtChunkBorders && (iterX == 0 || iterX == 15 || iterZ == 0 || iterZ == 15)){
                     chunkData->data.at(noiseValues.TerrainHeight[iterZ + int(iterX << 4)]-1 - lowest).data[iterZ + (iterX<<4)] = Blocks :: DIRT;
-                }*/
+                }
             }
         }
     }
     //TESTING
-    //chunkData->data.at(noiseValues.TerrainHeight[1 + int(2 << 4)]-1).data[1 + (2<<4)] = Blocks :: STONE;
+    //chunkData->data.at(noiseValues.TerrainHeight[1 + int(2 << 4)]-1 - lowest).data[1 + (2<<4)] = Blocks :: STONE;
     
 
     for(int iterX = 0; iterX < chunkSize; iterX++){
