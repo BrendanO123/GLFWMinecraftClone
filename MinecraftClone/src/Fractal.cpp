@@ -183,7 +183,7 @@ GLubyte Fractal :: getFoliage(glm :: ivec2 pos, GLubyte surfaceType, float rain,
 
 
 //world amplitude
-const float worldAmplitude = 100;
+constexpr const float worldAmplitude = 100;
 
 glm :: u8vec2 Fractal :: getTerrain(glm :: ivec2 pos, float erosionS, glm :: vec3 continental) const{
 
@@ -195,6 +195,8 @@ glm :: u8vec2 Fractal :: getTerrain(glm :: ivec2 pos, float erosionS, glm :: vec
     if(height < gravelLevel + int(SCurve(noise.SinglePerlin(settings.settings[noise :: FLOWER_NOISE].seed+12, pos.x / 25.f, pos.y / 25.f) * 0.5f + 0.5f) *  6) - 3){return glm :: u8vec2(height, Blocks :: GRAVEL);}
     return glm :: u8vec2(height, Blocks :: SAND);
 }
+
+
 
 //TEMP TODO
 float Fractal :: getRain(glm :: ivec2 pos, glm :: vec3 erosion, glm :: vec3 continental) const{return 1.0f;}
