@@ -17,6 +17,13 @@ struct StructNode
 
     StructNode(GLubyte ID, GLubyte x, GLubyte y, GLubyte z, StructNode* pointer = nullptr) : 
         id(ID), pos(glm :: u8vec3(x, y, z)), next(pointer){};
+
+    StructNode(GLubyte ID, glm :: u8vec3 Pos, StructNode* pointer = nullptr) : 
+        id(ID), pos(glm :: u8vec3(Pos.x, Pos.y, Pos.z)), next(pointer){};
+
+    bool operator==(const StructNode &other) const{
+        return id == other.id && pos.x == other.pos.x && pos.y == other.pos.y && pos.z == other.pos.z;
+    }
 };
 
 struct StructureList{
@@ -25,7 +32,16 @@ struct StructureList{
     StructNode* last;
 
     StructureList(int newCount = 0, StructNode* next = nullptr) : count(newCount), first(next), last(next){}
+    StructureList(const StructureList &other);
     ~StructureList();
+
+    void clear();
+    //deep copy
+    bool equals(const StructureList &other) const;
+    bool removeDuplicates();
+    bool operator==(const StructureList &other) const {return equals(other);}
+    bool operator!=(const StructureList &other) const {return !equals(other);}
+    void setList(const StructureList other);
 };
 
 struct ChunkData{

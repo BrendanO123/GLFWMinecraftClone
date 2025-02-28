@@ -1,6 +1,8 @@
 #include <vector>
 #include <glm/glm.hpp>
 
+#include <iostream>
+
 #include "ChunkData.h"
 #include "Structures.h"
 
@@ -14,6 +16,84 @@ StructureList :: ~StructureList(){
         delete iterate;
         iterate = next;
     }
+}
+
+StructureList :: StructureList(const StructureList &other){
+    setList(other);
+}
+
+void StructureList ::  clear(){
+    StructNode* iterate = first;
+    StructNode* next;
+    while(iterate != nullptr){
+        next = iterate->next;
+        delete iterate;
+        iterate = next;
+    }
+    count = 0;
+    first = last = nullptr;
+}
+void StructureList :: setList(const StructureList other){
+    std :: cout << "Clearing List" << std :: endl;
+    clear();
+    std :: cout << "\tCleared" << std :: endl;
+    if(other.count < 1){std :: cout << "Setting Empty List" << std :: endl; return;}
+    else{std :: cout << "Other Count: " << other.count << std :: endl;}
+    first = last = new StructNode(other.first->id, other.first->pos);
+    count++;
+
+    StructNode* iterate = other.first->next;
+    while(iterate != nullptr){
+        last->next = new StructNode(iterate->id, iterate->pos);
+        last = last->next; count++;
+        iterate = iterate->next;
+    }
+}
+
+bool StructureList :: equals(const StructureList &other) const{
+    if(count != other.count){return false;}
+
+    StructNode* selfIterator = first;
+    StructNode* otherIterator = other.first;
+    bool foundCopy = false;
+    while(selfIterator != nullptr){
+        foundCopy = false;
+        otherIterator = other.first;
+        while(otherIterator != nullptr){
+            if(*otherIterator == *selfIterator){foundCopy = true; break;}
+            otherIterator = otherIterator->next;
+        }
+        if(!foundCopy){return false;}
+        selfIterator = selfIterator ->next;
+    }
+    return true;
+}
+
+bool StructureList :: removeDuplicates(){
+    StructNode* outer = first;
+    StructNode* inner = first->next; 
+    StructNode* temp; StructNode* last = first;
+    bool hasFoundDupe = false;
+    while(outer != nullptr){
+        inner = outer->next;
+        last = outer;
+        while(inner != nullptr){
+            if(*inner == *outer){
+                temp = inner->next;
+                delete inner;
+                inner = temp;
+                last->next = inner;
+                count--;
+                hasFoundDupe = true;
+            }
+            else{
+                last = inner;
+                inner = inner -> next;
+            }
+        }
+        outer = outer->next;
+    }
+    return hasFoundDupe;
 }
 
 void ChunkData :: place(ChunkData* target, glm :: i8vec2 offset){

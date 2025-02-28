@@ -21,11 +21,11 @@ LIB_PATH = Dependencies/lib
 SRC_PATH = MinecraftClone/src/
 MAIN = Application
 TESTS_RAW_CPP = LOCRaycastingTest.cpp
-SRCS_RAW_CPP = LOCShaders.cpp LOCBlock.cpp LOCChunk.cpp LOCCamera.cpp LOCWorld.cpp LOCWorldGen.cpp LOCChunkData.cpp LOCStructure.cpp LOCFractal.cpp LOCNoise.cpp LOCUnitVoxelRaycaster.cpp LOCPlayer.cpp LOCBlockHighlighter.cpp LOCFileManager.cpp
+SRCS_RAW_CPP = LOCShaders.cpp LOCBlock.cpp LOCChunk.cpp LOCCamera.cpp LOCWorld.cpp LOCWorldGen.cpp LOCChunkData.cpp LOCStructure.cpp LOCFractal.cpp LOCNoise.cpp LOCUnitVoxelRaycaster.cpp LOCPlayer.cpp LOCBlockHighlighter.cpp LOCFileManager.cpp LOCChunkCleaner.cpp
 SRCS_CPP = $(SRCS_RAW_CPP:LOC%=$(SRC_PATH)%) #LOC -> path to source files
 
 #source .h files (same path)
-SRCS_RAW_H = LOCShaders.h LOCBlocks.h LOCBlock.h LOCChunk.h LOCCamera.h LOCWorld.h LOCWorldGen.h LOCChunkData.h LOCLayer.h LOCStructures.h LOCStructure.h LOCFractal.h LOCNoise.h LOCNoiseStructs.h LOCUnitVoxelRaycaster.h LOCPlayer.h LOCChunkList.h LOCBlockHighlighter.h LOCFileManager.h LOCWorldGenSettings.h
+SRCS_RAW_H = LOCShaders.h LOCBlocks.h LOCBlock.h LOCChunk.h LOCCamera.h LOCWorld.h LOCWorldGen.h LOCChunkData.h LOCLayer.h LOCStructures.h LOCStructure.h LOCFractal.h LOCNoise.h LOCNoiseStructs.h LOCUnitVoxelRaycaster.h LOCPlayer.h LOCChunkList.h LOCBlockHighlighter.h LOCFileManager.h LOCWorldGenSettings.h LOCChunkCleaner.h
 SRCS_H = $(SRCS_RAW_H:LOC%=$(SRC_PATH)%) #LOC -> path to source files
 
 #object .o files
@@ -76,14 +76,27 @@ run:
 
 RaycastTest: $(OBJS) $(OBJ_PATH)tests/RaycastingTest.o $(GL_OBJ) $(SRCS_H)
 	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -o RayCastTest.out $(OBJS) $(OBJ_PATH)tests/RaycastingTest.o $(GL_OBJ) -I$(INCLUDE) -l$(LIB) $(FRAMEWORKS) -L$(LIB_PATH)
-	@echo "COMPILED TEST"
+	@echo "RECOMPILED TEST"
 
-saveFileTrimmer: $(OBJS) $(OBJ_PATH)SaveFileCleaner.o $(GL_OBJ) $(SRCS_H)
+saveFileUpdater: $(OBJS) $(OBJ_PATH)SaveFileCleaner.o $(GL_OBJ) $(SRCS_H)
+	@rm -f $(OBJ_PATH)SaveFileCleaner.o
+	@@$(CXX) $(CXXFLAGS) $(CPPVERSION) -c -o $(OBJ_PATH)SaveFileCleaner.o $(SRC_PATH)SaveFileCleaner.cpp -I$(INCLUDE)
 	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -o trimSaves.out $(OBJS) $(OBJ_PATH)SaveFileCleaner.o $(GL_OBJ) -I$(INCLUDE) -l$(LIB) $(FRAMEWORKS) -L$(LIB_PATH)
-	@echo "COMPILED PROGRAM"
+	@echo "RECOMPILED PROGRAM"
 
-trimSaves: 
-	@make saveFileTrimmer -s
+saveFolderUpdater: $(OBJS) $(OBJ_PATH)SaveFileCleaner.o $(GL_OBJ) $(SRCS_H)
+	@rm -f $(OBJ_PATH)SaveFileCleaner.o
+	@@$(CXX) $(CXXFLAGS) $(CPPVERSION) -c -DCLEAN_ALL -o $(OBJ_PATH)SaveFileCleaner.o $(SRC_PATH)SaveFileCleaner.cpp -I$(INCLUDE)
+	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -o trimSaves.out $(OBJS) $(OBJ_PATH)SaveFileCleaner.o $(GL_OBJ) -I$(INCLUDE) -l$(LIB) $(FRAMEWORKS) -L$(LIB_PATH)
+	@echo "RECOMPILED PROGRAM"
+
+updateSave: 
+	@make saveFileUpdater -s
+	@./trimSaves.out
+	@echo "DONE"
+
+updateAllSaves: 
+	@make saveFolderUpdater -s
 	@./trimSaves.out
 	@echo "DONE"
 
@@ -96,17 +109,15 @@ TestRaycast:
 clean:
 	@rm -f $(TARGET) $(OBJS) $(ENTRY)
 	@rm -f $(TEST_OBJS)
-	@rm -f randSeed$(VERSION)
-	@rm -f setSeed$(VERSION)
+	@rm -f trimSaves.out
 	@rm -rf $(TARGET).dSYM
 	@echo "CLEANED"
 
 #clean .out file
 delete_exc:
 	@rm -f $(TARGET)
-	@rm -f randSeed$(VERSION)
-	@rm -f setSeed$(VERSION)
 	@rm -rf $(TARGET).dSYM
+	@rm -f trimSaves.out
 	@echo "CLEANED EXECUTABLE"
 
 
