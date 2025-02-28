@@ -344,18 +344,18 @@ void World :: threadUpdate(){
                 else{
                     ChunkData* NW;
                     //NW
-                    if(chunkData.find(tuple<int,int>(next.x-1, next.y+1))==chunkData.end()){
-                        if(file->hasFile(next.x-1, next.y+1)){
+                    if(chunkData.find(tuple<int,int>(next.x-1, next.y+1))==chunkData.end() || chunkData.at(tuple<int,int>(next.x-1, next.y+1))->hasBuilds){
+                        /*if(file->hasFile(next.x-1, next.y+1)){
                             NW = file->load(next.x-1, next.y+1);
                             mute.unlock();
                         }
-                        else{
+                        else{*/
                             mute.unlock();
                             
 
                             NW = new ChunkData();
                             WorldGen :: getChunkBasics(next.x-1, next.y+1, 16, NW, fractal);
-                        }
+                        //}
 
                         mute.lock();
                         chunkData[tuple<int,int>(next.x-1, next.y+1)] = NW;
@@ -367,18 +367,18 @@ void World :: threadUpdate(){
                     mute.lock();
                     ChunkData* NE;
                     //NE
-                    if(chunkData.find(tuple<int,int>(next.x+1, next.y+1))==chunkData.end()){
-                        if(file->hasFile(next.x+1, next.y+1)){
+                    if(chunkData.find(tuple<int,int>(next.x+1, next.y+1))==chunkData.end() || chunkData.at(tuple<int,int>(next.x+1, next.y+1))->hasBuilds){
+                        /*if(file->hasFile(next.x+1, next.y+1)){
                             NE = file->load(next.x+1, next.y+1);
                             mute.unlock();
-                        }
-                        else{
+                        //}
+                        else{*/
                             mute.unlock();
                             
 
                             NE = new ChunkData();
                             WorldGen :: getChunkBasics(next.x+1, next.y+1, 16, NE, fractal);
-                        }
+                        //}
 
                         mute.lock();
                         chunkData[tuple<int,int>(next.x+1, next.y+1)] = NE;
@@ -390,18 +390,18 @@ void World :: threadUpdate(){
                     mute.lock();
                     ChunkData* SW;
                     //SW
-                    if(chunkData.find(tuple<int,int>(next.x-1, next.y-1))==chunkData.end()){
-                        if(file->hasFile(next.x-1, next.y-1)){
+                    if(chunkData.find(tuple<int,int>(next.x-1, next.y-1))==chunkData.end() || chunkData.at(tuple<int,int>(next.x-1, next.y-1))->hasBuilds){
+                        /*if(file->hasFile(next.x-1, next.y-1)){
                             SW = file->load(next.x-1, next.y-1);
                             mute.unlock();
                         }
-                        else{
+                        else{*/
                             mute.unlock();
                             
 
                             SW = new ChunkData();
                             WorldGen :: getChunkBasics(next.x-1, next.y-1, 16, SW, fractal);
-                        }
+                        //}
 
                         mute.lock();
                         chunkData[tuple<int,int>(next.x-1, next.y-1)] = SW;
@@ -413,18 +413,18 @@ void World :: threadUpdate(){
                     mute.lock();
                     ChunkData* SE;
                     //SE
-                    if(chunkData.find(tuple<int,int>(next.x+1, next.y-1))==chunkData.end()){
-                        if(file->hasFile(next.x+1, next.y-1)){
+                    if(chunkData.find(tuple<int,int>(next.x+1, next.y-1))==chunkData.end() || chunkData.at(tuple<int,int>(next.x+1, next.y-1))->hasBuilds){
+                        /*if(file->hasFile(next.x+1, next.y-1)){
                             SE = file->load(next.x+1, next.y-1);
                             mute.unlock();
                         }
-                        else{
+                        else{*/
                             mute.unlock();
                             
 
                             SE = new ChunkData();
                             WorldGen :: getChunkBasics(next.x+1, next.y-1, 16, SE, fractal);
-                        }
+                        //}
 
                         mute.lock();
                         chunkData[tuple<int,int>(next.x+1, next.y-1)] = SE;
@@ -435,18 +435,22 @@ void World :: threadUpdate(){
 
                     mute.lock();
                     if(!chunk->data->fileStored){
-                        /*ChunkData* NW1 = new ChunkData(), *back = new ChunkData(), *NE1 = new ChunkData(), *left = new ChunkData(), *right = new ChunkData(), *SW1 = new ChunkData(), *front = new ChunkData(), *SE1 = new ChunkData();
-                        WorldGen :: getChunkBasics(next.x+1, next.y, 16, right, fractal);
-                        WorldGen :: getChunkBasics(next.x-1, next.y, 16, left, fractal);
-                        WorldGen :: getChunkBasics(next.x, next.y+1, 16, front, fractal);
-                        WorldGen :: getChunkBasics(next.x, next.y+1, 16, back, fractal);
-                        WorldGen :: getChunkBasics(next.x-1, next.y+1, 16, NW1, fractal);
-                        WorldGen :: getChunkBasics(next.x+1, next.y+1, 16, NE1, fractal);
-                        WorldGen :: getChunkBasics(next.x-1, next.y-1, 16, SW1, fractal);
-                        WorldGen :: getChunkBasics(next.x+1, next.y-1, 16, SE1, fractal);
-                        WorldGen :: resolveStructures(chunk->data, NW1, back, NE1, left, right, SW1, front, SE1);
-                        delete NW1; delete back; delete NE1; delete left; delete right; delete SW1; delete front; delete SE1;*/
-                        WorldGen :: resolveStructures(chunk->data, NW, chunk->back, NE, chunk->left, chunk->right, SW, chunk->front, SE);
+                        ChunkData *back = new ChunkData(), *left = new ChunkData(), *right = new ChunkData(), *front = new ChunkData();
+                        
+                        if(chunk->back->hasBuilds){WorldGen :: getChunkBasics(next.x, next.y-1, 16, back, fractal);}
+                        else{back = chunk->back;}
+                        if(chunk->front->hasBuilds){WorldGen :: getChunkBasics(next.x, next.y+1, 16, front, fractal);}
+                        else{front = chunk->front;}
+                        if(chunk->left->hasBuilds){WorldGen :: getChunkBasics(next.x-1, next.y, 16, left, fractal);}
+                        else{left = chunk->left;}
+                        if(chunk->right->hasBuilds){WorldGen :: getChunkBasics(next.x+1, next.y, 16, right, fractal);}
+                        else{right = chunk->right;}
+                        WorldGen :: resolveStructures(chunk->data, NW, back, NE, left, right, SW, front, SE);
+                        if(chunk->back->hasBuilds){delete back;}
+                        if(chunk->left->hasBuilds){delete left;} 
+                        if(chunk->right->hasBuilds){delete right;}
+                        if(chunk->front->hasBuilds){delete front;}
+                        //WorldGen :: resolveStructures(chunk->data, NW, chunk->back, NE, chunk->left, chunk->right, SW, chunk->front, SE);
                     }
                     chunk->flagByte |= ChunkFlags :: HAS_STRUCTURES;
                     mute.unlock();
