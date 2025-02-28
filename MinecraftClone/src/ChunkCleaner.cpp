@@ -19,8 +19,6 @@ void Cleaner :: cleanChunk(string saveFileName){
                 for(const auto & entry : std::filesystem::directory_iterator(directory)){ //chunks
                     ChunkData* data = fileManager->load(entry.path());
                     if(data == nullptr){continue;}
-                    std :: cout << "\tMy Count: " << data->Structs.count << std :: endl;
-                    std :: cout << (data->Structs.first == nullptr || data->Structs.last == nullptr ? "\tMy Structs Nullptr" : "\tMy Structs Fine") << std :: endl;
                     vector<Layer> list = data->data;
 
                     Layer* naturalLayer;
@@ -68,15 +66,23 @@ void Cleaner :: cleanChunk(string saveFileName){
                     if(replaceAllStructs || (checkStructsDuplicate && data->Structs.removeDuplicates()) || (checkStructsEqual && data->Structs != naturalData->Structs)){
                         needsResave = true;
 
-                        std :: cout << "Setting Structs" << std :: endl;
+                        /*std :: cout << "Setting Structs" << std :: endl;
                         data->Structs.setList(naturalData->Structs);
-                        std :: cout << "\tSet" << std :: endl;
+                        std :: cout << "\tSet" << std :: endl;*/
                     }
 
                     if(deleteNaturalChunks && naturalChunk){
                         //TEMP TODO delete chunk
                     }
-                    if(needsResave){data->data.shrink_to_fit(); fileManager->save(data);}
+                    if(needsResave){
+                        data->data.shrink_to_fit(); 
+                        if(replaceAllStructs){
+                            fileManager->save(data, naturalData);
+                        }
+                        else{
+                            fileManager->save(data);
+                        }
+                    }
                     if(adjustStructs || deleteNaturalChunks){
                         naturalData->Structs.clear();
                     }

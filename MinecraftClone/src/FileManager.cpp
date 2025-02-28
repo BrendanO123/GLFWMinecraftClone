@@ -144,6 +144,58 @@ bool FileManager :: save(ChunkData* data){
     else{file.close(); fprintf(stderr, "FAILED TO OPEN SAVE FILE");}
     return false;
 }
+bool FileManager :: save(ChunkData* blocks, ChunkData* Structs){
+    int x = blocks->xPos, y = blocks->zPos;
+    stringstream folderStream;
+    folderStream << saveFileName << "/region" << (x>>4) << "_" << (y>>4);
+    string name = folderStream.str();
+    if(!std::filesystem::create_directories(name.c_str())){
+        /*fprintf(stderr, "FAILED TO MAKE SAVE FILE FOLDER");
+        return false;*/
+    }
+    folderStream << "/chunk" << (x & 15) << "_" << (y & 15);
+    name = folderStream.str();
+    ofstream file; file.open(name.c_str(), ios::out|ios::binary|ios::trunc); 
+
+    if(file.is_open()){
+        int layerCount = blocks->data.size();
+
+        int structCount = 0;
+        vector<char> structData = vector<char>();
+        structData.reserve(Structs->Structs.count * 4);
+
+        StructNode* next = Structs->Structs.first;
+        while(next !=nullptr){
+            structCount++;
+            structData.push_back(next->id);
+            structData.push_back(next->pos.x);
+            structData.push_back(next->pos.y);
+            structData.push_back(next->pos.z);
+            next = next->next;
+        }
+
+        int byteCount = 2 + layerCount * (256+1) + structCount * 4;
+        char* contents = new char[byteCount];
+
+        contents[0] = (unsigned char)layerCount;
+        contents[1] = (unsigned char)structCount;
+        int offset = 2;
+        for(int i=0; i<layerCount; i++){
+            Layer layer = blocks->data.at(i);
+            contents[offset++] = layer.y; 
+            copy((char*)layer.data.data(), (char*)layer.data.data()+256, contents + offset); offset+=256;
+        }
+
+        copy(structData.data(), structData.data()+structCount, contents+offset);
+
+        file.write(contents, byteCount);
+        file.close();
+        delete[] contents;
+        return true;
+    }
+    else{file.close(); fprintf(stderr, "FAILED TO OPEN SAVE FILE");}
+    return false;
+}
 
 
 bool FileManager :: hasFile(int x, int z){
