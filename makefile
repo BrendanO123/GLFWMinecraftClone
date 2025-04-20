@@ -96,16 +96,12 @@ TestRaycast:
 clean:
 	@rm -f $(TARGET) $(OBJS) $(ENTRY)
 	@rm -f $(TEST_OBJS)
-	@rm -f randSeed$(VERSION)
-	@rm -f setSeed$(VERSION)
 	@rm -rf $(TARGET).dSYM
 	@echo "CLEANED"
 
 #clean .out file
 delete_exc:
 	@rm -f $(TARGET)
-	@rm -f randSeed$(VERSION)
-	@rm -f setSeed$(VERSION)
 	@rm -rf $(TARGET).dSYM
 	@echo "CLEANED EXECUTABLE"
 
