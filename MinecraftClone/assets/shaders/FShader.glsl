@@ -1,6 +1,6 @@
 #version 330
 
-in vec2 TexCoord;
+in vec2 TexCord;
 in vec3 Normal;
 in float invert;
 
@@ -20,7 +20,7 @@ float SCurve(float t){ return t * t * (3 - 2 * t); }
 float Lerp(float a, float b, float t) { return a + t * (b - a); }
 
 void main(){
-    vec4 color = texture(Texture, TexCoord);
+    vec4 color = texture(Texture, TexCord);
     if(color.a<alphaH){discard;}
 
     if(invert > 0){

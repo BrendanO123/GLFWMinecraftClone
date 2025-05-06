@@ -171,28 +171,14 @@ int main(){
      * create river placment math
      */
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 4);
 
     stbi_set_flip_vertically_on_load(true);
-
-    int w, h, channels;
-    GLubyte *data = stbi_load("MinecraftClone/assets/sprites/block_map.png", &w, &h, &channels, 0);
-    if(data){
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else{
-        glfwDestroyWindow(window);
-        glfwTerminate();
-        printf("TEXTURE LOAD FAILED\n", stderr);
-        exit(EXIT_FAILURE); 
-    }
-    stbi_image_free(data);
-
+    stbi_set_unpremultiply_on_load(false);
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glEnable(GL_CULL_FACE);
@@ -201,6 +187,23 @@ int main(){
 
     glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    for(int i = 0; i < 4; i++){
+        int w, h, channels;
+        stringstream str; str << "MinecraftClone/assets/sprites/Levels/mapLevel" << i << ".png";
+        GLubyte *data = stbi_load(str.str().c_str(), &w, &h, &channels, 0);
+        if(data){
+            glTexImage2D(GL_TEXTURE_2D, i, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            if(i==0){glGenerateMipmap(GL_TEXTURE_2D);}
+        }
+        else{
+            glfwDestroyWindow(window);
+            glfwTerminate();
+            printf("TEXTURE LOAD FAILED\n", stderr);
+            exit(EXIT_FAILURE); 
+        }
+        stbi_image_free(data);
+    }
 
     string saveFileName, seedInput; int seed = -1;
 
