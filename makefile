@@ -31,6 +31,7 @@ SRCS_H = $(SRCS_RAW_H:LOC%=$(SRC_PATH)%) #LOC -> path to source files
 #object .o files
 OBJ_PATH = Dependencies/bin/
 OBJS = $(SRCS_RAW_CPP:LOC%.cpp=$(OBJ_PATH)%.o) #.cpp -> .o
+DEPS = $(OBJS:%.o=%.d)
 TEST_OBJS = $(TESTS_RAW_CPP:LOC%.cpp=$(OBJ_PATH)tests/%.o) #.cpp -> .o
 ENTRY = $(OBJ_PATH)$(MAIN).o
 
@@ -38,11 +39,16 @@ ENTRY = $(OBJ_PATH)$(MAIN).o
 GL_OBJ = Dependencies/bin/gl.o
 GL_SRC = MinecraftClone/src/gl.c
 
+#default compilation rule
+ALL: DEPENDS $(TARGET)
 
 #Rule to generate the main target from the .o files (depends on .h files to ensure it recompiles often enough)
-$(TARGET) : $(OBJS) $(ENTRY) $(GL_OBJ) $(SRCS_H)
+$(TARGET) : $(DEPS) $(OBJS) $(ENTRY) $(GL_OBJ) $(SRCS_H)
 	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -o $(TARGET) $(OBJS) $(ENTRY) $(GL_OBJ) -I$(INCLUDE) -l$(LIB) $(FRAMEWORKS) -L$(LIB_PATH)
 	@echo "RECOMPILED"
+
+#rules for generating .o files
+-include $(DEPS)
 
 #Rule to generate app.o (seperate bc no .h for the .cpp)
 $(ENTRY) : $(SRC_PATH)$(MAIN).cpp
@@ -56,9 +62,16 @@ $(OBJ_PATH)tests/%Test.o : $(SRC_PATH)%Test.cpp
 $(OBJ_PATH)SaveFileCleaner.o : $(SRC_PATH)SaveFileCleaner.cpp 
 	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -c -o $@ $< -I$(INCLUDE)
 
+#rule to generate .d files
+$(OBJ_PATH)%.d : $(SRC_PATH)%.cpp
+	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -MM -o $(patsubst %.o, %.d, $@) $< -I$(INCLUDE)
+
+DEPENDS : $(DEPS)
+	@echo "MADE DEPENDENCY FILES"
+
 #Rule to generate .o files from corresponding .cpp and .h files
-$(OBJ_PATH)%.o : $(SRC_PATH)%.cpp $(SRC_PATH)%.h
-	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -c -o $@ $< -I$(INCLUDE)
+$(OBJ_PATH)%.o : $(SRC_PATH)%.cpp $(OBJ_PATH)%.d
+	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -MMD -c -o $@ $< -I$(INCLUDE)
 
 #Rule to generate the .o file from the .c file
 $(GL_OBJ) : $(GL_SRC)
@@ -94,7 +107,7 @@ TestRaycast:
 
 #clean .o and .out files
 clean:
-	@rm -f $(TARGET) $(OBJS) $(ENTRY)
+	@rm -f $(TARGET) $(OBJS) $(ENTRY) $(DEPS)
 	@rm -f $(TEST_OBJS)
 	@rm -rf $(TARGET).dSYM
 	@echo "CLEANED"
