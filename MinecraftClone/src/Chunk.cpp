@@ -386,10 +386,12 @@ void Chunk :: render(Shader shader){
         glVertexAttribPointer(vNormalLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, NormalSelector)));
 
         modelMatLoc = glGetUniformLocation(shader.program, "modelPos");
+        invertUniformLoc = glGetUniformLocation(shader.program, "invert");
         flagByte |= ChunkFlags :: RENDERABLE;
     }
 
     glUniform3iv(modelMatLoc, 1, glm::value_ptr(pos_world));
+    glUniform1f(invertUniformLoc, invert);
 
     glEnable(GL_CULL_FACE);
     glBindVertexArray(VAONorm);
@@ -486,6 +488,7 @@ void Chunk :: renderWater(Shader shader){
         glVertexAttribPointer(vNormalLoc, 1, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), (void*) (offsetof(Vertex, NormalSelector)));
 
         modelMatLoc = glGetUniformLocation(shader.program, "modelPos");
+        invertUniformLoc = glGetUniformLocation(shader.program, "invert");
         flagByte |= ChunkFlags :: RENDERABLE;
     }
 

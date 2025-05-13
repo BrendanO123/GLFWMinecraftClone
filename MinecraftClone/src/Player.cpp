@@ -86,10 +86,10 @@ vector<bool> Player :: resolveClicks(){
         i = clicks.front();
         clicks.pop();
         if(i.LClicked){
-            returnBools.push_back(World :: world -> placeBlock(i.raycast.pos + glm :: ivec3(i.raycast.normal), heldBlock));
+            returnBools.push_back(World :: getInstance() -> placeBlock(i.raycast.pos + glm :: ivec3(i.raycast.normal), heldBlock));
         }
         else{
-            returnBools.push_back(World :: world -> breakBlock(i.raycast.pos));
+            returnBools.push_back(World :: getInstance() -> breakBlock(i.raycast.pos));
         }
     }
     return returnBools;
@@ -102,7 +102,7 @@ bool Player :: MClick(){
     if(raycast.blockType != Blocks :: AIR){heldBlock = raycast.blockType; return true;}
     return false;
 }
-GLubyte Player :: getVoxel(int x, int y, int z){return World :: world->getBlock(x, y, z);}
+GLubyte Player :: getVoxel(int x, int y, int z){return World :: getInstance()->getBlock(x, y, z);}
 
 void Player :: setRotation(glm :: vec2 r){
     cam.setRotation(r);

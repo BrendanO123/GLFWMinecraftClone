@@ -11,12 +11,10 @@ uniform float invBlockMapH_blocks;
 in vec2 vPos;
 in float height;
 in vec2 vtexPos;
-
 in int normal;
 
 out vec2 TexCord;
 out vec3 Normal;
-out float invert;
 
 const vec3 normals[] = vec3[](
 	vec3( 0,  0,  1), // Forward
@@ -31,8 +29,5 @@ const vec3 normals[] = vec3[](
 void main(){
 	gl_Position = viewAndProjectionMatrix * vec4(vPos.x + modelPos.x - cameraPosI.x, height + modelPos.y - cameraPosI.y, vPos.y + modelPos.z - cameraPosI.z, 1.0);
 	TexCord = vec2(vtexPos.x * invBlockMapW_blocks, vtexPos.y * invBlockMapH_blocks);
-    
-	if(normal == 6){Normal = normals[4]; invert = 1.f;}
-	else if(normal == 7){Normal = normals[4]; invert = 1.f;}
-    else{Normal = normals[(normal % 6)]; invert = -1.f;}
+	Normal = normals[(normal % 6)];
 }

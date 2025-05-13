@@ -71,7 +71,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     else if(key == GLFW_KEY_9 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: PODZOL);}
     else if(key == GLFW_KEY_0 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: ROOTED_DIRT);}
 
-    else if(key == GLFW_KEY_L && action == GLFW_PRESS){World :: world -> setShouldSave(true);}
+    else if(key == GLFW_KEY_L && action == GLFW_PRESS){World :: getInstance() -> setShouldSave(true);}
 }
 static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods){
     if(!menu){player->mouseClickCallback(window, button, action, mods);}
@@ -226,7 +226,7 @@ int main(){
         }
     }
     else{file1.close();}
-    World :: world = new World(&shader, chunkRenderDist, seed, saveFileName, player);
+    World :: init(&shader, chunkRenderDist, seed, saveFileName, player);
 
     glClearColor(135/255.0f, 206/255.0f, 235/255.0f, 1.0f);
     float deltaTime, currentFrame; 
@@ -246,7 +246,7 @@ int main(){
         processInput(window, deltaTime);
 
         player->updateMatrixUniforms(ratio);
-        World :: world->update(player->getPosition(), menu, player);
+        World :: getInstance()->update(player->getPosition(), menu, player);
         if(!menu){player->highlightSelected();}
 
         glfwSwapBuffers(window);
@@ -254,7 +254,7 @@ int main(){
         else{glfwWaitEvents();}
     }
 
-    delete(World :: world);
+    World :: closeInstance();
     delete (player);
     glfwDestroyWindow(window);
     glfwTerminate();

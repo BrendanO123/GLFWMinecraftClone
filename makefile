@@ -110,3 +110,5 @@ delete_%:
 	@rm -r MinecraftClone/saves/"$(strip $*)"
 	@echo "DELETED SAVE: $(strip $*)"
 
+echo_saves:
+	@echo MinecraftClone/saves/*

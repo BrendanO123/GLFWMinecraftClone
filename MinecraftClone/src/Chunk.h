@@ -97,8 +97,10 @@ class Chunk{
         ChunkData* data, *left, *right, *front, *back;
         
     private:
-        GLuint VAONorm, VBONorm, EBONorm, VAOTranslucent, VBOTranslucent, EBOTranslucent, VAOBoard, VBOBoard, EBOBoard, modelMatLoc;
+        GLuint VAONorm, VBONorm, EBONorm, VAOTranslucent, VBOTranslucent, EBOTranslucent, VAOBoard, VBOBoard, EBOBoard;
+        GLuint modelMatLoc, invertUniformLoc;
         glm :: ivec3 pos_world;
+        float invert = 0.0f;
         vector<Vertex> verticies, translucentVerticies;
         vector<BillboardVertex> billboardVerticies;
         vector<unsigned int> indicies, translucentIndicies, billboardIndicies;

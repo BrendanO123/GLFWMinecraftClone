@@ -5,7 +5,7 @@
 #include "WorldGen.h"
 #include "WorldGenSettings.h"
 
-World* World :: world = nullptr;
+World* World :: world = nullptr; 
 
 World :: World(Shader* shader, int render, int Seed, string name, Player* player) : shader(shader), renderDistance(render){
 

@@ -2,12 +2,12 @@
 
 in vec2 TexCord;
 in vec3 Normal;
-in float invert;
 
 out vec4 fragment;
 
 uniform sampler2D Texture;
 uniform float alphaH;
+uniform float invert;
 
 const float ambient = 0.5f;
 const vec3 lightDirection = normalize(vec3(0.8, 1, 0.7));
@@ -23,7 +23,7 @@ void main(){
     vec4 color = texture(Texture, TexCord);
     if(color.a<alphaH){discard;}
 
-    if(invert > 0){
+    if(invert > 0.5f){
         color = vec4(SCurve(1 - color.x), SCurve(1 - color.y), SCurve(1 - color.z), 1);
         float grayScale = SCurve((color.x + color.y + color.z) / 3);
         color = vec4(
@@ -33,6 +33,6 @@ void main(){
         );
     }
     color=color * vec4(  vec3(   (max(dot(Normal, lightDirection), 0.0) /*diffuse light*/) + ambient /*ambient light*/),  1.0) /*light*/;
-    if(invert > 0){fragment = vec4(color.xyz, 0.6);}
+    if(invert > 0.5f){fragment = vec4(color.xyz, 0.6);}
     else{fragment = color;}
 }

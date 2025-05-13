@@ -42,7 +42,8 @@ struct FVertex
 };
 
 class BlockHighlighter{
-    GLuint VAO, VBO, EBO, modelMatLoc;
+    GLuint VAO, VBO, EBO, modelMatLoc, invertUniformLoc;
+    float invert = 1.0f;
     vector<FVertex> verticies;
     vector<int> indicies;
     constexpr static const float overfill = 0.05f;

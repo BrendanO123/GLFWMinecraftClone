@@ -22,14 +22,36 @@ using namespace std;
 
 class World{
     public:
-        World(Shader* shader, int render, int seed, string saveFileName, Player* player);
+
+        //keep destructer public
         ~World();
+
+        //init to make universal instance of world, access instance, close instance
+        static World* init(Shader* shader, int render, int seed, string saveFileName, Player* player){
+            if(getInstance()==nullptr){
+                world = (new World(shader, render, seed, saveFileName, player));
+            }
+            return getInstance();
+        }
+        static World* getInstance(){return world;}
+        static bool closeInstance(){
+            if(world == nullptr){return false;}
+            delete world; return true;
+        }
+
+        //delete copy constructors
+        World(const World&) = delete;
+        World& operator=(const World&) = delete;
         
+        //notify saveFileManager, needs to be notified and scheduled for synchronization insetad of just being saved
         void setShouldSave(bool shouldSave = true){saveNeeded = shouldSave;}
+
+        //get block or chunk data
         Chunk* getChunk(int x, int z);
         ChunkData* getChunkData(int x, int z);
-
         GLubyte getBlock(int x, int y, int z);
+
+        //modify blocks
         bool breakBlock(glm :: ivec3 pos);
         bool placeBlock(glm :: ivec3 pos, GLubyte blockType);
 
@@ -38,10 +60,14 @@ class World{
          */
         void update(glm :: ivec3 camPos, bool menu, Player* player);
 
-        static World* world;
         std :: mutex mute;
 
     private:
+
+        //private universal instance and therefore private constructor
+        static World* world;
+        World(Shader* shader, int render, int seed, string saveFileName, Player* player);
+
         /**
          * @brief The looping update function that runs on a backround thread and handles chunks and chunk data.
          */
