@@ -26,5 +26,12 @@ class Shader{
         void setInt(const string& name, int value) const;
         void setBool(const string& name, bool value) const;
 
+        void setFloat(GLuint position, float value) const;
+        void setVec2(GLuint position, vec2 value) const;
+        void setVec3(GLuint position, vec3 value) const;
+        void setVec4(GLuint position, vec4 value) const;
+        void setInt(GLuint position, int value) const;
+        void setBool(GLuint position, bool value) const;
+
         void use();
 };

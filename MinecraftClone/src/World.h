@@ -89,7 +89,7 @@ class World{
         bool shouldEnd=false;
         bool isMenu=false;
         bool playerPositionSet = false;
-        bool saveNeeded;
+        bool saveNeeded = false;
 
         constexpr static const std::chrono::duration normSleepMillis = std::chrono::milliseconds(100);
         constexpr static const std::chrono::duration menuSleepMillis = std::chrono::milliseconds(1000);
@@ -101,5 +101,6 @@ class World{
         int renderDistance = 8;
         constexpr static const int modifiedChunkStoreDistance = 10;
         unsigned int chunkSize = 16;
+        
         int seed;
 };

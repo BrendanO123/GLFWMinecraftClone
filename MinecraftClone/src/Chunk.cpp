@@ -391,7 +391,7 @@ void Chunk :: render(Shader shader){
     }
 
     glUniform3iv(modelMatLoc, 1, glm::value_ptr(pos_world));
-    glUniform1f(invertUniformLoc, invert);
+    shader.setFloat(invertUniformLoc, invert);
 
     glEnable(GL_CULL_FACE);
     glBindVertexArray(VAONorm);

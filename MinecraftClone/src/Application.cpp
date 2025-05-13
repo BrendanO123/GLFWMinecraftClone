@@ -124,9 +124,9 @@ int main(){
     player = new Player(shader, renderDist);
 
     float alphaErrorRange=0.2f; //MUST BE >0!!
-    glUniform1f(glGetUniformLocation(shader.program, "invBlockMapW_blocks"), 1.f / Blocks :: blockMapW_blocks);
-    glUniform1f(glGetUniformLocation(shader.program, "invBlockMapH_blocks"), 1.f / Blocks :: blockMapH_blocks);
-    glUniform1f(glGetUniformLocation(shader.program, "alphaH"), alphaErrorRange);
+    shader.setFloat("invBlockMapW_blocks", 1.f / Blocks :: blockMapW_blocks);
+    shader.setFloat("invBlockMapH_blocks", 1.f / Blocks :: blockMapH_blocks);
+    shader.setFloat("alphaH", alphaErrorRange);
 
 
     GLuint texture;
@@ -144,10 +144,6 @@ int main(){
      *      distance to ocean and rainshadow dot product math
      * temperature math
      *      perlin noise, z cord, rainfall * constant
-     * terrain math:
-     *      continental controls midline and amplitude
-     *      errosion controls gain
-     *      at a set layer, anaylize derrizative and recalc gain
      * 
      * 
      * old but useful todo list:

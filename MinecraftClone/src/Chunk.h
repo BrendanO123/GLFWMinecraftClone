@@ -99,12 +99,15 @@ class Chunk{
     private:
         GLuint VAONorm, VBONorm, EBONorm, VAOTranslucent, VBOTranslucent, EBOTranslucent, VAOBoard, VBOBoard, EBOBoard;
         GLuint modelMatLoc, invertUniformLoc;
-        glm :: ivec3 pos_world;
+
+        glm :: ivec3 pos_world; 
+        GLubyte LOD;
+
         float invert = 0.0f;
         vector<Vertex> verticies, translucentVerticies;
         vector<BillboardVertex> billboardVerticies;
         vector<unsigned int> indicies, translucentIndicies, billboardIndicies;
-        GLubyte LOD;
+
         static inline int Floor(float a){return (a<0 ? int(a) : int(a));}
 };
 namespace ChunkFlags{

@@ -101,22 +101,40 @@ Shader :: ~Shader(){glDeleteProgram(program);}
 void Shader :: setFloat(const string& name, float value) const{
     glUniform1f(glGetUniformLocation(program, name.c_str()), value);
 }
+void Shader :: setFloat(GLuint position, float value) const{
+    glUniform1f(position, value);
+}
 //set int function
 void Shader :: setInt(const string& name, int value) const{
     glUniform1i(glGetUniformLocation(program, name.c_str()), value);
 }
+void Shader :: setInt(GLuint position, int value) const{
+    glUniform1i(position, value);
+}
 //set bool function
 void Shader :: setBool(const string& name, bool value) const{
     glUniform1i(glGetUniformLocation(program, name.c_str()), (int)value);
+}
+void Shader :: setBool(GLuint position, bool value) const{
+    glUniform1i(position, (int)value);
 }
 
 //set vec functions
 void Shader :: setVec2(const string& name, vec2 value) const{
     glUniform1fv(glGetUniformLocation(program, name.c_str()), 2, value);
 }
+void Shader :: setVec2(GLuint position, vec2 value) const{
+    glUniform1fv(position, 2, value);
+}
 void Shader :: setVec3(const string& name, vec3 value) const{
     glUniform1fv(glGetUniformLocation(program, name.c_str()), 3, value);
 }
+void Shader :: setVec3(GLuint position, vec3 value) const{
+    glUniform1fv(position, 3, value);
+}
 void Shader :: setVec4(const string& name, vec4 value) const{
     glUniform1fv(glGetUniformLocation(program, name.c_str()), 4, value);
+}
+void Shader :: setVec4(GLuint position, vec4 value) const{
+    glUniform1fv(position, 4, value);
 }
