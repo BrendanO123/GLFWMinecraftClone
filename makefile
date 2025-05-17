@@ -40,10 +40,10 @@ GL_OBJ = Dependencies/bin/gl.o
 GL_SRC = MinecraftClone/src/gl.c
 
 #default compilation rule
-ALL: DEPENDS $(TARGET)
+ALL: $(TARGET)
 
 #Rule to generate the main target from the .o files (depends on .h files to ensure it recompiles often enough)
-$(TARGET) : $(DEPS) $(OBJS) $(ENTRY) $(GL_OBJ) $(SRCS_H)
+$(TARGET) : $(OBJS) $(ENTRY) $(GL_OBJ) $(SRCS_H)
 	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -o $(TARGET) $(OBJS) $(ENTRY) $(GL_OBJ) -I$(INCLUDE) -l$(LIB) $(FRAMEWORKS) -L$(LIB_PATH)
 	@echo "RECOMPILED"
 
@@ -70,12 +70,12 @@ DEPENDS : $(DEPS)
 	@echo "MADE DEPENDENCY FILES"
 
 #Rule to generate .o files from corresponding .cpp and .h files
-$(OBJ_PATH)%.o : $(SRC_PATH)%.cpp $(OBJ_PATH)%.d
-	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -MMD -c -o $@ $< -I$(INCLUDE)
+$(OBJ_PATH)%.o : $(SRC_PATH)%.cpp
+	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -c -o $@ $< -I$(INCLUDE)
 
 #Rule to generate the .o file from the .c file
 $(GL_OBJ) : $(GL_SRC)
-	@$(CC) $(CXXFLAGS) -c -o $@ $< -I$(INCLUDE)
+	@$(CC) -c -o $@ $< -I$(INCLUDE)
 
 build:
 	@make -s
@@ -107,7 +107,7 @@ TestRaycast:
 
 #clean .o and .out files
 clean:
-	@rm -f $(TARGET) $(OBJS) $(ENTRY) $(DEPS)
+	@rm -f $(TARGET) $(OBJS) $(ENTRY) $(DEPS) $(GL_OBJ)
 	@rm -f $(TEST_OBJS)
 	@rm -rf $(TARGET).dSYM
 	@echo "CLEANED"

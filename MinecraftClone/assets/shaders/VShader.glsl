@@ -1,4 +1,4 @@
-#version 330
+#version 400
 
 uniform ivec3 modelPos;
 uniform ivec3 cameraPosI;

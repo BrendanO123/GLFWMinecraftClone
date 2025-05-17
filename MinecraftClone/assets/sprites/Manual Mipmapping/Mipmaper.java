@@ -3,6 +3,7 @@ import javax.imageio.*;
 import java.awt.image.*;
 import java.awt.*;
 import java.util.*;
+import java.math.*;
 
 @SuppressWarnings("unused")
 public class Mipmaper{
@@ -39,41 +40,57 @@ public class Mipmaper{
                     int TL = levels[i-1].getRGB(2*x, 2*y); int TR = levels[i-1].getRGB(2*x+1, 2*y);
                     int BL = levels[i-1].getRGB(2*x, 2*y+1); int BR = levels[i-1].getRGB(2*x+1, 2*y+1);
 
-                    int R, B, G, A; R = G = B = A = 0; int n = 0;
+                    float R, B, G; R = G = B = 0; int n = 0;
+                    int RF, BF, GF, A=0;
 
                     if(((TL>>AShift) & byteMask)>0){
-                        R += ((TL>>RShift) & byteMask);// * ((TL>>AShift) & byteMask)/255; 
-                        G += ((TL>>GShift) & byteMask);// * ((TL>>AShift) & byteMask)/255; 
-                        B += ((TL>>BShift) & byteMask);// * ((TL>>AShift) & byteMask)/255; 
+                        R += Math.pow((((TL>>RShift) & byteMask)/255.0f), 2.2f);
+                        G += Math.pow((((TL>>GShift) & byteMask)/255.0f), 2.2f);
+                        B += Math.pow((((TL>>BShift) & byteMask)/255.0f), 2.2f);
                         A = (((TL>>AShift) & byteMask) > A ? ((TL>>AShift) & byteMask): A); n++;
                     }
                     if(((TR>>AShift) & byteMask)>0){
-                        R += ((TR>>RShift) & byteMask);// * ((TR>>AShift) & byteMask)/255; 
-                        G += ((TR>>GShift) & byteMask);// * ((TR>>AShift) & byteMask)/255; 
-                        B += ((TR>>BShift) & byteMask);// * ((TR>>AShift) & byteMask)/255; 
+                        R += Math.pow((((TR>>RShift) & byteMask)/255.0f), 2.2f); 
+                        G += Math.pow((((TR>>GShift) & byteMask)/255.0f), 2.2f); 
+                        B += Math.pow((((TR>>BShift) & byteMask)/255.0f), 2.2f); 
                         A = (((TR>>AShift) & byteMask) > A ? ((TR>>AShift) & byteMask): A); n++;
                     }
                     if(((BL>>AShift) & byteMask)>0){
-                        R += ((BL>>RShift) & byteMask);// * ((BL>>AShift) & byteMask)/255; 
-                        G += ((BL>>GShift) & byteMask);// * ((BL>>AShift) & byteMask)/255; 
-                        B += ((BL>>BShift) & byteMask);// * ((BL>>AShift) & byteMask)/255; 
+                        R += Math.pow((((BL>>RShift) & byteMask)/255.0f), 2.2f);
+                        G += Math.pow((((BL>>GShift) & byteMask)/255.0f), 2.2f);
+                        B += Math.pow((((BL>>BShift) & byteMask)/255.0f), 2.2f); 
                         A = (((BL>>AShift) & byteMask) > A ? ((BL>>AShift) & byteMask): A); n++;
                     }
                     if(((BR>>AShift) & byteMask)>0){
-                        R += ((BR>>RShift) & byteMask);// * ((BR>>AShift) & byteMask)/255; 
-                        G += ((BR>>GShift) & byteMask);// * ((BR>>AShift) & byteMask)/255; 
-                        B += ((BR>>BShift) & byteMask);// * ((BR>>AShift) & byteMask)/255; 
+                        R += Math.pow((((BR>>RShift) & byteMask)/255.0f), 2.2f);
+                        G += Math.pow((((BR>>GShift) & byteMask)/255.0f), 2.2f);
+                        B += Math.pow((((BR>>BShift) & byteMask)/255.0f), 2.2f);
                         A = (((BR>>AShift) & byteMask) > A ? ((BR>>AShift) & byteMask): A); n++;
                     }
                     if(n==0 || A==0){levels[i].setRGB(x, y, new Color(255, 255, 255, 0).getRGB());}
                     else{
 
-                        R = (int)((R/((float)n))+0.5f); B = (int)((B/((float)n))+0.5f); G = (int)((G/((float)n))+0.5f);
-                        R = (R<=0 ? 0 : (R>=255 ? 255 : R)); B = (B<=0 ? 0 : (B>=255 ? 255 : B)); G = (G<=0 ? 0 : (G>=255 ? 255 : G));
+                        RF = (int)(255*(float)Math.pow(R/n, 1/2.2f)+0.5f); 
+                        GF = (int)(255*(float)Math.pow(G/n, 1/2.2f)+0.5f); 
+                        BF = (int)(255*(float)Math.pow(B/n, 1/2.2f)+0.5f);
+                        RF = (RF<=0 ? 0 : (RF>=255 ? 255 : RF)); BF = (BF<=0 ? 0 : (BF>=255 ? 255 : BF)); GF = (GF<=0 ? 0 : (GF>=255 ? 255 : GF));
 
-                        levels[i].setRGB(x, y, (R<<RShift) + (G<<GShift) + (B<<BShift) + (A<<AShift));
+                        levels[i].setRGB(x, y, (RF<<RShift) + (GF<<GShift) + (BF<<BShift) + (A<<AShift));
                     }
 
+                }
+            }
+            xMax>>=1; yMax>>=1;
+        }
+        xMax = xBound>>1; yMax = yBound >> 1;
+        for(int i = 1; i < mipMapCount; i++){
+            for(int x = 0; x < xMax; x++){
+                for(int y=0; y < yMax; y++){
+                    if(((levels[i].getRGB(x, y)>>AShift) & byteMask) == 0){
+                        int c = levels[mipMapCount].getRGB(x>>(mipMapCount-i), y>>(mipMapCount-i));
+                        c &= ~(byteMask<<AShift);
+                        levels[i].setRGB(x, y, c);
+                    }
                 }
             }
             xMax>>=1; yMax>>=1;

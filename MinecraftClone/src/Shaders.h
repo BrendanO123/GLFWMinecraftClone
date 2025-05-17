@@ -14,6 +14,7 @@ using namespace std;
  */
 class Shader{
     public:
+    
         GLuint program;
         Shader(const char* VShaderPath, const char* FShaderPath);
         Shader();
