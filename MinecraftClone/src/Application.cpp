@@ -70,6 +70,8 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     else if(key == GLFW_KEY_8 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: COARSE_DIRT);}
     else if(key == GLFW_KEY_9 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: PODZOL);}
     else if(key == GLFW_KEY_0 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: ROOTED_DIRT);}
+    else if(key == GLFW_KEY_UP && action == GLFW_PRESS){player->setHeldBlock((player->getHeldBlock()-1+Blocks::blockCount)%Blocks::blockCount);}
+    else if(key == GLFW_KEY_DOWN && action == GLFW_PRESS){player->setHeldBlock((player->getHeldBlock()+1)%Blocks::blockCount);}
 
     else if(key == GLFW_KEY_L && action == GLFW_PRESS){World :: getInstance() -> setShouldSave(true);}
 }
@@ -147,13 +149,12 @@ int main(){
      * 
      * 
      * old but useful todo list:
-     * fix transparent textures
      * add way more block types and sprites
      * add f3 screen and png writing for underlying maps
      * 
      * get vukan and metalvk
      * add compute shader dispatching for chunk gen
-     * make FBm noise for erosion, continental, temperature noise, and rainfall noise maps
+     * make FBm noise for temperature noise, and rainfall noise maps
      * 
      * create latitude temperature map and add to temperature noise
      * 
@@ -162,16 +163,12 @@ int main(){
      * 
      * create biome maps
      * create cave noise
-     * create structure placement noise
      * 
      * create river placment math
      */
 
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-    //glGenerateMipmap(GL_TEXTURE_2D);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR); //No
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);

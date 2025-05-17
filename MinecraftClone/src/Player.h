@@ -60,6 +60,7 @@ class Player{
 
         void setFirstMouse(bool state){cam.setFirstMouse(state);}
         bool setHeldBlock(GLubyte blockType){if(blockType){heldBlock = blockType; return true;} return false;}
+        GLubyte getHeldBlock(){return heldBlock;}
 
         static GLubyte getVoxel(int x, int y, int z);
 };
