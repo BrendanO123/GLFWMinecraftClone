@@ -58,6 +58,7 @@ Shader :: Shader(const char* VShaderPath, const char* FShaderPath){
     if(!success){
         glGetShaderInfoLog(VShader, 512, NULL, infoLog);
         printf("VERTEX SHADER COMPILATION FAILED\n", stderr);
+        printf(infoLog, stderr);
     }
 
     //create and compile fragment shader
@@ -70,6 +71,7 @@ Shader :: Shader(const char* VShaderPath, const char* FShaderPath){
     if(!success){
         glGetShaderInfoLog(FShader, 512, NULL, infoLog);
         printf("FRAGMENT SHADER COMPILATION FAILED\n", stderr);
+        printf(infoLog, stderr);
     }
 
     //create final program
