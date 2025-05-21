@@ -14,6 +14,8 @@
 
 #include "Player.h"
 #include "World.h"
+#include "StructureLoader.h"
+#include "Structures.h"
 
 #include <stdlib.h>
 #include <stddef.h>
@@ -33,6 +35,7 @@ float renderDist = int(chunkRenderDist*16*1.6 + 0.5f);
 Player* player;
 
 bool menu = false;
+bool structureCreatorMode = false;
 
 static void error_callback(int error, const char* description){
     fprintf(stderr, "Error %s\n", description);
@@ -70,8 +73,22 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     else if(key == GLFW_KEY_8 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: COARSE_DIRT);}
     else if(key == GLFW_KEY_9 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: PODZOL);}
     else if(key == GLFW_KEY_0 && action == GLFW_PRESS){player->setHeldBlock(Blocks :: ROOTED_DIRT);}
-    else if(key == GLFW_KEY_UP && action == GLFW_PRESS){player->setHeldBlock((player->getHeldBlock()-1+Blocks::blockCount)%Blocks::blockCount);}
-    else if(key == GLFW_KEY_DOWN && action == GLFW_PRESS){player->setHeldBlock((player->getHeldBlock()+1)%Blocks::blockCount);}
+    else if(key == GLFW_KEY_UP && action == GLFW_PRESS){
+        int block = player->getHeldBlock()-1; if(block==0){block=35;}
+        player->setHeldBlock(block);
+    }
+    else if(key == GLFW_KEY_DOWN && action == GLFW_PRESS){
+        int block = player->getHeldBlock()+1; if(block==36){block=1;}
+        player->setHeldBlock(block);
+    }
+    else if (key == GLFW_KEY_R && action == GLFW_PRESS){
+        structureCreatorMode = !structureCreatorMode;
+        //player->setStructureCreatorMode(structureCreatorMode);
+    }
+    else if(key == GLFW_KEY_ENTER && action == GLFW_PRESS){
+        //if(structureCreatorMode){player->createStructure();}
+        structureCreatorMode=false;
+    }
 
     else if(key == GLFW_KEY_L && action == GLFW_PRESS){World :: getInstance() -> setShouldSave(true);}
 }
@@ -225,6 +242,8 @@ int main(){
     else{file1.close();}
     World :: init(&shader, chunkRenderDist, seed, saveFileName, player);
 
+    StructManager* structManager = StructManager :: getInstance();
+
     glClearColor(135/255.0f, 206/255.0f, 235/255.0f, 1.0f);
     float deltaTime, currentFrame; 
     float lastFrame = glfwGetTime();
@@ -252,6 +271,7 @@ int main(){
     }
 
     World :: closeInstance();
+    StructManager :: closeInstance();
     delete (player);
     glfwDestroyWindow(window);
     glfwTerminate();

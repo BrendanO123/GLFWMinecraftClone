@@ -7,7 +7,7 @@
 
 namespace Blocks{
 
-    const GLubyte blockCount = 36;
+    const GLubyte blockCount = 37;
 
 
     /**
@@ -77,7 +77,8 @@ namespace Blocks{
             10, 11, 0, 1, //side: tex = (0,1)
             0, 1, 0, 1 //bottom = dirt: tex = (0,0)
         ),
-        Block(10, 11, 2, 3) //rooted dirt
+        Block(10, 11, 2, 3), //rooted dirt
+        Block(15, 16, 0, 1, true, false, false, true, false) //Air for removing blocks within structures aka solid air
     };
 
 
@@ -123,6 +124,7 @@ namespace Blocks{
         DARK_PLANKS = 32,
         DARK_LOG = 33,
         PODZOL = 34,
-        ROOTED_DIRT = 35
+        ROOTED_DIRT = 35,
+        SOLID_AIR = 36
     };
 }

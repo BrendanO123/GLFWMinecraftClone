@@ -10,8 +10,8 @@ namespace Structures{
 
     const GLubyte StructureCount = 15;
 
-
     using namespace Blocks;
+    
     const vector<vector<GLubyte>> StructsData = {
 
         {//tree

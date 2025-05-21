@@ -38,6 +38,23 @@ class Structure{
          */
         Structure(
             GLubyte sX, GLubyte sY, GLubyte sZ,
+            GLubyte blocks[],
+            vector<bool> isForced,  
+            bool waterLoged = false
+        ) : 
+            shouldWaterLog(waterLoged),     sizeX(sX), sizeY(sY), sizeZ(sZ), 
+            forcedBlocks(isForced),     contents(blocks){};
+
+        /**
+         * @param sX The size of the structure along the x axis.
+         * @param sY The size of the structure along the y axis.
+         * @param sZ The size of the structure along the z axis.
+         * @param blocks The flattened array of block types that define the structure.
+         * @param isForced The flattened bool array that specifies where the structure should carve out existing blocks.
+         * @param waterLogged Specifies if the structure should attempt to waterlog blocks when placing water, unimplemented.
+         */
+        Structure(
+            GLubyte sX, GLubyte sY, GLubyte sZ,
             const GLubyte blocks[],
             const vector<bool> isForced,  
             bool waterLoged = false

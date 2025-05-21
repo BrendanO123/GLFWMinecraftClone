@@ -8,23 +8,6 @@
 #include <limits>
 using namespace std;
 
-int FileManager :: getInt(char * contents, int offset){
-    int output;
-    copy(contents + offset, contents + offset + 4, (char*)&output);
-    return output;
-}
-float FileManager :: getFloat(char * contents, int offset){
-    float output;
-    copy(contents + offset, contents + offset + 4, (char*)&output);
-    return output;
-}
-
-void FileManager :: setInt(char * contents, int offset, int input){
-    copy((char*)&input, ((char*)&input) + 4, contents + offset);
-}
-void FileManager :: setFloat(char * contents, int offset, float input){
-    copy((char*)&input, ((char*)&input) + 4, contents + offset);
-}
 FileManager :: FileManager(string name, int &seed, glm :: ivec3 &playerPositionI, glm :: vec3 &playerPositionF, glm :: vec2 &playerRoation){
     saveFileName = (savesFolderPath + name);
     string mainPath = saveFileName + "/main";

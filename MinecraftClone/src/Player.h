@@ -33,6 +33,8 @@ class Player{
         GLuint ViewAndPrespectiveMatLoc, cameraIntVecLoc; //gets from shader
         const float renderDist;
         queue<clickAction> clicks = queue<clickAction>();
+
+        bool structureCreatorMode = false;
     
     public:
         Player() : renderDist(307.f){}
@@ -63,4 +65,7 @@ class Player{
         GLubyte getHeldBlock(){return heldBlock;}
 
         static GLubyte getVoxel(int x, int y, int z);
+
+        void setStructureCreatorMode(bool structureCreatorMode);
+        bool createStructure();
 };
