@@ -10,9 +10,11 @@ public class Mipmaper{
     
     public static void main(String[] args){
 
-        int xBound = 256; int yBound = 64; 
-        int singleXBound = 16; int singleYBound = 16; int mipMapCount = 4;
+        int defaultXBound = 256; int defaultYBound = 64; 
         File spriteMap = new File("MinecraftClone/assets/sprites/BlockMap/block_map.png");
+
+        int mipMapCount = 5;
+        int spriteMapInsertionLevel=1;
 
         File[] outMaps = new File[mipMapCount+1];
         for(int i = 0; i <= mipMapCount; i++){
@@ -20,20 +22,30 @@ public class Mipmaper{
         }
 
         BufferedImage[] levels = new BufferedImage[mipMapCount+1];
-        for(int i = 1; i <= mipMapCount; i++){
-            levels[i] = new BufferedImage(xBound>>i, yBound>>i, BufferedImage.TYPE_INT_ARGB);
+        for(int i = 0; i <= mipMapCount; i++){
+            levels[i] = new BufferedImage((defaultXBound<<spriteMapInsertionLevel)>>i, (defaultYBound<<spriteMapInsertionLevel)>>i, BufferedImage.TYPE_INT_ARGB);
         }
-        try{levels[0] = ImageIO.read(spriteMap);}
+        try{levels[spriteMapInsertionLevel] = ImageIO.read(spriteMap);}
         catch(IOException e){e.printStackTrace(); System.exit(-1);}
 
-        int xMax = xBound/2; int yMax = yBound/2; 
+        int xMax = defaultXBound<<1; int yMax = defaultYBound<<1; 
         final int byteMask = (1<<8)-1;
         final int AShift = 24;
         final int RShift = 16;
         final int GShift = 8;
         final int BShift = 0;
 
-        for(int i = 1; i <= mipMapCount; i++){
+        for(int i=spriteMapInsertionLevel-1; i>=0; i--){
+            for(int y=0; y<yMax; y++){
+                for(int x=0; x<xMax; x++){
+                    levels[i].setRGB(x, y, levels[i+1].getRGB(x>>1, y>>1));
+                }
+            }
+            xMax<<=1; yMax<<=1;
+        }
+
+        xMax = defaultXBound>>1; yMax = defaultYBound>>1;
+        for(int i = spriteMapInsertionLevel+1; i <= mipMapCount; i++){
             for(int x = 0; x < xMax; x++){
                 for(int y = 0; y < yMax; y++){
 
@@ -82,8 +94,8 @@ public class Mipmaper{
             }
             xMax>>=1; yMax>>=1;
         }
-        xMax = xBound>>1; yMax = yBound >> 1;
-        for(int i = 1; i < mipMapCount; i++){
+        xMax = defaultXBound>>1; yMax = defaultYBound >> 1;
+        for(int i = spriteMapInsertionLevel+1; i < mipMapCount; i++){
             for(int x = 0; x < xMax; x++){
                 for(int y=0; y < yMax; y++){
                     if(((levels[i].getRGB(x, y)>>AShift) & byteMask) == 0){
