@@ -18,7 +18,8 @@ class Structure{
          * @brief Specifies if the structure should try to water log blocks when placing water.
          */
         const bool shouldWaterLog;
-        const int sizeX, sizeY, sizeZ;
+        const int sizeX, sizeY, sizeZ, id;
+
         /**
          * @brief A bool array that specififes where to carve away terrain with air and where to leave it be, unimplemented.
          */
@@ -37,12 +38,12 @@ class Structure{
          * @param waterLogged Specifies if the structure should attempt to waterlog blocks when placing water, unimplemented.
          */
         Structure(
-            GLubyte sX, GLubyte sY, GLubyte sZ,
+            GLubyte sX, GLubyte sY, GLubyte sZ, int ID, 
             GLubyte blocks[],
             vector<bool> isForced,  
             bool waterLoged = false
         ) : 
-            shouldWaterLog(waterLoged),     sizeX(sX), sizeY(sY), sizeZ(sZ), 
+            shouldWaterLog(waterLoged),     sizeX(sX), sizeY(sY), sizeZ(sZ),    id(ID),
             forcedBlocks(isForced),     contents(blocks){};
 
         /**
@@ -54,12 +55,12 @@ class Structure{
          * @param waterLogged Specifies if the structure should attempt to waterlog blocks when placing water, unimplemented.
          */
         Structure(
-            GLubyte sX, GLubyte sY, GLubyte sZ,
+            GLubyte sX, GLubyte sY, GLubyte sZ, int ID,
             const GLubyte blocks[],
             const vector<bool> isForced,  
             bool waterLoged = false
         ) : 
-            shouldWaterLog(waterLoged),     sizeX(sX), sizeY(sY), sizeZ(sZ), 
+            shouldWaterLog(waterLoged),     sizeX(sX), sizeY(sY), sizeZ(sZ),    id(ID),
             forcedBlocks(isForced),     contents(blocks){};
 
         /**

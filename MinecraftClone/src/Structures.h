@@ -11,7 +11,7 @@ namespace Structures{
     const GLubyte StructureCount = 15;
 
     using namespace Blocks;
-    
+
     const vector<vector<GLubyte>> StructsData = {
 
         {//tree
@@ -288,16 +288,16 @@ namespace Structures{
      * @brief The const list of all implemented structures that do require the ability to selectivly delete blocks.
      */
     const Structure Structs[StructureCount]={
-        Structure(5, 7, 5, StructsData[0].data(), StructsForcedArr[0]), Structure(16, 4, 16, StructsData[1].data(), StructsForcedArr[1]),
-        Structure(1, 2, 1, StructsData[2].data(), StructsForcedArr[2]), Structure(1, 1, 1, StructsData[3].data(), StructsForcedArr[3]),
+        Structure(5, 7, 5, 0, StructsData[0].data(), StructsForcedArr[0]), Structure(16, 4, 16, 1, StructsData[1].data(), StructsForcedArr[1]),
+        Structure(1, 2, 1, 2, StructsData[2].data(), StructsForcedArr[2]), Structure(1, 1, 1, 3, StructsData[3].data(), StructsForcedArr[3]),
 
-        Structure(1, 1, 1, StructsData[4].data(), StructsForcedArr[4]), Structure(1, 1, 1, StructsData[5].data(), StructsForcedArr[5]),
-        Structure(1, 1, 1, StructsData[6].data(), StructsForcedArr[6]), Structure(1, 1, 1, StructsData[7].data(), StructsForcedArr[7]),
-        Structure(1, 1, 1, StructsData[8].data(), StructsForcedArr[8]), Structure(1, 1, 1, StructsData[9].data(), StructsForcedArr[9]),
-        Structure(1, 1, 1, StructsData[10].data(), StructsForcedArr[10]), Structure(1, 1, 1, StructsData[11].data(), StructsForcedArr[11]),
+        Structure(1, 1, 1, 4, StructsData[4].data(), StructsForcedArr[4]), Structure(1, 1, 1, 5, StructsData[5].data(), StructsForcedArr[5]),
+        Structure(1, 1, 1, 6, StructsData[6].data(), StructsForcedArr[6]), Structure(1, 1, 1, 7, StructsData[7].data(), StructsForcedArr[7]),
+        Structure(1, 1, 1, 8, StructsData[8].data(), StructsForcedArr[8]), Structure(1, 1, 1, 9, StructsData[9].data(), StructsForcedArr[9]),
+        Structure(1, 1, 1, 10, StructsData[10].data(), StructsForcedArr[10]), Structure(1, 1, 1, 11, StructsData[11].data(), StructsForcedArr[11]),
 
-        Structure(1, 2, 1, StructsData[12].data(), StructsForcedArr[12]), Structure(1, 2, 1, StructsData[13].data(), StructsForcedArr[13]),
-        Structure(1, 2, 1, StructsData[14].data(), StructsForcedArr[14])
+        Structure(1, 2, 1, 12, StructsData[12].data(), StructsForcedArr[12]), Structure(1, 2, 1, 13, StructsData[13].data(), StructsForcedArr[13]),
+        Structure(1, 2, 1, 14, StructsData[14].data(), StructsForcedArr[14])
     };
 
     /**

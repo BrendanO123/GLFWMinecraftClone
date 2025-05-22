@@ -28,8 +28,17 @@ class StructManager{
             delete structManager; return true;
         }
         Structure* getStruct(string name){
-            if(Structs.find(name) == Structs.end()){return nullptr;}
-            return Structs.at(name);
+            if(StructLocations.find(name) == StructLocations.end()){return nullptr;}
+            if(Structs.find(StructLocations.at(name)) == Structs.end()){return nullptr;}
+            return Structs.at(StructLocations.at(name));
+        }
+        int getStructID(string name){
+            if(StructLocations.find(name) == StructLocations.end()){return -1;}
+            return StructLocations.at(name);
+        }
+        Structure* getStruct(int id){
+            if(Structs.find(id) == Structs.end()){return nullptr;}
+            return Structs.at(id);
         }
 
         //delete copy constructors
@@ -47,6 +56,7 @@ class StructManager{
         static StructManager* structManager;
         StructManager();
 
-        unordered_map<string, Structure*> Structs = unordered_map<string, Structure*>();
+        unordered_map<int, Structure*> Structs = unordered_map<int, Structure*>();
+        unordered_map<string, int> StructLocations = unordered_map<string, int>();
         static Structure* loadStruct(string path);
 };

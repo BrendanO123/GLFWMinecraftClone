@@ -243,6 +243,21 @@ int main(){
     World :: init(&shader, chunkRenderDist, seed, saveFileName, player);
 
     StructManager* structManager = StructManager :: getInstance();
+    structManager->saveStruct("OAK_TREE", Structures :: Structs[Structures :: OAK_TREE]);
+    structManager->saveStruct("POND", Structures :: Structs[Structures :: POND]);
+    structManager->saveStruct("TALL_GRASS", Structures :: Structs[Structures :: TALL_GRASS]);
+    structManager->saveStruct("SHORT_GRASS", Structures :: Structs[Structures :: SHORT_GRASS_STRUCT]);
+    structManager->saveStruct("BLUE_LILAC", Structures :: Structs[Structures :: BLUE_LILAC_STRUCT]);
+    structManager->saveStruct("CORNFLOWER", Structures :: Structs[Structures :: CORNFLOWER_STRUCT]);
+    structManager->saveStruct("ALLIUM", Structures :: Structs[Structures :: ALLIUM_STRUCT]);
+    structManager->saveStruct("TULIP_PINK", Structures :: Structs[Structures :: TULIP_PINK_STRUCT]);
+    structManager->saveStruct("ROSE", Structures :: Structs[Structures :: ROSE_STRUCT]);
+    structManager->saveStruct("TULIP_ORANGE", Structures :: Structs[Structures :: TULIP_ORANGE_STRUCT]);
+    structManager->saveStruct("DANDILION", Structures :: Structs[Structures :: DANDILION_STRUCT]);
+    structManager->saveStruct("TULIP_WHITE", Structures :: Structs[Structures :: TULIP_WHITE_STRUCT]);
+    structManager->saveStruct("LILAC", Structures :: Structs[Structures :: LILAC]);
+    structManager->saveStruct("PEONY", Structures :: Structs[Structures :: PEONY]);
+    structManager->saveStruct("ROSEBUSH", Structures :: Structs[Structures :: ROSEBUSH]);
 
     glClearColor(135/255.0f, 206/255.0f, 235/255.0f, 1.0f);
     float deltaTime, currentFrame; 
