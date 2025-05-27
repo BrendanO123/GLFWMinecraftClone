@@ -189,7 +189,8 @@ int main(){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 4);
+    constexpr const int maxMipmapLevel = 4;
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, maxMipmapLevel);
 
     stbi_set_flip_vertically_on_load(true);
     stbi_set_unpremultiply_on_load(false);
@@ -202,7 +203,7 @@ int main(){
     glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    for(int i = 0; i < 4; i++){
+    for(int i = 0; i <= maxMipmapLevel; i++){
         int w, h, channels;
         stringstream str; str << "MinecraftClone/assets/sprites/Levels/mapLevel" << i << ".png";
         GLubyte *data = stbi_load(str.str().c_str(), &w, &h, &channels, 0);
@@ -243,7 +244,7 @@ int main(){
     World :: init(&shader, chunkRenderDist, seed, saveFileName, player);
 
     StructManager* structManager = StructManager :: getInstance();
-    structManager->saveStruct("OAK_TREE", Structures :: Structs[Structures :: OAK_TREE]);
+    /*structManager->saveStruct("OAK_TREE", Structures :: Structs[Structures :: OAK_TREE]);
     structManager->saveStruct("POND", Structures :: Structs[Structures :: POND]);
     structManager->saveStruct("TALL_GRASS", Structures :: Structs[Structures :: TALL_GRASS]);
     structManager->saveStruct("SHORT_GRASS", Structures :: Structs[Structures :: SHORT_GRASS_STRUCT]);
@@ -257,7 +258,7 @@ int main(){
     structManager->saveStruct("TULIP_WHITE", Structures :: Structs[Structures :: TULIP_WHITE_STRUCT]);
     structManager->saveStruct("LILAC", Structures :: Structs[Structures :: LILAC]);
     structManager->saveStruct("PEONY", Structures :: Structs[Structures :: PEONY]);
-    structManager->saveStruct("ROSEBUSH", Structures :: Structs[Structures :: ROSEBUSH]);
+    structManager->saveStruct("ROSEBUSH", Structures :: Structs[Structures :: ROSEBUSH]);*/
 
     glClearColor(135/255.0f, 206/255.0f, 235/255.0f, 1.0f);
     float deltaTime, currentFrame; 

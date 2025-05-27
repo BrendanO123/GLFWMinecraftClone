@@ -1,7 +1,8 @@
 #include <iostream>
 
 #include "Fractal.h"
-#include "Structures.h"
+//#include "Structures.h"
+#include "StructureLoader.h"
 
 using namespace noise;
 inline float SCurve(float t) { return t * t * (3 - 2 * t); }

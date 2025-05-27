@@ -94,6 +94,11 @@ clean:
 	@rm -rf $(TARGET).dSYM
 	@echo "CLEANED"
 
+clean_.o_files:
+	@rm -f $(OBJS) $(ENTRY)$(GL_OBJ)
+	@rm -f $(TEST_OBJS)
+	@echo "CLEANED UNLINKED COMPILED FILES"
+
 #clean .out file
 delete_exc:
 	@rm -f $(TARGET)

@@ -1,4 +1,5 @@
 #include "StructureLoader.h"
+#include "Structures.h"
 
 namespace fs = std::filesystem;
 using namespace std; 
@@ -26,6 +27,7 @@ StructManager :: StructManager(){
                     StructLocations.emplace(entry.path().stem(), Struct->id);
                     StructureCount++;
                 }
+                else{cout << "WHAT THE HELL IT IS ALL FAILING" << endl;}
             }
         }
     }
@@ -49,7 +51,32 @@ Structure* StructManager :: loadStruct(string path){
 
             delete [] basics;
             int arraySize = sizeX * sizeY * sizeZ;
-            int mainSize = arraySize + ((arraySize+7)>>3) + 1;
+            //int mainSize = arraySize + ((arraySize+7)>>3) + 1;
+
+            char* contents = new char[arraySize];
+            file.read(contents, arraySize);
+
+            char* forcedBlockArrChar = new char[((arraySize+7)>>3)+1];
+            file.read(forcedBlockArrChar, ((arraySize+7)>>3)+1);
+            file.close();
+
+            if(forcedBlockArrChar[((arraySize+7)>>3)]!=EOF){fprintf(stderr,"INCORRECT STRUCTURE FILE ENCODNG FOUND"); /*return nullptr*/}
+
+            /*bool* forcedArr = new bool[((arraySize+7)>>3)<<3];
+            copy(forcedBlockArrChar, forcedBlockArrChar+((arraySize+7)>>3), (char*)forcedArr);
+            delete [] forcedBlockArrChar;*/
+
+            Structure* Struct = new Structure(sizeX, sizeY, sizeZ, id, contents, forcedBlockArrChar);
+
+            if(Struct->operator!=(Structures::Structs[Struct->id])){
+                cout << "UNEQUAL STRUCTURE CREATION!" << endl;
+                cout << path << endl;
+            }
+            delete[] contents;
+            delete [] forcedBlockArrChar;//delete [] forcedArr;
+
+            /*vector<bool> forcedArr = vector<bool>
+            for(int i=0; i<arraySize; i++){}
 
             char* contents = new char[mainSize];
             file.read(contents, mainSize);
@@ -62,12 +89,12 @@ Structure* StructManager :: loadStruct(string path){
             copy(contents + arraySize, contents+mainSize-1, (char*)forcedArr);
             
             vector<bool> forcedBlocks = vector<bool>();
-            forcedBlocks.reserve(((arraySize+7)>>3)<<3);
-            for(int i=0; i<((arraySize+7)>>3)<<3; i++){forcedBlocks.emplace_back(forcedArr[i]);}
+            forcedBlocks.reserve(arraySize);
+            for(int i=0; i<arraySize; i++){forcedBlocks.emplace_back(forcedArr[i]);}
 
             Structure* Struct = new Structure(sizeX, sizeY, sizeZ, id, blocks, forcedBlocks);
-            if(contents[mainSize-1] != EOF){fprintf(stderr,"INCORRECT STRUCTURE FILE ENCODNG FOUND"); /*return nullptr*/}
-            delete [] contents;
+            if(contents[mainSize-1] != EOF){fprintf(stderr,"INCORRECT STRUCTURE FILE ENCODNG FOUND");}
+            delete [] contents;*/
 
             return Struct;
         }
@@ -110,17 +137,24 @@ bool StructManager :: saveStruct(string name, Structure Struct){
 
         //forced block array specifying where to carve out blocks for air
         int forcedBlockArrSize = (((arraySize+7)>>3)<<3);
-        bool arr[forcedBlockArrSize];
+        //char* forcedBlocks = new char[forcedBlockArrSize];
+        for(int i=0; i<arraySize; i++){
+            if(i>>3==0){contents[offset + i>>3]=0;}
+            contents[offset + i>>3] |= ((char)(Struct.forcedBlocks.at(i))<<(i&7));
+        }
+        //bool* arr = new bool[forcedBlockArrSize];
 
-        std::memset(arr, 0, forcedBlockArrSize);
-        for(int i=0; i<arraySize; i++){arr[i] = Struct.forcedBlocks.at(i);}
-        copy((char*)(arr), (char*)(arr) + ((arraySize+7)>>3), contents+offset);
+
+        /*for(int i=0; i<arraySize; i++){arr[i] = Struct.forcedBlocks.at(i);}
+        for(int i=arraySize; i<forcedBlockArrSize; i++){arr[i]=0;}
+        copy((char*)(arr), (char*)(arr) + ((arraySize+7)>>3), contents+offset);*/
 
 
         file.write(contents, mainSize);
         file.close();
 
         delete[] contents;
+        //delete [] arr;
         return true;
     }
     else{file.close(); fprintf(stderr, "FAILED TO OPEN SAVE FILE");}

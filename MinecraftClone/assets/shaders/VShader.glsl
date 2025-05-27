@@ -27,7 +27,7 @@ const vec3 normals[] = vec3[](
 
 
 void main(){
-	gl_Position = viewAndProjectionMatrix * vec4(vPos.x + modelPos.x - cameraPosI.x, height + modelPos.y - cameraPosI.y, vPos.y + modelPos.z - cameraPosI.z, 1.0);
+	gl_Position = viewAndProjectionMatrix * vec4(vPos.x + (modelPos.x - cameraPosI.x), height + (modelPos.y - cameraPosI.y), vPos.y + (modelPos.z - cameraPosI.z), 1.0);
 	TexCord = vec2(vtexPos.x * invBlockMapW_blocks, vtexPos.y * invBlockMapH_blocks);
 	Normal = normals[(normal % 6)];
 }

@@ -3,7 +3,8 @@
 #include <iostream>
 
 #include "Blocks.h"
-#include "Structures.h"
+//#include "Structures.h"
+#include "StructureLoader.h"
 
 using namespace std;
 
@@ -18,7 +19,8 @@ void WorldGen :: fillLayer(int index, int chunkSize, ChunkData* chunkData, GLuby
 
 void WorldGen :: placeStruct(ChunkData* chunkData, GLubyte id, GLubyte x, GLubyte y, GLubyte z){
     bool overspill;
-    overspill = Structures :: Structs[id].placeSelf(*chunkData, x, y, z);
+    overspill = StructManager :: getInstance()->getStruct(id)->placeSelf(*chunkData, x, y, z);
+    //overspill = Structures :: Structs[id].placeSelf(*chunkData, x, y, z);
     if(overspill){
         StructNode* newStruct = new StructNode(id, x, y, z);
         if(chunkData->Structs.count == 0){

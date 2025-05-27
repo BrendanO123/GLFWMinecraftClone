@@ -2,7 +2,8 @@
 #include <glm/glm.hpp>
 
 #include "ChunkData.h"
-#include "Structures.h"
+//#include "Structures.h"
+#include "StructureLoader.h"
 
 using namespace std;
 
@@ -19,11 +20,12 @@ StructureList :: ~StructureList(){
 void ChunkData :: place(ChunkData* target, glm :: i8vec2 offset){
     StructNode* iterate = Structs.first;
     while(iterate != nullptr){
-        Structure iterateActual = Structures :: Structs[iterate->id];
+        Structure* iterateActual = StructManager :: getInstance()->getStruct(iterate->id);// :: Structs[iterate->id];
+        //Structure iterateActual = Structures :: Structs[iterate->id];
 
-        if((offset.x + iterate->pos.x + (iterateActual.sizeX >> 1) + (iterateActual.sizeX & 1) - 1) >= 0 && (offset.x + iterate->pos.x - (iterateActual.sizeX>>1)) <= 15){
-            if((offset.y +iterate->pos.z + (iterateActual.sizeZ >> 1) + (iterateActual.sizeZ & 1) - 1) >= 0 && (offset.y + iterate->pos.z - (iterateActual.sizeZ>>1)) <= 15){
-                Structures :: Structs[iterate->id].placeSelf(*target, iterate->pos.x + offset.x, iterate->pos.y, iterate->pos.z + offset.y);
+        if((offset.x + iterate->pos.x + (iterateActual->sizeX >> 1) + (iterateActual->sizeX & 1) - 1) >= 0 && (offset.x + iterate->pos.x - (iterateActual->sizeX>>1)) <= 15){
+            if((offset.y +iterate->pos.z + (iterateActual->sizeZ >> 1) + (iterateActual->sizeZ & 1) - 1) >= 0 && (offset.y + iterate->pos.z - (iterateActual->sizeZ>>1)) <= 15){
+                iterateActual->placeSelf(*target, iterate->pos.x + offset.x, iterate->pos.y, iterate->pos.z + offset.y);
             }
         }
         iterate = iterate->next;

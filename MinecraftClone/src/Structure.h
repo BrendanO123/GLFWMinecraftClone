@@ -14,6 +14,11 @@ using namespace std;
 class Structure{
 
     public:
+
+        ~Structure(){
+            delete [] contents;
+            forcedBlocks.clear();
+        }
         /**
          * @brief Specifies if the structure should try to water log blocks when placing water.
          */
@@ -23,11 +28,11 @@ class Structure{
         /**
          * @brief A bool array that specififes where to carve away terrain with air and where to leave it be, unimplemented.
          */
-        const vector<bool> forcedBlocks;
+        vector<bool> forcedBlocks;
         /**
          * @brief The blocks that compose the structure.
          */
-        const GLubyte *contents;
+        GLubyte* contents;
 
         /**
          * @param sX The size of the structure along the x axis.
@@ -39,12 +44,23 @@ class Structure{
          */
         Structure(
             GLubyte sX, GLubyte sY, GLubyte sZ, int ID, 
-            GLubyte blocks[],
-            vector<bool> isForced,  
+            char* blocks,
+            char* isForced,  
             bool waterLoged = false
         ) : 
-            shouldWaterLog(waterLoged),     sizeX(sX), sizeY(sY), sizeZ(sZ),    id(ID),
-            forcedBlocks(isForced),     contents(blocks){};
+            shouldWaterLog(waterLoged),     sizeX(sX), sizeY(sY), sizeZ(sZ),    id(ID)
+            {
+                int arraySize = sX * sY * sZ;
+                forcedBlocks=vector<bool>();
+                forcedBlocks.reserve(arraySize);
+                for(int i=0; i<arraySize; i++){
+                    forcedBlocks.push_back(isForced[i>>3] >> (i&7));
+                }
+                //for(int i=0; i<arraySize; i++){forcedBlocks.push_back(isForced+i);}
+
+                contents = new GLubyte[arraySize];
+                copy((GLubyte*)blocks, (GLubyte*)(blocks+arraySize), contents);
+            };
 
         /**
          * @param sX The size of the structure along the x axis.
@@ -61,7 +77,10 @@ class Structure{
             bool waterLoged = false
         ) : 
             shouldWaterLog(waterLoged),     sizeX(sX), sizeY(sY), sizeZ(sZ),    id(ID),
-            forcedBlocks(isForced),     contents(blocks){};
+            forcedBlocks(isForced){
+                contents = new GLubyte[sX*sY*sZ];
+                copy(blocks, blocks + sX*sY*sZ, contents);
+            };
 
         /**
          * @brief Places a const structure object in a chunk at a position. Used for structures that need to create non-cuboid caves.
@@ -72,4 +91,15 @@ class Structure{
          * @return A boolean storing wether the structure extrudes past the targeted chunks edges. Used to create structure list for chunk. 
          */
         bool placeSelf(ChunkData &target, GLbyte pX, GLbyte pY, GLbyte pZ) const;
+
+        bool operator==(const Structure& other) const{
+            if(id!=other.id){return false;}
+            if(sizeX != other.sizeX || sizeY != other.sizeY || sizeZ != other.sizeZ){return false;}
+            int arraySize = sizeX * sizeY * sizeZ;
+            for(int i=0; i<arraySize; i++){
+                if(contents[i] != other.contents[i] || forcedBlocks.at(i) != other.forcedBlocks.at(i)){return false;}
+            }
+            return true;
+        }
+        bool operator!=(const Structure& other) const{return !this->operator==(other);}
 };

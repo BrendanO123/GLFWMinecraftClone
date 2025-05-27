@@ -303,7 +303,7 @@ namespace Structures{
     /**
      * @brief The name of all variable fill structures and their index in the constant list.
      */
-    enum STRUCT_ASSETS : unsigned char{
+    /*enum STRUCT_ASSETS : unsigned char{
         OAK_TREE = 0,
         POND = 1,
 
@@ -322,5 +322,5 @@ namespace Structures{
         LILAC = 12,
         PEONY = 13,
         ROSEBUSH = 14
-    };
+    };*/
 };
