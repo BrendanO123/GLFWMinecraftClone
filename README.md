@@ -1,5 +1,5 @@
-# Minecraft Clone
-An attempt to make a Minecraft clone in C++ with GLFW. Inspired by: https://github.com/EvanatorM/ScuffedMinecraft.git.
+# The Game
+A voxel game made in C++ with GLFW. Inspired by: https://github.com/EvanatorM/ScuffedMinecraft.git.
 
 ## How to Use the Project
 
