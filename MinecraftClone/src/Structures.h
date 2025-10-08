@@ -138,7 +138,7 @@ namespace Structures{
             TALL_GRASS_TOP
         }, {SHORT_GRASS},
         
-        {BLUE_LILAC}, {CORNFLOWER}, {ALLIUM}, {TULIP_PINK}, {ROSE}, {TULIP_ORANGE}, {DANDILION}, {TULIP_WHITE},
+        {BLUE_LILAC}, {CORNFLOWER}, {ALLIUM}, {TULIP_PINK}, {ROSE}, {TULIP_ORANGE}, {DANDELION}, {TULIP_WHITE},
 
         {LILAC_BOTTOM, LILAC_TOP}, {PEONY_BOTTOM, PEONY_TOP}, {ROSEBUSH_BOTTOM, ROSEBUSH_TOP}
     };
@@ -285,7 +285,7 @@ namespace Structures{
     };
 
     /**
-     * @brief The const list of all implemented structures that do require the ability to selectivly delete blocks.
+     * @brief The const list of all implemented structures that do require the ability to selectively delete blocks.
      */
     const Structure Structs[StructureCount]={
         Structure(5, 7, 5, StructsData[0].data(), StructsForcedArr[0]), Structure(16, 4, 16, StructsData[1].data(), StructsForcedArr[1]),
@@ -316,7 +316,7 @@ namespace Structures{
         TULIP_PINK_STRUCT = 7,
         ROSE_STRUCT = 8,
         TULIP_ORANGE_STRUCT = 9,
-        DANDILION_STRUCT = 10,
+        DANDELION_STRUCT = 10,
         TULIP_WHITE_STRUCT = 11,
 
         LILAC = 12,

@@ -7,7 +7,7 @@ CPPVERSION = -std=c++17
 #.out file name
 TARGET = build.out
 
-#Framworks for .out file
+#Frameworks for .out file
 F = -framework
 FRAMEWORKS = $(F) Cocoa $(F) OpenGL $(F) IOKit
 
@@ -50,15 +50,15 @@ $(TARGET) : $(OBJS) $(ENTRY) $(GL_OBJ) $(SRCS_H)
 #rules for generating .o files
 -include $(DEPS)
 
-#Rule to generate app.o (seperate bc no .h for the .cpp)
+#Rule to generate app.o (separate bc no .h for the .cpp)
 $(ENTRY) : $(SRC_PATH)$(MAIN).cpp
 	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -c -o $@ $< -I$(INCLUDE)
 
-#rule to generate testing files in spereate folder
+#rule to generate testing files in separate folder
 $(OBJ_PATH)tests/%Test.o : $(SRC_PATH)%Test.cpp 
 	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -c -o $@ $< -I$(INCLUDE)
 
-#rule to generate testing files in spereate folder
+#rule to generate testing files in separate folder
 $(OBJ_PATH)SaveFileCleaner.o : $(SRC_PATH)SaveFileCleaner.cpp 
 	@$(CXX) $(CXXFLAGS) $(CPPVERSION) -c -o $@ $< -I$(INCLUDE)
 
@@ -82,7 +82,7 @@ build:
 	@rm -f $(OBJS) $(ENTRY)
 
 
-#recompile .out if neccessary and run
+#recompile .out if necessary and run
 run:
 	@make -s
 	@./$(TARGET)

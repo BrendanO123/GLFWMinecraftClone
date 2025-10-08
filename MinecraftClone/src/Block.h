@@ -5,24 +5,24 @@
  */
 struct Block{
     
-    char topLowX, topHighX, topLowY, topHighY; //top face/quad min and max x and y tex cords (not nomralized) in block map image
+    char topLowX, topHighX, topLowY, topHighY; //top face/quad min and max x and y tex cords (not normalized) in block map image
     char sideLowX, sideHighX, sideLowY, sideHighY;
     char bottomLowX, bottomHighX, bottomLowY, bottomHighY;
-    char flagByte; //header byte with transparent and billoard flag bits
+    char flagByte; //header byte with transparent and billboard flag bits
 
     /**
-     * @brief The consturctor for a block with each side being the same sprite.
+     * @brief The constructor for a block with each side being the same sprite.
      * @param minX The left bounding wall of the subregion on the texture sheet where the block's sprite can be found (not normalized).
      * @param maxX The right bounding wall of the subregion on the texture sheet where the block's sprite can be found (not normalized).
      * @param minY The lower bounding wall of the subregion on the texture sheet where the block's sprite can be found (not normalized).
      * @param maxY The upper bounding wall of the subregion on the texture sheet where the block's sprite can be found (not normalized).
      */
     Block(char minX, char maxX, char minY, char maxY, 
-        bool transparent = false, bool billboard = false, bool solid = true, bool waterLogable = false, bool traslucent = false);
+        bool transparent = false, bool billboard = false, bool solid = true, bool waterLoggable = false, bool translucent = false);
 
 
     /**
-     * @brief The consturctor for a block with a different top, side, or bottom texture.
+     * @brief The constructor for a block with a different top, side, or bottom texture.
      * @param _minX The left bounding wall of the subregion on the texture sheet where the texture for a given face (top, side, bottom) can be found (not normalized).
      * @param _maxX The right bounding wall of the subregion on the texture sheet where the texture for a given face (top, side, bottom) can be found (not normalized).
      * @param _minY The lower bounding wall of the subregion on the texture sheet where the texture for a given face (top, side, bottom) can be found (not normalized).
@@ -32,7 +32,7 @@ struct Block{
     char topMinX, char topMaxX, char topMinY, char topMaxY,
     char sideMinX, char sideMaxX, char sideMinY, char sideMaxY, 
     char bottomMinX, char bottomMaxX, char bottomMinY, char bottomMaxY,
-    bool transparent = false, bool billboard = false, bool solid = true, bool waterLogable = false, bool traslucent = false);
+    bool transparent = false, bool billboard = false, bool solid = true, bool waterLoggable = false, bool translucent = false);
 
 
     /**
@@ -47,7 +47,7 @@ struct Block{
 namespace Blocks{
     enum BlockFlags : unsigned char{
         BILLBOARD_BIT = 1,
-        WATER_LOGABLE_BIT = 2,
+        WATER_LOGGABLE_BIT = 2,
         TRANSLUCENT_BIT = 4,
         SOLID_BIT = 8,
         TRANSPARENT_BIT =(unsigned char)(1<<7)

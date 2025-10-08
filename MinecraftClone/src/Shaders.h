@@ -10,7 +10,7 @@
 using namespace std;
 
 /**
- * @brief The shader class used to compile, link, and interact with glfw shaders and shader programs from seperate files.
+ * @brief The shader class used to compile, link, and interact with glfw shaders and shader programs from separate files.
  */
 class Shader{
     public:

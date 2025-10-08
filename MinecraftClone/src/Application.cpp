@@ -143,7 +143,7 @@ int main(){
      * 
      * math:
      * rainfall math
-     *      distance to ocean and rainshadow dot product math
+     *      distance to ocean and rain-shadow dot product math
      * temperature math
      *      perlin noise, z cord, rainfall * constant
      * 
@@ -152,19 +152,19 @@ int main(){
      * add way more block types and sprites
      * add f3 screen and png writing for underlying maps
      * 
-     * get vukan and metalvk
+     * get vulkan and metalvk
      * add compute shader dispatching for chunk gen
      * make FBm noise for temperature noise, and rainfall noise maps
      * 
      * create latitude temperature map and add to temperature noise
      * 
-     * create variable layer count FBm for terrain height w/ errosion and continental maps
-     * create rainshadow math and add to rainfall noise
+     * create variable layer count FBm for terrain height w/ erosion and continental maps
+     * create rain-shadow math and add to rainfall noise
      * 
      * create biome maps
      * create cave noise
      * 
-     * create river placment math
+     * create river placement math
      */
 
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);

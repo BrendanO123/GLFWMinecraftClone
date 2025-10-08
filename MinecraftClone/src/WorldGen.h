@@ -20,11 +20,11 @@ namespace WorldGen{
     void fillLayer(int index, int chunkSize, ChunkData* chunkData, GLubyte type);
 
     /**
-     * @brief Calls the placement functions and adds to the strcutre list of the chunk if the structure spans a chunk edge.
+     * @brief Calls the placement functions and adds to the structure list of the chunk if the structure spans a chunk edge.
      * @param chunkData The target chunk to work on.
      * @param id The index in the const structure arr found in the structures.h file where the actual structure can be found.
      * @param x The position along the x axis of the center of the structure in chunk space.
-     * @param y The position along the y axis of the botom of the structure in chunk space.
+     * @param y The position along the y axis of the bottom of the structure in chunk space.
      * @param z The position along the z axis of the center of the structure in chunk space. 
      */
     inline void placeStruct(ChunkData* chunkData, GLubyte id, GLubyte x, GLubyte y, GLubyte z);
@@ -36,9 +36,9 @@ namespace WorldGen{
 
 
     /**
-     * @brief The main worldGen call which fills in a chunk given its world position (the actual cordinates are divided by chunk size).
-     * @param chunkX The x cordinate of the chunk divided by the standard chunk size (16).
-     * @param chunkZ The z cordinate of the chunk divided by the standard chunk size (16).
+     * @brief The main worldGen call which fills in a chunk given its world position (the actual coordinates are divided by chunk size).
+     * @param chunkX The x coordinate of the chunk divided by the standard chunk size (16).
+     * @param chunkZ The z coordinate of the chunk divided by the standard chunk size (16).
      * @param chunkData The target chunk for the generation function.
      */
     void getChunkBasics(int chunkX, int chunkZ, int chunkSize, ChunkData* chunkData, noise :: Fractal* fractal);

@@ -13,7 +13,7 @@
 using namespace std;
 
 /**
- * @brief A vertex for a normal block in a chunk (int style cordinates).
+ * @brief A vertex for a normal block in a chunk (int style coordinates).
  */
 struct Vertex
 {
@@ -49,7 +49,7 @@ struct Vertex
 };
 
 /**
- * @brief A vertex for a billboard block (such as a flower or tall grass) in a chunk (float cordinates). 
+ * @brief A vertex for a billboard block (such as a flower or tall grass) in a chunk (float coordinates). 
  */
 struct BillboardVertex
 {
@@ -104,8 +104,8 @@ class Chunk{
         GLubyte LOD;
 
         float invert = 0.0f;
-        vector<Vertex> verticies, translucentVerticies;
-        vector<BillboardVertex> billboardVerticies;
+        vector<Vertex> vertices, translucentVertices;
+        vector<BillboardVertex> billboardVertices;
         vector<unsigned int> indicies, translucentIndicies, billboardIndicies;
 
         static inline int Floor(float a){return (a<0 ? int(a) : int(a));}

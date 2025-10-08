@@ -29,7 +29,7 @@ class Camera{
         float mouseSensitivity;
 
         Camera();
-        Camera(float FOV, float maxFOV, float minFOV, float defualtFOV, glm :: vec3 pos, glm :: vec2 Rotation, float sensitivity=0.1f);
+        Camera(float FOV, float maxFOV, float minFOV, float defaultFOV, glm :: vec3 pos, glm :: vec2 Rotation, float sensitivity=0.1f);
         void mouse_callback(GLFWwindow* window, double xpos, double ypos);
         void scroll_callback(GLFWwindow* window, double xOff, double yOff);
         void processInput(GLFWwindow* window, glm :: vec3 &FPos, glm :: ivec3 &IPos, float deltaTime=1.f);

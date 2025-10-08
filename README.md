@@ -4,7 +4,7 @@ A voxel game made in C++ with GLFW. Inspired by: https://github.com/EvanatorM/Sc
 ## How to Use the Project
 
 ### Getting Started
-The project comes with a Makefile in the root directory for make compatibility. After downloading and unzipping the project (if you have make for C++ installed), simply run ```cd <path_to_root_directory>``` in the terminal, and you will be able to use the Makfile and its custom commands. 
+The project comes with a Makefile in the root directory for make compatibility. After downloading and unzipping the project (if you have make for C++ installed), simply run ```cd <path_to_root_directory>``` in the terminal, and you will be able to use the Makefile and its custom commands. 
 
 ### Building the Project
 To compile the project with Makefile, you need to first run ```make DEPENDS``` to construct the dependency files. After running this once, you can quickly run ```make``` in the root directory of the project to compile or recompile the project. Additionally, ```make run``` and ```make build``` can be used to compile and run and compile without .o files, respectively.

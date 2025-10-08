@@ -25,7 +25,7 @@ void FileManager :: setInt(char * contents, int offset, int input){
 void FileManager :: setFloat(char * contents, int offset, float input){
     copy((char*)&input, ((char*)&input) + 4, contents + offset);
 }
-FileManager :: FileManager(string name, int &seed, glm :: ivec3 &playerPositionI, glm :: vec3 &playerPositionF, glm :: vec2 &playerRoation){
+FileManager :: FileManager(string name, int &seed, glm :: ivec3 &playerPositionI, glm :: vec3 &playerPositionF, glm :: vec2 &playerRotation){
     saveFileName = (savesFolderPath + name);
     string mainPath = saveFileName + "/main";
     ifstream file1(mainPath.c_str());
@@ -47,8 +47,8 @@ FileManager :: FileManager(string name, int &seed, glm :: ivec3 &playerPositionI
             playerPositionF.y = getFloat(contents, sizeof(int32_t) * 4 + sizeof(float)*1);
             playerPositionF.z = getFloat(contents, sizeof(int32_t) * 4 + sizeof(float)*2);
 
-            playerRoation.x = getFloat(contents, sizeof(int32_t) * 4 + sizeof(float)*3);
-            playerRoation.y = getFloat(contents, sizeof(int32_t) * 4 + sizeof(float)*4);
+            playerRotation.x = getFloat(contents, sizeof(int32_t) * 4 + sizeof(float)*3);
+            playerRotation.y = getFloat(contents, sizeof(int32_t) * 4 + sizeof(float)*4);
 
             delete[] contents;
             return;
@@ -62,11 +62,11 @@ FileManager :: FileManager(string name, int &seed, glm :: ivec3 &playerPositionI
             /*fprintf(stderr, "FAILED TO MAKE SAVE FILE FOLDER");
             return;*/
         }
-        save(seed, playerPositionI, playerPositionF, playerRoation);
+        save(seed, playerPositionI, playerPositionF, playerRotation);
     }
 }
 
-bool FileManager :: save(int seed, glm :: ivec3 playerPositionI, glm :: vec3 playerPositionF, glm :: vec2  playerRoation){
+bool FileManager :: save(int seed, glm :: ivec3 playerPositionI, glm :: vec3 playerPositionF, glm :: vec2  playerRotation){
     ofstream file; file.open((saveFileName + "/main").c_str(), ios::out|ios::binary); 
         if(file.is_open()){
             char * contents = new char [mainFileSize];
@@ -80,8 +80,8 @@ bool FileManager :: save(int seed, glm :: ivec3 playerPositionI, glm :: vec3 pla
             setFloat(contents, sizeof(int32_t) * 4 + sizeof(float)*1, playerPositionF.y);
             setFloat(contents, sizeof(int32_t) * 4 + sizeof(float)*2, playerPositionF.z);
 
-            setFloat(contents, sizeof(int32_t) * 4 + sizeof(float)*3, playerRoation.x);
-            setFloat(contents, sizeof(int32_t) * 4 + sizeof(float)*4, playerRoation.y);
+            setFloat(contents, sizeof(int32_t) * 4 + sizeof(float)*3, playerRotation.x);
+            setFloat(contents, sizeof(int32_t) * 4 + sizeof(float)*4, playerRotation.y);
 
             file.write(contents, mainFileSize);
             file.close();
@@ -166,22 +166,22 @@ ChunkData* FileManager :: load(string path){
     string region = path.substr(7, chunkNameIndex-7);
     string chunk = path = path.substr(chunkNameIndex+6);
 
-    int regionSeperatorIndex = region.find("_"); 
-    int chunkSeperatorIndex = chunk.find("_");
+    int regionSeparatorIndex = region.find("_"); 
+    int chunkSeparatorIndex = chunk.find("_");
 
     int RX, RY, CX, CY;
     stringstream stream;
-    stream << region.substr(0, regionSeperatorIndex);
+    stream << region.substr(0, regionSeparatorIndex);
     stream >> RX; if(stream.bad()){return nullptr;}
     stream.clear();
-    stream << region.substr(regionSeperatorIndex+1);
+    stream << region.substr(regionSeparatorIndex+1);
     stream >> RY; if(stream.bad()){return nullptr;}
 
     stream.clear();
-    stream << chunk.substr(0, chunkSeperatorIndex);
+    stream << chunk.substr(0, chunkSeparatorIndex);
     stream >> CX; if(stream.bad()){return nullptr;}
     stream.clear();
-    stream << chunk.substr(chunkSeperatorIndex+1);
+    stream << chunk.substr(chunkSeparatorIndex+1);
     stream >> CY; if(stream.bad()){return nullptr;}
 
     return load(RX * 16 + CX, RY * 16 + CY);

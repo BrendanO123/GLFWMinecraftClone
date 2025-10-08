@@ -23,7 +23,7 @@ using namespace std;
 class World{
     public:
 
-        //keep destructer public
+        //keep destructor public
         ~World();
 
         //init to make universal instance of world, access instance, close instance
@@ -43,7 +43,7 @@ class World{
         World(const World&) = delete;
         World& operator=(const World&) = delete;
         
-        //notify saveFileManager, needs to be notified and scheduled for synchronization insetad of just being saved
+        //notify saveFileManager, needs to be notified and scheduled for synchronization instead of just being saved
         void setShouldSave(bool shouldSave = true){saveNeeded = shouldSave;}
 
         //get block or chunk data
@@ -69,7 +69,7 @@ class World{
         World(Shader* shader, int render, int seed, string saveFileName, Player* player);
 
         /**
-         * @brief The looping update function that runs on a backround thread and handles chunks and chunk data.
+         * @brief The looping update function that runs on a background thread and handles chunks and chunk data.
          */
         void threadUpdate();
         bool save(Player* player);

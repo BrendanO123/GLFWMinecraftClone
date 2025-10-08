@@ -54,7 +54,7 @@ float Noise :: SinglePerlin(int seed, float x, float y) const{
         //However, if the perfect conditions for 1/sqrt(2) are not possible with your set of grad vector directions
             //(pi/4 multiples are needed), 
         //your grad vecs are slightly shorter than normalized,
-        //or the psuedo-rand num generator doesn't allow the grad and displacement vectors to be parrellel
+        //or the pseudo-rand num generator doesn't allow the grad and displacement vectors to be parallel
 
         //then the max will be below 1/sqrt(2) and the factor (seen above at the end of the return) should be > sqrt(2)
 }

@@ -24,13 +24,13 @@ class Player{
         const int reachDist = 24;
         Raycaster raycaster = Raycaster(reachDist, &getVoxel); //makes
 
-        glm :: ivec3 intPos; //needs initital, can be a literal
-        glm :: vec3 fPos; //needs initital, can be a literal
-        glm :: vec3 lookDirection; //needs initital, can be a literal
+        glm :: ivec3 intPos; //needs initial, can be a literal
+        glm :: vec3 fPos; //needs initial, can be a literal
+        glm :: vec3 lookDirection; //needs initial, can be a literal
 
         glm :: mat4 finalTransformationMatrix; //sets
 
-        GLuint ViewAndPrespectiveMatLoc, cameraIntVecLoc; //gets from shader
+        GLuint ViewAndPerspectiveMatLoc, cameraIntVecLoc; //gets from shader
         const float renderDist;
         queue<clickAction> clicks = queue<clickAction>();
     

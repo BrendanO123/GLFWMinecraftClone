@@ -168,7 +168,7 @@ GLubyte Fractal :: getFoliage(glm :: ivec2 pos, GLubyte surfaceType, float rain,
                 }
                 else{
                     if(value > -0.34265f){
-                        return Structures :: DANDILION_STRUCT;
+                        return Structures :: DANDELION_STRUCT;
                     }
                     return Structures :: TULIP_WHITE_STRUCT;
                 }

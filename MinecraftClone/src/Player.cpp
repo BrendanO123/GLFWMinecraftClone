@@ -9,7 +9,7 @@
 using namespace std;
 
 Player :: Player(Shader newShader, float RenderDist) : shader(newShader), renderDist(RenderDist){
-    ViewAndPrespectiveMatLoc = glGetUniformLocation(shader.program, "viewAndProjectionMatrix");
+    ViewAndPerspectiveMatLoc = glGetUniformLocation(shader.program, "viewAndProjectionMatrix");
     cameraIntVecLoc = glGetUniformLocation(shader.program, "cameraPosI");
 
     intPos = cam.CameraIPos;
@@ -20,7 +20,7 @@ Player :: Player(Shader newShader, float RenderDist) : shader(newShader), render
 }
 
 void Player :: updateMatrixUniforms(float ratio){
-    glUniformMatrix4fv(ViewAndPrespectiveMatLoc, 1, GL_FALSE, glm::value_ptr(cam.getViewAndProjection(lookDirection, ratio, renderDist)));
+    glUniformMatrix4fv(ViewAndPerspectiveMatLoc, 1, GL_FALSE, glm::value_ptr(cam.getViewAndProjection(lookDirection, ratio, renderDist)));
     intPos = cam.CameraIPos;
     glUniform3iv(cameraIntVecLoc, 1, glm::value_ptr(intPos));
 }

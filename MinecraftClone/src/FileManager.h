@@ -22,10 +22,10 @@ class FileManager{
         static inline void setFloat(char * contents, int offset, float input);
 
     public:
-        FileManager(string name, int &seed, glm :: ivec3 &playerPositionI, glm :: vec3 &playerPositionF, glm :: vec2 &playerRoation);
+        FileManager(string name, int &seed, glm :: ivec3 &playerPositionI, glm :: vec3 &playerPositionF, glm :: vec2 &playerRotation);
 
         bool save(ChunkData* data);
-        bool save(int seed, glm :: ivec3 playerPositionI, glm :: vec3 playerPositionF, glm :: vec2 playerRoation);
+        bool save(int seed, glm :: ivec3 playerPositionI, glm :: vec3 playerPositionF, glm :: vec2 playerRotation);
         ChunkData* load(int x, int z);
         ChunkData* load(string path);
         bool hasFile(int x, int z);

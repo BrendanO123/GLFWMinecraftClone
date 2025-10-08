@@ -38,7 +38,7 @@ void main(){
         n += (mipmap - floor(mipmap));
     }
 
-    //discared empty texels
+    //discard empty texels
     if(n ==0 || color.w<alphaH){discard;}
 
     //normalize

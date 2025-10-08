@@ -35,7 +35,7 @@ Shader :: Shader(const char* VShaderPath, const char* FShaderPath){
         FCodeStr = FShaderStream.str();
     }
     catch(ifstream :: failure e){
-        fprintf(stderr, "SHADER RETRIVAL FAILED\n%s\n", e.what());
+        fprintf(stderr, "SHADER RETRIEVAL FAILED\n%s\n", e.what());
     }
 
     //convert into const char*

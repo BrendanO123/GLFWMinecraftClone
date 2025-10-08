@@ -48,7 +48,7 @@ namespace Blocks{
         Block(3, 4, 3, 4, true, true, false), //pink tulip
         Block(4, 5, 3, 4, true, true, false), //rose/poppy
         Block(5, 6, 3, 4, true, true, false), //orange tulip
-        Block(6, 7, 3, 4, true, true, false), //dandilion
+        Block(6, 7, 3, 4, true, true, false), //dandelion
         Block(7, 8, 3, 4, true, true, false), //white tulip
 
 
@@ -108,7 +108,7 @@ namespace Blocks{
         TULIP_PINK = 18,
         ROSE = 19,
         TULIP_ORANGE = 20,
-        DANDILION = 21,
+        DANDELION = 21,
         TULIP_WHITE = 22,
         
         WATER = 23,

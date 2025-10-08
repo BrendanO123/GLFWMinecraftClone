@@ -62,14 +62,14 @@ struct ChunkData{
 
     /**
      * @short Returns the layer with the given y value, places one in data if none exists. 
-     * @param height The y value of the deisred layer.
-     * @note This function has many checks to keep data sorted and return a valid layer with the given y value even in edge cases. If some of the edge case checks can be skipped, this function might not be preffered.
+     * @param height The y value of the desired layer.
+     * @note This function has many checks to keep data sorted and return a valid layer with the given y value even in edge cases. If some of the edge case checks can be skipped, this function might not be preferred.
      * @returns The index of the desired layer.
      */
     GLubyte safeLayerFetch(GLubyte height);
 
     /**
-     * @short Places a new layer while keeping data sorted, should only be used when the layer doesn't already exist and is inbetween existing layers.
+     * @short Places a new layer while keeping data sorted, should only be used when the layer doesn't already exist and is in between existing layers.
      * @param height The y value where the new layer is placed.
      * @param lowerBound The minimum index to consider as a placement option. 
      * @attention Breaks if layer already exists, data is empty, or the layer should be placed at index 0.
@@ -81,7 +81,7 @@ struct ChunkData{
 
         //layer/block fetch helper (binary search) function
         /**
-         * @brief helper function that uses a binary search with resepect to height of the layers to find a layer
+         * @brief helper function that uses a binary search with respect to height of the layers to find a layer
          */
         Layer* findLayer(GLubyte target, int low, int high);
 

@@ -9,7 +9,7 @@
 using namespace std;
 
 /**
- * @brief The class describing sturcture assets.
+ * @brief The class describing structure assets.
  */
 class Structure{
 
@@ -20,7 +20,7 @@ class Structure{
         const bool shouldWaterLog;
         const int sizeX, sizeY, sizeZ;
         /**
-         * @brief A bool array that specififes where to carve away terrain with air and where to leave it be, unimplemented.
+         * @brief A bool array that specifies where to carve away terrain with air and where to leave it be, unimplemented.
          */
         const vector<bool> forcedBlocks;
         /**
@@ -40,9 +40,9 @@ class Structure{
             GLubyte sX, GLubyte sY, GLubyte sZ,
             const GLubyte blocks[],
             const vector<bool> isForced,  
-            bool waterLoged = false
+            bool waterLogged = false
         ) : 
-            shouldWaterLog(waterLoged),     sizeX(sX), sizeY(sY), sizeZ(sZ), 
+            shouldWaterLog(waterLogged),     sizeX(sX), sizeY(sY), sizeZ(sZ), 
             forcedBlocks(isForced),     contents(blocks){};
 
         /**
